@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-uk/values-uk.xml",
+            "map": [
+                {
+                    "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/values-uk/values-uk.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,140,220,287,358,443,523,604,693,772,846",
+                        "endColumns": "84,79,66,70,84,79,80,88,78,73,68",
+                        "endOffsets": "135,215,282,353,438,518,599,688,767,841,910"
+                    }
+                }
+            ]
+        }
+    ]
+}

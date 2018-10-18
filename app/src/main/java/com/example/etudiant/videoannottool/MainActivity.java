@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+   /*    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             {
                 requestPermissions(new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, 2);
@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
         else{
 
 
-        }
+        }*/
 
 
             super.onCreate(savedInstanceState);
@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
         //2. prepare video source from url
 //        videoSource = new ExtractorMediaSource(Uri.parse(path), DataSourceFactory,
 //                new DefaultExtractorsFactory(), null, null);
-        Uri uri = Uri.fromFile(new java.io.File("/sdcard/Download/test.mp4"));
+        Uri uri = Uri.fromFile(new java.io.File("/sdcard/DCIM/Camera/test.mp4"));
         DataSpec dataSpec = new DataSpec(uri);
         FileDataSource fileDataSource = new FileDataSource();
         try
