@@ -1,4 +1,0 @@
-#Fri Oct 19 10:47:47 CEST 2018
-base.0=/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/transforms/dexMerger/debug/9
-path.0=classes.dex
-renamed.0=classes.dex
