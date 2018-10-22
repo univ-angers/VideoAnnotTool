@@ -1,7 +1,7 @@
 [
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_exo_controls_repeat_all.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxhdpi-v4/exo_controls_repeat_all.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_template_big_media_narrow_custom.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.0.0.aar/ff9a9e06b9741e5894d63b0398a96e4d/res/layout/notification_template_big_media_narrow_custom.xml"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_launcher_background.png.flat",
@@ -20,24 +20,8 @@
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxhdpi-v4/exo_controls_rewind.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_exo_simple_player_view.xml.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/layout/exo_simple_player_view.xml"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_activity_main.xml.flat",
-        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/layout/activity_main.xml"
-    },
-    {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_launcher_background.png.flat",
         "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/generated/res/pngs/debug/drawable-hdpi/ic_launcher_background.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_exo_controls_repeat_one.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-hdpi-v4/exo_controls_repeat_one.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_repeat_off.xml.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_repeat_off.xml"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_launcher_background.png.flat",
@@ -46,14 +30,6 @@
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_controls_play.png.flat",
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-mdpi-v4/exo_controls_play.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_exo_controls_next.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxhdpi-v4/exo_controls_next.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_exo_controls_play.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-hdpi-v4/exo_controls_play.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher.png.flat",
@@ -72,16 +48,16 @@
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-mdpi-v4/exo_controls_pause.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable_ic_fullscreen_expand.png.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/drawable/ic_fullscreen_expand.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher.png.flat",
         "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher_round.png.flat",
-        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-hdpi/ic_launcher_round.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_notification_bg_normal.9.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-hdpi-v4/notification_bg_normal.9.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_controls_fastforward.png.flat",
@@ -92,32 +68,24 @@
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_pause.xml"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_next.xml.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_next.xml"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout-v16_notification_template_custom_big.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/layout-v16/notification_template_custom_big.xml"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_edit_mode_logo.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_edit_mode_logo.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_notification_bg_low_pressed.9.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-hdpi-v4/notification_bg_low_pressed.9.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_controls_repeat_one.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-mdpi-v4/exo_controls_repeat_one.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher.png.flat",
-        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-mdpi/ic_launcher.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_fastforward.xml.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_fastforward.xml"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_play.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_play.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_controls_repeat_one.png.flat",
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_repeat_one.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_play.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_play.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_notification_bg_normal_pressed.9.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-hdpi-v4/notification_bg_normal_pressed.9.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_edit_mode_logo.png.flat",
@@ -132,64 +100,44 @@
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_next.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_repeat_one.xml.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_repeat_one.xml"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout-v21_notification_action.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/layout-v21/notification_action.xml"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/raw_test.mp4.flat",
         "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/raw/test.mp4"
     },
     {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_repeat_one.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_repeat_one.xml"
+    },
+    {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_controls_previous.png.flat",
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_previous.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_play.xml.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_play.xml"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxxhdpi-v4_exo_edit_mode_logo.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxxhdpi-v4/exo_edit_mode_logo.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_previous.png.flat",
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_previous.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_exo_controls_fastforward.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxhdpi-v4/exo_controls_fastforward.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_template_part_time.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/layout/notification_template_part_time.xml"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_exo_controls_play.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxhdpi-v4/exo_controls_play.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_exo_controls_fastforward.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxhdpi-v4/exo_controls_fastforward.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_pause.png.flat",
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_pause.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_repeat_off.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_repeat_off.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_exo_controls_pause.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-hdpi-v4/exo_controls_pause.png"
-    },
-    {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_exo_controls_repeat_off.png.flat",
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-hdpi-v4/exo_controls_repeat_off.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_rewind.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_rewind.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_exo_controls_fastforward.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-hdpi-v4/exo_controls_fastforward.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_notification_bg_normal.9.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-xhdpi-v4/notification_bg_normal.9.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_exo_controls_previous.png.flat",
@@ -200,16 +148,12 @@
         "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/generated/res/pngs/debug/drawable-mdpi/ic_launcher_background.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-v24_ic_launcher_foreground.xml.flat",
-        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/drawable-v24/ic_launcher_foreground.xml"
-    },
-    {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable_draw_button_icon.png.flat",
         "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/drawable/draw_button_icon.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_fastforward.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_fastforward.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_media_cancel_action.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.0.0.aar/ff9a9e06b9741e5894d63b0398a96e4d/res/layout/notification_media_cancel_action.xml"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_exo_edit_mode_logo.png.flat",
@@ -224,32 +168,16 @@
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-hdpi-v4/exo_controls_repeat_all.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_repeat_all.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_repeat_all.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_template_media_custom.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.0.0.aar/ff9a9e06b9741e5894d63b0398a96e4d/res/layout/notification_template_media_custom.xml"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_exo_playback_control_view.xml.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/layout/exo_playback_control_view.xml"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher_round.png.flat",
-        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher_round.png.flat",
-        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_previous.xml.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_previous.xml"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_notification_bg_normal_pressed.9.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-xhdpi-v4/notification_bg_normal_pressed.9.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_controls_repeat_off.png.flat",
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-mdpi-v4/exo_controls_repeat_off.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_rewind.xml.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_rewind.xml"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_shuffle.png.flat",
@@ -260,16 +188,8 @@
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_fastforward.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_controls_play.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_play.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_shuffle.xml.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_shuffle.xml"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_controls_repeat_off.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_repeat_off.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_template_big_media_custom.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.0.0.aar/ff9a9e06b9741e5894d63b0398a96e4d/res/layout/notification_template_big_media_custom.xml"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_exo_controls_repeat_one.png.flat",
@@ -284,24 +204,16 @@
         "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-mdpi/ic_launcher_round.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_controls_rewind.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-mdpi-v4/exo_controls_rewind.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_exo_controls_next.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-hdpi-v4/exo_controls_next.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-hdpi/ic_launcher.png"
-    },
-    {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_controls_pause.png.flat",
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_pause.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_exo_controls_pause.png.flat",
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxhdpi-v4/exo_controls_pause.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_template_big_media.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.0.0.aar/ff9a9e06b9741e5894d63b0398a96e4d/res/layout/notification_template_big_media.xml"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_exo_edit_mode_logo.png.flat",
@@ -320,36 +232,36 @@
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_repeat_all.xml"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_controls_next.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-mdpi-v4/exo_controls_next.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi_ic_launcher_background.png.flat",
-        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/generated/res/pngs/debug/drawable-ldpi/ic_launcher_background.png"
-    },
-    {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxxhdpi_ic_launcher_background.png.flat",
         "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/generated/res/pngs/debug/drawable-xxxhdpi/ic_launcher_background.png"
-    },
-    {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_controls_repeat_all.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_repeat_all.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_controls_repeat_all.png.flat",
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-mdpi-v4/exo_controls_repeat_all.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_controls_shuffle.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_shuffle.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_media_action.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.0.0.aar/ff9a9e06b9741e5894d63b0398a96e4d/res/layout/notification_media_action.xml"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_controls_previous.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-mdpi-v4/exo_controls_previous.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_notify_panel_notification_icon_bg.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-mdpi-v4/notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_action.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/layout/notification_action.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_notification_bg_low_pressed.9.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-xhdpi-v4/notification_bg_low_pressed.9.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_ic_launcher_background.xml.flat",
         "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/generated/res/pngs/debug/drawable-anydpi-v21/ic_launcher_background.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_notification_bg_low_normal.9.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-mdpi-v4/notification_bg_low_normal.9.png"
     },
     {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher_round.png.flat",
@@ -360,11 +272,267 @@
         "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxhdpi-v4/exo_controls_repeat_off.png"
     },
     {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_next.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_next.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_template_lines_media.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.0.0.aar/ff9a9e06b9741e5894d63b0398a96e4d/res/layout/notification_template_lines_media.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_exo_controls_repeat_all.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxhdpi-v4/exo_controls_repeat_all.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_exo_simple_player_view.xml.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/layout/exo_simple_player_view.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_activity_main.xml.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/layout/activity_main.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_notification_bg_low_normal.9.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-hdpi-v4/notification_bg_low_normal.9.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_exo_controls_repeat_one.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-hdpi-v4/exo_controls_repeat_one.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_repeat_off.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_repeat_off.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout-v21_notification_action_tombstone.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_notification_bg_normal.9.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-mdpi-v4/notification_bg_normal.9.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_template_big_media_narrow.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.0.0.aar/ff9a9e06b9741e5894d63b0398a96e4d/res/layout/notification_template_big_media_narrow.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_exo_controls_next.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxhdpi-v4/exo_controls_next.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_exo_controls_play.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-hdpi-v4/exo_controls_play.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable_notification_bg_low.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_notification_bg_normal_pressed.9.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-mdpi-v4/notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-hdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_next.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_next.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable_notification_tile_bg.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable/notification_tile_bg.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_edit_mode_logo.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_edit_mode_logo.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_controls_repeat_one.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-mdpi-v4/exo_controls_repeat_one.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_fastforward.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_fastforward.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_action_tombstone.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/layout/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_play.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_play.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxxhdpi-v4_exo_edit_mode_logo.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxxhdpi-v4/exo_edit_mode_logo.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_exo_controls_play.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xxhdpi-v4/exo_controls_play.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_repeat_off.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_repeat_off.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_exo_controls_pause.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-hdpi-v4/exo_controls_pause.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_template_custom_big.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/layout/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_rewind.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_rewind.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_template_media.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-media-compat-26.0.0.aar/ff9a9e06b9741e5894d63b0398a96e4d/res/layout/notification_template_media.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_exo_controls_fastforward.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-hdpi-v4/exo_controls_fastforward.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_notification_bg_low_normal.9.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-xhdpi-v4/notification_bg_low_normal.9.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-v21_notification_action_background.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-v21/notification_action_background.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-v24_ic_launcher_foreground.xml.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/drawable-v24/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_fastforward.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_fastforward.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_repeat_all.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_repeat_all.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout-v21_notification_template_icon_group.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/layout-v21/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_notify_panel_notification_icon_bg.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-xhdpi-v4/notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_exo_playback_control_view.xml.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/layout/exo_playback_control_view.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_previous.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_previous.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_rewind.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_rewind.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_template_icon_group.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/layout/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_controls_play.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_play.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-anydpi-v21_exo_controls_shuffle.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-anydpi-v21/exo_controls_shuffle.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_controls_repeat_off.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_repeat_off.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_controls_rewind.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-mdpi-v4/exo_controls_rewind.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_exo_controls_next.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-hdpi-v4/exo_controls_next.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout-v21_notification_template_custom_big.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/layout-v21/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/layout_notification_template_part_chronometer.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/layout/notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable_notification_bg.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable/notification_bg.xml"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_controls_next.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-mdpi-v4/exo_controls_next.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi_ic_launcher_background.png.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/generated/res/pngs/debug/drawable-ldpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_controls_repeat_all.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_repeat_all.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_notify_panel_notification_icon_bg.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-hdpi-v4/notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_exo_controls_shuffle.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-xhdpi-v4/exo_controls_shuffle.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_exo_controls_previous.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-mdpi-v4/exo_controls_previous.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable_notification_icon_background.xml.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable/notification_icon_background.xml"
+    },
+    {
         "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher.png.flat",
         "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
     },
     {
-        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-ldpi-v4_exo_controls_next.png.flat",
-        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.0.aar/bfc437a2b6f3c84c5a69d117da5533ff/res/drawable-ldpi-v4/exo_controls_next.png"
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable_ic_fullscreen_skrink.png.flat",
+        "source": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/src/main/res/drawable/ic_fullscreen_skrink.png"
+    },
+    {
+        "merged": "/home/etudiant/AndroidStudioProjects/VideoAnnotTool/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_notification_bg_low_pressed.9.png.flat",
+        "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/drawable-mdpi-v4/notification_bg_low_pressed.9.png"
     }
 ]

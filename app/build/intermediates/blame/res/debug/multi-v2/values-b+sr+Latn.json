@@ -12,6 +12,23 @@
                         "endColumns": "83,73,66,65,79,76,86,78,77,78,68",
                         "endOffsets": "134,208,275,341,421,498,585,664,742,821,890"
                     }
+                },
+                {
+                    "source": "/home/etudiant/.gradle/caches/transforms-1/files-1.1/support-compat-26.0.0.aar/7d8f5d1eecf875f9f5e7d88797fbfb5d/res/values-b+sr+Latn/values-b+sr+Latn.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "13",
+                        "startColumns": "4",
+                        "startOffsets": "895",
+                        "endColumns": "100",
+                        "endOffsets": "991"
+                    }
                 }
             ]
         }
