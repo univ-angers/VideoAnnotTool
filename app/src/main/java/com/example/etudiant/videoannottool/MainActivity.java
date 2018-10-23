@@ -1,22 +1,20 @@
 package com.example.etudiant.videoannottool;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 
 import android.support.v4.content.ContextCompat;
+
+import com.example.etudiant.videoannottool.adapter.AnnotationsAdapter;
+import com.example.etudiant.videoannottool.adapter.VideosAdapter;
+import com.example.etudiant.videoannottool.annotation.Annotation;
+import com.example.etudiant.videoannottool.annotation.Video;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -33,7 +31,7 @@ import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
-import com.google.android.exoplayer2.util.Util;
+
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -41,8 +39,6 @@ import android.widget.Spinner;
 
 
 import java.util.ArrayList;
-
-import static java.security.AccessController.getContext;
 
 public class MainActivity extends Activity {
     private SimpleExoPlayer player;

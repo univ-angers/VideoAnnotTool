@@ -1,4 +1,6 @@
-package com.example.etudiant.videoannottool;
+package com.example.etudiant.videoannottool.annotation;
+
+import com.example.etudiant.videoannottool.annotation.Annotation;
 
 import java.util.ArrayList;
 

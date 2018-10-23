@@ -1,4 +1,4 @@
-package com.example.etudiant.videoannottool;
+package com.example.etudiant.videoannottool.annotation;
 
 public class Annotation {
     private String texte;
