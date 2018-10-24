@@ -77,7 +77,8 @@
 	    android:focusable="true"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
-	    android:gravity="center" />
+	    android:gravity="center"
+        app:resize_mode="fill"/>
 
 	</FrameLayout>
 

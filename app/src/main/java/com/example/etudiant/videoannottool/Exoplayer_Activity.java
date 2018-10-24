@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -39,7 +40,8 @@ public class Exoplayer_Activity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String path = "android.resource://" + getPackageName() + "/" + R.raw.test;
+        //String path = "android.resource://" + getPackageName() + "/" + R.raw.test;
+        String first = "test2"; // <------------------------------------------------------------------------------ a modifié pour accéder a la première viedo de la bd
 
 
         SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
@@ -49,10 +51,8 @@ public class Exoplayer_Activity extends Activity {
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
         DataSourceFactory = new DefaultExtractorsFactory();
-        //2. prepare video source from url
-        //        videoSource = new ExtractorMediaSource(Uri.parse(path), DataSourceFactory,
-        //                new DefaultExtractorsFactory(), null, null);
-        Uri uri = Uri.fromFile(new java.io.File("/sdcard/DCIM/Camera/test.mp4"));
+        //2. prepare video source
+        Uri uri = Uri.fromFile(new java.io.File("/sdcard/DCIM/Camera/"+first+".mp4"));
         DataSpec dataSpec = new DataSpec(uri);
         FileDataSource fileDataSource = new FileDataSource();
         try {
@@ -70,44 +70,10 @@ public class Exoplayer_Activity extends Activity {
         exoPlayerView.setControllerShowTimeoutMs(0);
         exoPlayerView.setPlayer(player);
         player.setPlayWhenReady(true);
+        player.setRepeatMode(Player.REPEAT_MODE_ONE);
         player.prepare(videoSource, false, false);
 
 
-//3. partie pour gerer l'audio du lecteur
-/*       AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-
-
-public boolean onKeyDown(int keyCode, KeyEvent event) {
-if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN){
-volumeSeekBar.setProgress(audioManager.getStreamVolume(player.getAudioStreamType()));
-}
-return super.onKeyDown(keyCode, event);
-}
-
-@Override
-public boolean onKeyUp(int keyCode, KeyEvent event) {
-if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP){
-volumeSeekBar.setProgress(audioManager.getStreamVolume(player.getAudioStreamType()));
-}
-return super.onKeyUp(keyCode, event);
-}
-
-volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-@Override
-public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-audioManager.setStreamVolume(player.getAudioStreamType(), i, 0);
-}
-
-@Override
-public void onStartTrackingTouch(SeekBar seekBar) {
-
-}
-
-@Override
-public void onStopTrackingTouch(SeekBar seekBar) {
-
-}
-});*/
 
     }
 }
