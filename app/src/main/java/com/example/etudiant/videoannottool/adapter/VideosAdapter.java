@@ -40,9 +40,7 @@ public class VideosAdapter extends ArrayAdapter {
 
         // Populate the data into the template view using the data object
 
-        tvName.setText(video.getName());
-
-        tvHome.setText(video.getAuthor());
+        tvName.setText(video.getFileName());
 
         // Return the completed view to render on screen
 

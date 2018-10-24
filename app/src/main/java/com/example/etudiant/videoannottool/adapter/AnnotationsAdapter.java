@@ -9,11 +9,12 @@ import android.widget.TextView;
 
 import com.example.etudiant.videoannottool.annotation.Annotation;
 import com.example.etudiant.videoannottool.R;
+import com.example.etudiant.videoannottool.annotation.TextAnnotation;
 
 import java.util.ArrayList;
 
-public class AnnotationsAdapter extends ArrayAdapter {
-    public AnnotationsAdapter(Context context, ArrayList<Annotation> annotations) {
+public class AnnotationsAdapter extends ArrayAdapter<TextAnnotation> {
+    public AnnotationsAdapter(Context context, ArrayList<TextAnnotation> annotations) {
 
         super(context, 0, annotations);
     }
@@ -40,9 +41,7 @@ public class AnnotationsAdapter extends ArrayAdapter {
 
         // Populate the data into the template view using the data object
 
-        tvTexte.setText(annotation.getTexte());
-
-
+        tvTexte.setText(annotation.getAnnotationTitle());
 
         // Return the completed view to render on screen
 

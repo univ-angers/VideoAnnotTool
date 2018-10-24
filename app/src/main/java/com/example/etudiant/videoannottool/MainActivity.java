@@ -14,7 +14,13 @@ import android.support.v4.content.ContextCompat;
 import com.example.etudiant.videoannottool.adapter.AnnotationsAdapter;
 import com.example.etudiant.videoannottool.adapter.VideosAdapter;
 import com.example.etudiant.videoannottool.annotation.Annotation;
+import com.example.etudiant.videoannottool.annotation.AudioAnnotation;
+import com.example.etudiant.videoannottool.annotation.DrawAnnotation;
+import com.example.etudiant.videoannottool.annotation.SlowMotionAnnotation;
+import com.example.etudiant.videoannottool.annotation.TextAnnotation;
 import com.example.etudiant.videoannottool.annotation.Video;
+import com.example.etudiant.videoannottool.annotation.VideoAnnotation;
+import com.example.etudiant.videoannottool.annotation.ZoomMotionAnnotation;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -38,7 +44,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends Activity {
     private SimpleExoPlayer player;
@@ -93,9 +101,9 @@ public class MainActivity extends Activity {
         ArrayList<Annotation> arrayOfAnnotations3 = new ArrayList<Annotation>();
         ArrayList<Annotation> arrayOfAnnotationsEmpty = new ArrayList<Annotation>();
 
-        Annotation annotation1 = new Annotation("annotation1");
-        Annotation annotation2 = new Annotation("annotation2");
-        Annotation annotation3 = new Annotation("annotation3");
+        Annotation annotation1 = new Annotation("annotation1",null,0,0);
+        Annotation annotation2 = new Annotation("annotation2",null,0,0);
+        Annotation annotation3 = new Annotation("annotation3",null,0,0);
 
         arrayOfAnnotations1.add(annotation1);
         arrayOfAnnotations1.add(annotation2);
@@ -109,13 +117,27 @@ public class MainActivity extends Activity {
         arrayOfAnnotations3.add(annotation2);
         arrayOfAnnotations3.add(annotation1);
 
-        Video video1= new Video("nom1","auteur1",arrayOfAnnotations1);
+        ArrayList<TextAnnotation> textAnnotationsArrayList = new ArrayList<>();
+        textAnnotationsArrayList.add(new TextAnnotation("Annotation_1", new Date(), 4, 2, "Commentaire portant sur l'annoation 1"));
+
+        ArrayList<DrawAnnotation> drawAnnotationsArrayList = new ArrayList<>();
+        ArrayList<AudioAnnotation> audioAnnotationsArrayList = new ArrayList<>();
+        ArrayList<SlowMotionAnnotation> slowMotionAnnotationsArrayList = new ArrayList<>();
+        ArrayList<ZoomMotionAnnotation> zoomMotionAnnotationsArrayList = new ArrayList<>();
+
+
+
+        VideoAnnotation videoAnnotation = new VideoAnnotation(new Date(),new Date(),textAnnotationsArrayList,audioAnnotationsArrayList,drawAnnotationsArrayList,slowMotionAnnotationsArrayList,zoomMotionAnnotationsArrayList);
+        Video video = new Video("Video_1","",videoAnnotation);
+
+
+        /*Video video1= new Video("nom1","auteur1",arrayOfAnnotations1);
         arrayOfVideos.add(video1);
 
         Video video2= new Video("nom2","auteur2",arrayOfAnnotations2);
         arrayOfVideos.add(video2);
-        Video video3= new Video("nom3","auteur3",arrayOfAnnotations3);
-        arrayOfVideos.add(video3);
+        Video video3= new Video("nom3","auteur3",arrayOfAnnotations3);*/
+        arrayOfVideos.add(video);
 
 
 
@@ -123,8 +145,8 @@ public class MainActivity extends Activity {
 
         final VideosAdapter videosAdapter = new VideosAdapter(this, arrayOfVideos);
 
-        final AnnotationsAdapter annotationsAdapter= new AnnotationsAdapter(this,arrayOfAnnotationsEmpty);
-        final AnnotationsAdapter annotationsAdapter2= new AnnotationsAdapter(this,arrayOfAnnotations1);
+        //final AnnotationsAdapter annotationsAdapter= new AnnotationsAdapter(this,arrayOfAnnotationsEmpty);
+        //final AnnotationsAdapter annotationsAdapter2= new AnnotationsAdapter(this,arrayOfAnnotations1);
 
         final ListView listViewVideos = (ListView)  findViewById(R.id.lv_videos);
         listViewVideos.setAdapter(videosAdapter);
@@ -134,7 +156,7 @@ public class MainActivity extends Activity {
 
 
         final ListView listViewAnnotations = (ListView)  findViewById(R.id.lv_annotations);
-        listViewAnnotations.setAdapter(annotationsAdapter);
+        //listViewAnnotations.setAdapter(annotationsAdapter);
 
         //Spinner catégorie
         ArrayList<String> spinnerList = new ArrayList<String>();
@@ -173,7 +195,7 @@ public class MainActivity extends Activity {
 
                 Video video = (Video) listViewVideos.getItemAtPosition(position);
 
-                final AnnotationsAdapter annotationsAdapter2= new AnnotationsAdapter(listViewVideos.getContext(),video.getAnnotations());
+                AnnotationsAdapter annotationsAdapter2= new AnnotationsAdapter(listViewVideos.getContext(),video.getVideoAnnotation().getTextAnnotationArrayList());
 
                 listViewAnnotations.setAdapter(annotationsAdapter2);
 

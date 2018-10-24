@@ -27,7 +27,7 @@
 
         android:layout_height="66dp"
 
-        android:text="Author"
+        android:text=""
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
         android:visibility="visible" />
 
