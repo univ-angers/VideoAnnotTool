@@ -198,7 +198,7 @@ public class MainActivity extends Activity {
         //2. prepare video source from url
         //        videoSource = new ExtractorMediaSource(Uri.parse(path), DataSourceFactory,
         //                new DefaultExtractorsFactory(), null, null);
-        Uri uri = Uri.fromFile(new java.io.File("/sdcard/DCIM/Camera/test.mp4"));
+        Uri uri = Uri.fromFile(new java.io.File("/sdcard/DCIM/Camera/test2.mp4"));
         DataSpec dataSpec = new DataSpec(uri);
         FileDataSource fileDataSource = new FileDataSource();
         try {
