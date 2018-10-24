@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -23,6 +24,7 @@ import com.example.etudiant.videoannottool.annotation.VideoAnnotation;
 import com.example.etudiant.videoannottool.annotation.ZoomMotionAnnotation;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -44,9 +46,11 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends Activity {
     private SimpleExoPlayer player;
@@ -66,6 +70,8 @@ public class MainActivity extends Activity {
     private int ResumeWindow;
     private long ResumePosition;
 
+    String videoName = "test"; // a modifié pour aller chercher le nom des video
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
    /*    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -80,7 +86,8 @@ public class MainActivity extends Activity {
         }s
 
 
-        */super.onCreate(savedInstanceState);
+        */
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState != null) {
             ResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
@@ -91,71 +98,64 @@ public class MainActivity extends Activity {
         ArrayList<Video> arrayOfVideos = new ArrayList<Video>();
 
 
-
-
-
-
-
-        final ArrayList<Annotation> arrayOfAnnotations1 = new ArrayList<Annotation>();
-        ArrayList<Annotation> arrayOfAnnotations2 = new ArrayList<Annotation>();
-        ArrayList<Annotation> arrayOfAnnotations3 = new ArrayList<Annotation>();
+        final VideoAnnotation videoAnnotations1;
+        final VideoAnnotation videoAnnotations2;
+        final VideoAnnotation videoAnnotations3;
+        //ArrayList<Annotation> arrayOfAnnotations2 = new ArrayList<Annotation>();
+        //ArrayList<Annotation> arrayOfAnnotations3 = new ArrayList<Annotation>();
         ArrayList<Annotation> arrayOfAnnotationsEmpty = new ArrayList<Annotation>();
 
-        Annotation annotation1 = new Annotation("annotation1",null,0,0);
-        Annotation annotation2 = new Annotation("annotation2",null,0,0);
-        Annotation annotation3 = new Annotation("annotation3",null,0,0);
+        TextAnnotation annotation1 = new TextAnnotation("annotation1", null, 0, 0, null);
+        TextAnnotation annotation2 = new TextAnnotation("annotation2", null, 0, 0, null);
+        TextAnnotation annotation3 = new TextAnnotation("annotation3", null, 0, 0, null);
+
+        ArrayList<TextAnnotation> arrayOfAnnotations1 = new ArrayList<>();
 
         arrayOfAnnotations1.add(annotation1);
         arrayOfAnnotations1.add(annotation2);
         arrayOfAnnotations1.add(annotation3);
+        //arrayOfVideoAnnotations1.add(annotation2);
+        //arrayOfVideoAnnotations1.add(annotation3);
 
+        ArrayList<TextAnnotation> arrayOfAnnotations2 = new ArrayList<>();
         arrayOfAnnotations2.add(annotation2);
         arrayOfAnnotations2.add(annotation1);
         arrayOfAnnotations2.add(annotation3);
 
+        ArrayList<TextAnnotation> arrayOfAnnotations3 = new ArrayList<>();
         arrayOfAnnotations3.add(annotation3);
         arrayOfAnnotations3.add(annotation2);
         arrayOfAnnotations3.add(annotation1);
 
-        ArrayList<TextAnnotation> textAnnotationsArrayList = new ArrayList<>();
-        textAnnotationsArrayList.add(new TextAnnotation("Annotation_1", new Date(), 4, 2, "Commentaire portant sur l'annoation 1"));
+        videoAnnotations1 = new VideoAnnotation(null, null, arrayOfAnnotations1, null, null, null, null);
+        //videoAnnotations1.setTextAnnotationArrayList(arrayOfAnnotations1);
 
-        ArrayList<DrawAnnotation> drawAnnotationsArrayList = new ArrayList<>();
-        ArrayList<AudioAnnotation> audioAnnotationsArrayList = new ArrayList<>();
-        ArrayList<SlowMotionAnnotation> slowMotionAnnotationsArrayList = new ArrayList<>();
-        ArrayList<ZoomMotionAnnotation> zoomMotionAnnotationsArrayList = new ArrayList<>();
+        videoAnnotations2 = new VideoAnnotation(null, null, arrayOfAnnotations2, null, null, null, null);
+        //videoAnnotations2.setTextAnnotationArrayList(arrayOfAnnotations2);
 
+        videoAnnotations3 = new VideoAnnotation(null, null, arrayOfAnnotations3, null, null, null, null);
+        //videoAnnotations3.setTextAnnotationArrayList(arrayOfAnnotations3);
 
-
-        VideoAnnotation videoAnnotation = new VideoAnnotation(new Date(),new Date(),textAnnotationsArrayList,audioAnnotationsArrayList,drawAnnotationsArrayList,slowMotionAnnotationsArrayList,zoomMotionAnnotationsArrayList);
-        Video video = new Video("Video_1","",videoAnnotation);
-
-
-        /*Video video1= new Video("nom1","auteur1",arrayOfAnnotations1);
-        arrayOfVideos.add(video1);
-
-        Video video2= new Video("nom2","auteur2",arrayOfAnnotations2);
-        arrayOfVideos.add(video2);
-        Video video3= new Video("nom3","auteur3",arrayOfAnnotations3);*/
-        arrayOfVideos.add(video);
+        List<Video> videoList = new ArrayList<>();
+        Video video1 = new Video("test", null, videoAnnotations1);
+        Video video2 = new Video("test2", null, videoAnnotations2);
+        Video video3 = new Video("nom3", null, videoAnnotations3);
+        videoList.add(video1);
+        videoList.add(video2);
+        videoList.add(video3);
 
 
 
+        final VideosAdapter videosAdapter = new VideosAdapter(this, videoList);
 
+        final AnnotationsAdapter annotationsAdapter = new AnnotationsAdapter(this, new ArrayList<>());
+        final AnnotationsAdapter annotationsAdapter2 = new AnnotationsAdapter(this, video1.getAllAnnotationObject());
 
-        final VideosAdapter videosAdapter = new VideosAdapter(this, arrayOfVideos);
-
-        //final AnnotationsAdapter annotationsAdapter= new AnnotationsAdapter(this,arrayOfAnnotationsEmpty);
-        //final AnnotationsAdapter annotationsAdapter2= new AnnotationsAdapter(this,arrayOfAnnotations1);
-
-        final ListView listViewVideos = (ListView)  findViewById(R.id.lv_videos);
+        final ListView listViewVideos = (ListView) findViewById(R.id.lv_videos);
         listViewVideos.setAdapter(videosAdapter);
 
 
-
-
-
-        final ListView listViewAnnotations = (ListView)  findViewById(R.id.lv_annotations);
+        final ListView listViewAnnotations = (ListView) findViewById(R.id.lv_annotations);
         //listViewAnnotations.setAdapter(annotationsAdapter);
 
         //Spinner catégorie
@@ -184,8 +184,6 @@ public class MainActivity extends Activity {
         spinner2.setAdapter(spinnerAdapter2);
 
 
-
-
         listViewVideos.setClickable(true);
 
         listViewVideos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -195,20 +193,23 @@ public class MainActivity extends Activity {
 
                 Video video = (Video) listViewVideos.getItemAtPosition(position);
 
-                AnnotationsAdapter annotationsAdapter2= new AnnotationsAdapter(listViewVideos.getContext(),video.getVideoAnnotation().getTextAnnotationArrayList());
+                AnnotationsAdapter annotationsAdapter2 = new AnnotationsAdapter(listViewVideos.getContext(), video.getAllAnnotationObject());
 
                 listViewAnnotations.setAdapter(annotationsAdapter2);
 
+                videoName = video.getFileName();
 
+                player.stop();
+
+                initExoPlayer(); // crée des lecteurs en boucles
             }
         });
 
 
     }
 
-    public void initExoPlayer(){
+    public void initExoPlayer() {
         String path = "android.resource://" + getPackageName() + "/" + R.raw.test;
-
 
         SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
 
@@ -220,7 +221,8 @@ public class MainActivity extends Activity {
         //2. prepare video source from url
         //        videoSource = new ExtractorMediaSource(Uri.parse(path), DataSourceFactory,
         //                new DefaultExtractorsFactory(), null, null);
-        Uri uri = Uri.fromFile(new java.io.File("/sdcard/DCIM/Camera/test.mp4"));
+        Uri uri = Uri.fromFile(new java.io.File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + File.separator + "Camera" + File.separator + videoName+".mp4"));
+        //Uri uri = Uri.fromFile(new java.io.File("/sdcard/DCIM/Camera/" + videoName + ".mp4"));
         DataSpec dataSpec = new DataSpec(uri);
         FileDataSource fileDataSource = new FileDataSource();
         try {
@@ -238,6 +240,7 @@ public class MainActivity extends Activity {
         exoPlayerView.setControllerShowTimeoutMs(0);
         exoPlayerView.setPlayer(player);
         player.setPlayWhenReady(false);
+        player.setRepeatMode(Player.REPEAT_MODE_ONE);
         player.prepare(videoSource, false, false);
     }
 
@@ -307,7 +310,7 @@ public class MainActivity extends Activity {
 
         if (playerView == null) {
 
-            playerView =  findViewById(R.id.player_view);
+            playerView = findViewById(R.id.player_view);
             initFullscreenDialog();
             initFullscreenButton();
 

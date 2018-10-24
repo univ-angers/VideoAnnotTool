@@ -22,6 +22,10 @@ public class VideoAnnotation{
         this.zoomMotionAnnotationArrayList = zoomMotionAnnotationArrayList;
     }
 
+    public VideoAnnotation() {
+
+    }
+
     public Date getCreationDate() {
         return creationDate;
     }

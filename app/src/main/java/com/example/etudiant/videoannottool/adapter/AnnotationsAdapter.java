@@ -12,9 +12,10 @@ import com.example.etudiant.videoannottool.R;
 import com.example.etudiant.videoannottool.annotation.TextAnnotation;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class AnnotationsAdapter extends ArrayAdapter<TextAnnotation> {
-    public AnnotationsAdapter(Context context, ArrayList<TextAnnotation> annotations) {
+public class AnnotationsAdapter extends ArrayAdapter<Object> {
+    public AnnotationsAdapter(Context context, List<Object> annotations) {
 
         super(context, 0, annotations);
     }

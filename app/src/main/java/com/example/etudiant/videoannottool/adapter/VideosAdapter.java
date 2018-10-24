@@ -11,10 +11,11 @@ import com.example.etudiant.videoannottool.R;
 import com.example.etudiant.videoannottool.annotation.Video;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class VideosAdapter extends ArrayAdapter {
+public class VideosAdapter extends ArrayAdapter<Video> {
 
-    public VideosAdapter(Context context, ArrayList<Video> videos) {
+    public VideosAdapter(Context context, List<Video> videos) {
 
         super(context, 0, videos);
     }
