@@ -70,7 +70,7 @@ public class Exoplayer_Activity extends Activity {
         exoPlayerView.setControllerShowTimeoutMs(0);
         exoPlayerView.setPlayer(player);
         player.setPlayWhenReady(true);
-        player.setRepeatMode(Player.REPEAT_MODE_ONE); // méthode ne semblant pas fonctionné
+        player.setRepeatMode(Player.REPEAT_MODE_ONE);
         player.prepare(videoSource, false, false);
 
 

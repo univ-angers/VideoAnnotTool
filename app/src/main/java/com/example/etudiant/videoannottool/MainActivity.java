@@ -17,6 +17,7 @@ import com.example.etudiant.videoannottool.annotation.Annotation;
 import com.example.etudiant.videoannottool.annotation.Video;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -57,6 +58,8 @@ public class MainActivity extends Activity {
 
     private int ResumeWindow;
     private long ResumePosition;
+
+    String videoName = "test"; // a modifié pour aller chercher le nom des video
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,10 +112,10 @@ public class MainActivity extends Activity {
         arrayOfAnnotations3.add(annotation2);
         arrayOfAnnotations3.add(annotation1);
 
-        Video video1= new Video("nom1","auteur1",arrayOfAnnotations1);
+        Video video1= new Video("test","auteur1",arrayOfAnnotations1);
         arrayOfVideos.add(video1);
 
-        Video video2= new Video("nom2","auteur2",arrayOfAnnotations2);
+        Video video2= new Video("test2","auteur2",arrayOfAnnotations2);
         arrayOfVideos.add(video2);
         Video video3= new Video("nom3","auteur3",arrayOfAnnotations3);
         arrayOfVideos.add(video3);
@@ -177,7 +180,11 @@ public class MainActivity extends Activity {
 
                 listViewAnnotations.setAdapter(annotationsAdapter2);
 
+                videoName = video.getName();
+                
+                player.stop();
 
+                initExoPlayer(); // crée des lecteurs en boucles
             }
         });
 
@@ -186,7 +193,6 @@ public class MainActivity extends Activity {
 
     public void initExoPlayer(){
         String path = "android.resource://" + getPackageName() + "/" + R.raw.test;
-
 
         SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
 
@@ -198,7 +204,7 @@ public class MainActivity extends Activity {
         //2. prepare video source from url
         //        videoSource = new ExtractorMediaSource(Uri.parse(path), DataSourceFactory,
         //                new DefaultExtractorsFactory(), null, null);
-        Uri uri = Uri.fromFile(new java.io.File("/sdcard/DCIM/Camera/test2.mp4"));
+        Uri uri = Uri.fromFile(new java.io.File("/sdcard/DCIM/Camera/"+videoName+".mp4"));
         DataSpec dataSpec = new DataSpec(uri);
         FileDataSource fileDataSource = new FileDataSource();
         try {
@@ -216,6 +222,7 @@ public class MainActivity extends Activity {
         exoPlayerView.setControllerShowTimeoutMs(0);
         exoPlayerView.setPlayer(player);
         player.setPlayWhenReady(false);
+        player.setRepeatMode(Player.REPEAT_MODE_ONE);
         player.prepare(videoSource, false, false);
     }
 
