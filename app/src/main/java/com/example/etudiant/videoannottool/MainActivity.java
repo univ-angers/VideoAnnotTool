@@ -14,15 +14,9 @@ import android.support.v4.content.ContextCompat;
 
 import com.example.etudiant.videoannottool.adapter.AnnotationsAdapter;
 import com.example.etudiant.videoannottool.adapter.VideosAdapter;
-import com.example.etudiant.videoannottool.annotation.Annotation;
-import com.example.etudiant.videoannottool.annotation.AudioAnnotation;
-import com.example.etudiant.videoannottool.annotation.DrawAnnotation;
-import com.example.etudiant.videoannottool.annotation.SlowMotionAnnotation;
-import com.example.etudiant.videoannottool.annotation.TextAnnotation;
 import com.example.etudiant.videoannottool.annotation.VAnnotation;
 import com.example.etudiant.videoannottool.annotation.Video;
 import com.example.etudiant.videoannottool.annotation.VideoAnnotation;
-import com.example.etudiant.videoannottool.annotation.ZoomMotionAnnotation;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
@@ -48,9 +42,7 @@ import android.widget.Spinner;
 
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends Activity {

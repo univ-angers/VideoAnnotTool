@@ -132,6 +132,7 @@ public class VAnnotation implements Serializable {
         ZOOM("zoom"),
         SLOWMOTION("ralenti");
 
+
         private final String value;
 
         AnnotationType(String value) {

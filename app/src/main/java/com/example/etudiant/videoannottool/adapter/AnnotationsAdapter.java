@@ -7,12 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.etudiant.videoannottool.annotation.Annotation;
 import com.example.etudiant.videoannottool.R;
-import com.example.etudiant.videoannottool.annotation.TextAnnotation;
 import com.example.etudiant.videoannottool.annotation.VAnnotation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AnnotationsAdapter extends ArrayAdapter<VAnnotation> {
