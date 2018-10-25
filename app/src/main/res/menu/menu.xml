@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action1"
+
+        android:title="Profil"
+        android:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action2"
+
+        android:title="Importer une vidéo"
+        android:showAsAction="never"
+    />
+    <item
+        android:id="@+id/action3"
+
+        android:title="Exporter une vidéo"
+        android:showAsAction="never"
+        />
+
+</menu>
