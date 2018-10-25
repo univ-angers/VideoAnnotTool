@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
     android:orientation="horizontal"
     tools:context=".MainActivity"
     android:baselineAligned="false">
@@ -27,6 +25,7 @@
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="2dp"
                     android:text="@string/category"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
@@ -47,6 +46,7 @@
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="2dp"
                     android:text="@string/subcategory"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
