@@ -2,15 +2,19 @@ package com.example.etudiant.videoannottool.annotation;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class VideoAnnotation{
     private Date creationDate;
     private Date lastModified;
-    private ArrayList<TextAnnotation> textAnnotationArrayList;
-    private ArrayList<AudioAnnotation> audioAnnotationArrayList;
-    private ArrayList<DrawAnnotation> drawAnnotationArrayList;
-    private ArrayList<SlowMotionAnnotation> slowMotionAnnotationArrayList;
-    private ArrayList<ZoomMotionAnnotation> zoomMotionAnnotationArrayList;
+    private List<VAnnotation> annotationList;
+    /*
+    private List<TextAnnotation> textAnnotationArrayList;
+    private List<AudioAnnotation> audioAnnotationArrayList;
+    private List<DrawAnnotation> drawAnnotationArrayList;
+    private List<SlowMotionAnnotation> slowMotionAnnotationArrayList;
+    private List<ZoomMotionAnnotation> zoomMotionAnnotationArrayList;
+
 
     public VideoAnnotation(Date creationDate, Date lastModified, ArrayList<TextAnnotation> textAnnotationArrayList, ArrayList<AudioAnnotation> audioAnnotationArrayList, ArrayList<DrawAnnotation> drawAnnotationArrayList, ArrayList<SlowMotionAnnotation> slowMotionAnnotationArrayList, ArrayList<ZoomMotionAnnotation> zoomMotionAnnotationArrayList) {
         this.creationDate = creationDate;
@@ -21,9 +25,17 @@ public class VideoAnnotation{
         this.slowMotionAnnotationArrayList = slowMotionAnnotationArrayList;
         this.zoomMotionAnnotationArrayList = zoomMotionAnnotationArrayList;
     }
+    */
+
 
     public VideoAnnotation() {
 
+    }
+
+    public VideoAnnotation(Date creationDate, Date lastModified, List<VAnnotation> annotationList) {
+        this.creationDate = creationDate;
+        this.lastModified = lastModified;
+        this.annotationList = annotationList;
     }
 
     public Date getCreationDate() {
@@ -42,7 +54,16 @@ public class VideoAnnotation{
         this.lastModified = lastModified;
     }
 
-    public ArrayList<TextAnnotation> getTextAnnotationArrayList() {
+    public List<VAnnotation> getAnnotationList() {
+        return annotationList;
+    }
+
+    public void setAnnotationList(List<VAnnotation> annotationList) {
+        this.annotationList = annotationList;
+    }
+
+/*
+    public List<TextAnnotation> getTextAnnotationArrayList() {
         return textAnnotationArrayList;
     }
 
@@ -50,7 +71,7 @@ public class VideoAnnotation{
         this.textAnnotationArrayList = textAnnotationArrayList;
     }
 
-    public ArrayList<AudioAnnotation> getAudioAnnotationArrayList() {
+    public List<AudioAnnotation> getAudioAnnotationArrayList() {
         return audioAnnotationArrayList;
     }
 
@@ -58,7 +79,7 @@ public class VideoAnnotation{
         this.audioAnnotationArrayList = audioAnnotationArrayList;
     }
 
-    public ArrayList<DrawAnnotation> getDrawAnnotationArrayList() {
+    public List<DrawAnnotation> getDrawAnnotationArrayList() {
         return drawAnnotationArrayList;
     }
 
@@ -66,7 +87,7 @@ public class VideoAnnotation{
         this.drawAnnotationArrayList = drawAnnotationArrayList;
     }
 
-    public ArrayList<SlowMotionAnnotation> getSlowMotionAnnotationArrayList() {
+    public List<SlowMotionAnnotation> getSlowMotionAnnotationArrayList() {
         return slowMotionAnnotationArrayList;
     }
 
@@ -74,11 +95,12 @@ public class VideoAnnotation{
         this.slowMotionAnnotationArrayList = slowMotionAnnotationArrayList;
     }
 
-    public ArrayList<ZoomMotionAnnotation> getZoomMotionAnnotationArrayList() {
+    public List<ZoomMotionAnnotation> getZoomMotionAnnotationArrayList() {
         return zoomMotionAnnotationArrayList;
     }
 
     public void setZoomMotionAnnotationArrayList(ArrayList<ZoomMotionAnnotation> zoomMotionAnnotationArrayList) {
         this.zoomMotionAnnotationArrayList = zoomMotionAnnotationArrayList;
     }
+    */
 }
