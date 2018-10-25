@@ -89,16 +89,32 @@ public class MainActivity extends Activity {
 
         spinner.setAdapter(spinnerAdapter);
 
+
         //Spinner sous-catégorie
         ArrayList<String> spinnerList2 = new ArrayList<String>();
         spinnerList2.add("item1");
         spinnerList2.add("item2");
-        Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
+        final Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
 
         ArrayAdapter<String> spinnerAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList2);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner2.setAdapter(spinnerAdapter2);
+        spinner2.setVisibility(View.GONE);
+        /*
+        spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                spinner2.setVisibility(View.VISIBLE);
+
+
+            }
+        });
+
+        */
+
 
 
 
