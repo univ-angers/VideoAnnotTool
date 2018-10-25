@@ -1,0 +1,52 @@
+package com.example.etudiant.videoannottool.adapter;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
+
+import com.example.etudiant.videoannottool.R;
+import com.example.etudiant.videoannottool.annotation.Video;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class VideosAdapter extends ArrayAdapter<Video> {
+
+    public VideosAdapter(Context context, List<Video> videos) {
+
+        super(context, 0, videos);
+    }
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        // Get the data item for this position
+
+        Video video = (Video)  getItem(position);
+
+        // Check if an existing view is being reused, otherwise inflate the view
+
+        if (convertView == null) {
+
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_video, parent, false);
+
+        }
+
+        // Lookup view for data population
+
+        TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
+
+        TextView tvHome = (TextView) convertView.findViewById(R.id.tvAuthor);
+
+        // Populate the data into the template view using the data object
+
+        tvName.setText(video.getFileName());
+
+        // Return the completed view to render on screen
+
+        return convertView;
+
+    }
+}
+

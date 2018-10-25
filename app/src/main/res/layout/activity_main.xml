@@ -65,46 +65,135 @@
             </ListView>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:background="@color/colorCenter">
+	<FrameLayout
+		android:id="@+id/main_media_frame"
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:layout_weight="5"
+		android:background="@color/colorCenter">
 
-        </LinearLayout>
+	<com.google.android.exoplayer2.ui.SimpleExoPlayerView
+	    android:id="@+id/player_view"
+	    android:focusable="true"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:gravity="center"
+        app:resize_mode="fill"/>
+
+	</FrameLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="@color/colorLeftRight"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:background="@color/colorLeftRight"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
                 android:text="@string/video_annotations"
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
             <ListView
                 android:id="@+id/lv_annotations"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="4">
+                android:layout_height="match_parent">
 
             </ListView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_weight="2"
-                android:background="@color/colorPrimaryDark">
-
-            </LinearLayout>
         </LinearLayout>
+
+
+        <!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:background="@color/colorPrimaryDark">
+
+            <ImageButton android:id="@+id/graphic_annot_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/draw_button_icon"/>
+
+            <ImageButton android:id="@+id/audio_annot_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/draw_button_icon"/>
+
+            <ImageButton android:id="@+id/text_annot_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/draw_button_icon"/>
+
+            <ImageButton android:id="@+id/slow_mode_annot_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/draw_button_icon"/>
+
+            <ImageButton android:id="@+id/zoom_mode_annot_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:src="@drawable/draw_button_icon"/>
+
+        </LinearLayout>
+        -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:orientation="horizontal"
+
+            android:background="@color/colorPrimaryDark">
+
+            <ImageButton android:id="@+id/graphic_annot_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/draw_button_icon"/>
+
+            <ImageButton android:id="@+id/audio_annot_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/graphic_annot_btn"
+                android:src="@drawable/draw_button_icon"/>
+
+            <ImageButton android:id="@+id/text_annot_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/audio_annot_btn"
+                android:src="@drawable/draw_button_icon"/>
+
+            <ImageButton android:id="@+id/slow_mode_annot_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/graphic_annot_btn"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/draw_button_icon"/>
+
+            <ImageButton android:id="@+id/zoom_mode_annot_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/slow_mode_annot_btn"
+                android:layout_alignTop="@id/slow_mode_annot_btn"
+                android:src="@drawable/draw_button_icon"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 
 

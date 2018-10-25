@@ -7,4 +7,6 @@
     <color name="colorTopBar">#d81bc5</color>
     <color name="colorBottomBar">#8ed9c1</color>
     <color name="colorLeftRight">#a5b37e</color>
+
+    <color name="exo_error_message_background_color">#fefefe</color>
 </resources>
