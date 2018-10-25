@@ -5,6 +5,9 @@ import android.app.Dialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -42,8 +45,10 @@ import com.google.android.exoplayer2.upstream.FileDataSource;
 
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 
 import java.io.File;
@@ -151,6 +156,7 @@ public class MainActivity extends Activity {
         final AnnotationsAdapter annotationsAdapter = new AnnotationsAdapter(this, new ArrayList<>());
         final AnnotationsAdapter annotationsAdapter2 = new AnnotationsAdapter(this, video1.getAllAnnotationObject());
 
+
         final ListView listViewVideos = (ListView) findViewById(R.id.lv_videos);
         listViewVideos.setAdapter(videosAdapter);
 
@@ -160,13 +166,15 @@ public class MainActivity extends Activity {
 
         //Spinner catégorie
         ArrayList<String> spinnerList = new ArrayList<String>();
-
+        //Création temporaire de la liste des dossiers pour spinner (devra etre automatisé)
         spinnerList.add("item1");
         spinnerList.add("item2");
+        spinnerList.add("item3");
+        spinnerList.add("item4");
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
 
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList);
+        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList);
 
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -174,29 +182,87 @@ public class MainActivity extends Activity {
 
 
         //Spinner sous-catégorie
-        ArrayList<String> spinnerList2 = new ArrayList<String>();
-        spinnerList2.add("item1");
-        spinnerList2.add("item2");
+        //Création temporaire des listes de sous-dossiers pour spinner2 (devra etre automatisé)
+
+
+
+        ArrayList<String> spinnerList2_1 = new ArrayList<String>();
+        spinnerList2_1.add("item1_1");
+        spinnerList2_1.add("item1_2");
+        spinnerList2_1.add("item1_3");
+        spinnerList2_1.add("item1_4");
+
+        ArrayList<String> spinnerList2_2 = new ArrayList<String>();
+        spinnerList2_2.add("item2_1");
+        spinnerList2_2.add("item2_2");
+        spinnerList2_2.add("item2_3");
+        spinnerList2_2.add("item2_4");
+
+        ArrayList<String> spinnerList2_3 = new ArrayList<String>();
+        spinnerList2_3.add("item3_1");
+        spinnerList2_3.add("item3_2");
+        spinnerList2_3.add("item3_3");
+        spinnerList2_3.add("item3_4");
+
+        ArrayList<String> spinnerList2_4 = new ArrayList<String>();
+        spinnerList2_4.add("item4_1");
+        spinnerList2_4.add("item4_2");
+        spinnerList2_4.add("item4_3");
+        spinnerList2_4.add("item4_4");
+
         final Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
 
-        ArrayAdapter<String> spinnerAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList2);
-        spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        final ArrayAdapter<String> spinnerAdapter2_1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList2_1);
+        final ArrayAdapter<String> spinnerAdapter2_2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList2_2);
+        final ArrayAdapter<String> spinnerAdapter2_3 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList2_3);
+        final ArrayAdapter<String> spinnerAdapter2_4 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList2_4);
 
-        spinner2.setAdapter(spinnerAdapter2);
-        spinner2.setVisibility(View.GONE);
-        /*
-        spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+        spinnerAdapter2_1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerAdapter2_2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerAdapter2_3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerAdapter2_4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+
+
+        spinner2.setAdapter(spinnerAdapter2_1);
+        //spinner2.setVisibility(View.INVISIBLE);
+
+        final LinearLayout ll_subcat = findViewById(R.id.ll_subcat);
+        ll_subcat.setVisibility(View.INVISIBLE);
+
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast toast = Toast.makeText(getApplicationContext(),  parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT);
+                toast.show();
 
-                spinner2.setVisibility(View.VISIBLE);
+                switch (position){
+                    case 0:  spinner2.setAdapter(spinnerAdapter2_1);
+                            break;
+                    case 1:  spinner2.setAdapter(spinnerAdapter2_2);
+                            break;
+                    case 2:  spinner2.setAdapter(spinnerAdapter2_3);
+                        break;
+                    case 3:  spinner2.setAdapter(spinnerAdapter2_4);
+                        break;
+
+                }
+
 
 
             }
-        });
 
-        */
+            //sert à rien ?
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+                ll_subcat.setVisibility(View.INVISIBLE);
+            }
+
+
+        });
 
 
 
@@ -223,6 +289,13 @@ public class MainActivity extends Activity {
 
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
 
     public void initExoPlayer() {
         String path = "android.resource://" + getPackageName() + "/" + R.raw.test;
