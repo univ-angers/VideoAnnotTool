@@ -44,23 +44,8 @@ public class Video{
         this.videoAnnotation = videoAnnotation;
     }
 
-    //protected ArrayList<Annotation> annotations;
 
-    /*public Video(String name,String author,ArrayList<Annotation> annotations){
-        this.name=name;
-        this.author=author;
-        this.annotations=annotations;
-    }
-
-    public String getName(){
-        return this.name;
-    }
-    public String getAuthor(){
-        return this.author;
-    }
-    public ArrayList<Annotation> getAnnotations(){ return  this.annotations;}*/
-
-
+    /*
     public List<Object> getAllAnnotationObject(){
         List<Object> objectList = new ArrayList<>();
 
@@ -87,4 +72,5 @@ public class Video{
 
         return  objectList;
     }
+    */
 }

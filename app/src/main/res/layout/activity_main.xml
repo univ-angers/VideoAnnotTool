@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
     android:orientation="horizontal"
     tools:context=".MainActivity"
     android:baselineAligned="false">
@@ -49,12 +47,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="@string/subcategory"
+                android:hint="category"
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
             <Spinner
                 android:id="@+id/spinner2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                />
 
         </LinearLayout>
 

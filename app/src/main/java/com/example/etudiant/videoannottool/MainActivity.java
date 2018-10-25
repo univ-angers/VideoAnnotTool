@@ -22,6 +22,7 @@ import com.example.etudiant.videoannottool.annotation.AudioAnnotation;
 import com.example.etudiant.videoannottool.annotation.DrawAnnotation;
 import com.example.etudiant.videoannottool.annotation.SlowMotionAnnotation;
 import com.example.etudiant.videoannottool.annotation.TextAnnotation;
+import com.example.etudiant.videoannottool.annotation.VAnnotation;
 import com.example.etudiant.videoannottool.annotation.Video;
 import com.example.etudiant.videoannottool.annotation.VideoAnnotation;
 import com.example.etudiant.videoannottool.annotation.ZoomMotionAnnotation;
@@ -106,40 +107,38 @@ public class MainActivity extends Activity {
         final VideoAnnotation videoAnnotations1;
         final VideoAnnotation videoAnnotations2;
         final VideoAnnotation videoAnnotations3;
-        //ArrayList<Annotation> arrayOfAnnotations2 = new ArrayList<Annotation>();
-        //ArrayList<Annotation> arrayOfAnnotations3 = new ArrayList<Annotation>();
-        ArrayList<Annotation> arrayOfAnnotationsEmpty = new ArrayList<Annotation>();
 
-        TextAnnotation annotation1 = new TextAnnotation("annotation1", null, 0, 0, null);
-        TextAnnotation annotation2 = new TextAnnotation("annotation2", null, 0, 0, null);
-        TextAnnotation annotation3 = new TextAnnotation("annotation3", null, 0, 0, null);
+        VAnnotation annotation1 = new VAnnotation("annotation1", null, null, null, VAnnotation.AnnotationType.TEXT.toString());
+        VAnnotation annotation2 = new VAnnotation("annotation2", null, null, null, VAnnotation.AnnotationType.TEXT.toString());
+        VAnnotation annotation3 = new VAnnotation("annotation3", null, null, null, VAnnotation.AnnotationType.TEXT.toString());
+        //TextAnnotation annotation2 = new TextAnnotation("annotation2", null, 0, 0, null);
+        //TextAnnotation annotation3 = new TextAnnotation("annotation3", null, 0, 0, null);
 
-        ArrayList<TextAnnotation> arrayOfAnnotations1 = new ArrayList<>();
+        //List<TextAnnotation> arrayOfAnnotations1 = new ArrayList<>();
+        List<VAnnotation> arrayOfAnnotations1 = new ArrayList<>();
 
         arrayOfAnnotations1.add(annotation1);
         arrayOfAnnotations1.add(annotation2);
         arrayOfAnnotations1.add(annotation3);
-        //arrayOfVideoAnnotations1.add(annotation2);
-        //arrayOfVideoAnnotations1.add(annotation3);
 
-        ArrayList<TextAnnotation> arrayOfAnnotations2 = new ArrayList<>();
+
+        //List<TextAnnotation> arrayOfAnnotations2 = new ArrayList<>();
+        List<VAnnotation> arrayOfAnnotations2 = new ArrayList<>();
         arrayOfAnnotations2.add(annotation2);
         arrayOfAnnotations2.add(annotation1);
         arrayOfAnnotations2.add(annotation3);
 
-        ArrayList<TextAnnotation> arrayOfAnnotations3 = new ArrayList<>();
+        //ArrayList<TextAnnotation> arrayOfAnnotations3 = new ArrayList<>();
+        List<VAnnotation> arrayOfAnnotations3 = new ArrayList<>();
         arrayOfAnnotations3.add(annotation3);
         arrayOfAnnotations3.add(annotation2);
         arrayOfAnnotations3.add(annotation1);
 
-        videoAnnotations1 = new VideoAnnotation(null, null, arrayOfAnnotations1, null, null, null, null);
-        //videoAnnotations1.setTextAnnotationArrayList(arrayOfAnnotations1);
+        videoAnnotations1 = new VideoAnnotation(null, null, arrayOfAnnotations1);
 
-        videoAnnotations2 = new VideoAnnotation(null, null, arrayOfAnnotations2, null, null, null, null);
-        //videoAnnotations2.setTextAnnotationArrayList(arrayOfAnnotations2);
+        videoAnnotations2 = new VideoAnnotation(null, null, arrayOfAnnotations2);
 
-        videoAnnotations3 = new VideoAnnotation(null, null, arrayOfAnnotations3, null, null, null, null);
-        //videoAnnotations3.setTextAnnotationArrayList(arrayOfAnnotations3);
+        videoAnnotations3 = new VideoAnnotation(null, null, arrayOfAnnotations3);
 
         List<Video> videoList = new ArrayList<>();
         Video video1 = new Video("test", null, videoAnnotations1);
@@ -153,8 +152,8 @@ public class MainActivity extends Activity {
 
         final VideosAdapter videosAdapter = new VideosAdapter(this, videoList);
 
-        final AnnotationsAdapter annotationsAdapter = new AnnotationsAdapter(this, new ArrayList<>());
-        final AnnotationsAdapter annotationsAdapter2 = new AnnotationsAdapter(this, video1.getAllAnnotationObject());
+        final AnnotationsAdapter annotationsAdapter = new AnnotationsAdapter(this, new ArrayList<VAnnotation>());
+        final AnnotationsAdapter annotationsAdapter2 = new AnnotationsAdapter(this, video1.getVideoAnnotation().getAnnotationList());
 
 
         final ListView listViewVideos = (ListView) findViewById(R.id.lv_videos);
@@ -275,7 +274,7 @@ public class MainActivity extends Activity {
 
                 Video video = (Video) listViewVideos.getItemAtPosition(position);
 
-                AnnotationsAdapter annotationsAdapter2 = new AnnotationsAdapter(listViewVideos.getContext(), video.getAllAnnotationObject());
+                AnnotationsAdapter annotationsAdapter2 = new AnnotationsAdapter(listViewVideos.getContext(), video.getVideoAnnotation().getAnnotationList());
 
                 listViewAnnotations.setAdapter(annotationsAdapter2);
 
