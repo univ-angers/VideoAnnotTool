@@ -8,12 +8,12 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.etudiant.videoannottool.R;
-import com.example.etudiant.videoannottool.annotation.VAnnotation;
+import com.example.etudiant.videoannottool.annotation.Annotation;
 
 import java.util.List;
 
-public class AnnotationsAdapter extends ArrayAdapter<VAnnotation> {
-    public AnnotationsAdapter(Context context, List<VAnnotation> annotations) {
+public class AnnotationsAdapter extends ArrayAdapter<Annotation> {
+    public AnnotationsAdapter(Context context, List<Annotation> annotations) {
 
         super(context, 0, annotations);
     }
@@ -23,7 +23,7 @@ public class AnnotationsAdapter extends ArrayAdapter<VAnnotation> {
 
         // Get the data item for this position
 
-        VAnnotation annotation = (VAnnotation)  getItem(position);
+        Annotation annotation = (Annotation)  getItem(position);
 
         // Check if an existing view is being reused, otherwise inflate the view
 

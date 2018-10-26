@@ -3,24 +3,24 @@ package com.example.etudiant.videoannottool.annotation;
 import java.io.Serializable;
 import java.util.Date;
 
-public class VAnnotation implements Serializable {
+public class Annotation implements Serializable {
 
     private String annotationTitle;
     private Date annotationDate;
     private Integer annotationStartTime;
     private Integer annotationDuration;
-    private String annotationType;
+    private AnnotationType annotationType;
     private String audioFileName;
     private String  drawFileName;
     private String textComment;
     private Integer zoomRate;
     private Integer slowMotionSpeed;
 
-    public VAnnotation(String annotationTitle) {
+    public Annotation(String annotationTitle) {
         this.annotationTitle = annotationTitle;
     }
 
-    public VAnnotation(String annotationTitle, Date annotationDate, Integer annotationStartTime, Integer annotationDuration, String annotationType) {
+    public Annotation(String annotationTitle, Date annotationDate, Integer annotationStartTime, Integer annotationDuration, AnnotationType annotationType) {
         this.annotationTitle = annotationTitle;
         this.annotationDate = annotationDate;
         this.annotationStartTime = annotationStartTime;
@@ -28,7 +28,7 @@ public class VAnnotation implements Serializable {
         this.annotationType = annotationType;
     }
 
-    public VAnnotation(String annotationTitle, Date annotationDate, Integer annotationStartTime, Integer annotationDuration, String annotationType, String audioFileName, String drawFileName, String textComment, Integer zoomRate, Integer slowMotionSpeed) {
+    public Annotation(String annotationTitle, Date annotationDate, Integer annotationStartTime, Integer annotationDuration, AnnotationType annotationType, String audioFileName, String drawFileName, String textComment, Integer zoomRate, Integer slowMotionSpeed) {
         this.annotationTitle = annotationTitle;
         this.annotationDate = annotationDate;
         this.annotationStartTime = annotationStartTime;
@@ -76,11 +76,11 @@ public class VAnnotation implements Serializable {
         this.annotationDuration = annotationDuration;
     }
 
-    public String getAnnotationType() {
+    public AnnotationType getAnnotationType() {
         return annotationType;
     }
 
-    public void setAnnotationType(String annotationType) {
+    public void setAnnotationType(AnnotationType annotationType) {
         this.annotationType = annotationType;
     }
 
@@ -124,24 +124,4 @@ public class VAnnotation implements Serializable {
         this.slowMotionSpeed = slowMotionSpeed;
     }
 
-
-    public enum AnnotationType{
-        TEXT("texte"),
-        AUDIO("audio"),
-        DRAW("graphique"),
-        ZOOM("zoom"),
-        SLOWMOTION("ralenti");
-
-
-        private final String value;
-
-        AnnotationType(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return this.value;
-        }
-    }
 }

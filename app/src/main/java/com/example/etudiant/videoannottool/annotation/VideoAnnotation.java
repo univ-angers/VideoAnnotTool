@@ -1,13 +1,12 @@
 package com.example.etudiant.videoannottool.annotation;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class VideoAnnotation{
     private Date creationDate;
     private Date lastModified;
-    private List<VAnnotation> annotationList;
+    private List<Annotation> annotationList;
 
 
 
@@ -15,7 +14,7 @@ public class VideoAnnotation{
 
     }
 
-    public VideoAnnotation(Date creationDate, Date lastModified, List<VAnnotation> annotationList) {
+    public VideoAnnotation(Date creationDate, Date lastModified, List<Annotation> annotationList) {
         this.creationDate = creationDate;
         this.lastModified = lastModified;
         this.annotationList = annotationList;
@@ -37,11 +36,11 @@ public class VideoAnnotation{
         this.lastModified = lastModified;
     }
 
-    public List<VAnnotation> getAnnotationList() {
+    public List<Annotation> getAnnotationList() {
         return annotationList;
     }
 
-    public void setAnnotationList(List<VAnnotation> annotationList) {
+    public void setAnnotationList(List<Annotation> annotationList) {
         this.annotationList = annotationList;
     }
 
