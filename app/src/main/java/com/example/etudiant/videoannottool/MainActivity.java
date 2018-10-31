@@ -1,13 +1,14 @@
 package com.example.etudiant.videoannottool;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MotionEvent;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -16,16 +17,12 @@ import android.widget.ImageView;
 import android.support.v4.content.ContextCompat;
 
 import com.example.etudiant.videoannottool.adapter.AnnotationsAdapter;
+import com.example.etudiant.videoannottool.adapter.SpinnerAdapter;
 import com.example.etudiant.videoannottool.adapter.VideosAdapter;
+import com.example.etudiant.videoannottool.annotation.AnnotationType;
 import com.example.etudiant.videoannottool.annotation.Annotation;
-import com.example.etudiant.videoannottool.annotation.AudioAnnotation;
-import com.example.etudiant.videoannottool.annotation.DrawAnnotation;
-import com.example.etudiant.videoannottool.annotation.SlowMotionAnnotation;
-import com.example.etudiant.videoannottool.annotation.TextAnnotation;
-import com.example.etudiant.videoannottool.annotation.VAnnotation;
 import com.example.etudiant.videoannottool.annotation.Video;
 import com.example.etudiant.videoannottool.annotation.VideoAnnotation;
-import com.example.etudiant.videoannottool.annotation.ZoomMotionAnnotation;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
@@ -46,19 +43,19 @@ import com.google.android.exoplayer2.upstream.FileDataSource;
 
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import static java.security.AccessController.getContext;
+
 public class MainActivity extends Activity {
+
     private SimpleExoPlayer player;
     private SimpleExoPlayerView playerView;
     private MediaSource videoSource;
@@ -68,31 +65,36 @@ public class MainActivity extends Activity {
     private final String STATE_RESUME_POSITION = "resumePosition";
     private final String STATE_PLAYER_FULLSCREEN = "playerFullscreen";
 
+    private int ResumeWindow;
+    private long ResumePosition;
+
     private boolean ExoPlayerFullscreen = false;
     private FrameLayout FullScreenButton;
     private ImageView FullScreenIcon;
     private Dialog FullScreenDialog;
 
-    private int ResumeWindow;
-    private long ResumePosition;
+    private ListView listViewVideos;
+    private ListView listViewAnnotations;
+
+    private Spinner spinnerCategorie;
+    private Spinner spinnerSubCategorie;
+
+    private VideosAdapter videosAdapter;
+    private AnnotationsAdapter annotationsAdapter;
+
+    private List<Video> videoList;
+
 
     String videoName = "test"; // a modifié pour aller chercher le nom des video
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-   /*    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            {
-                requestPermissions(new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, 2);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
             }
         }
-        else{
 
-
-        }s
-
-
-        */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState != null) {
@@ -101,236 +103,50 @@ public class MainActivity extends Activity {
             ExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
         }
 
-        ArrayList<Video> arrayOfVideos = new ArrayList<Video>();
+        listViewVideos = (ListView) findViewById(R.id.lv_videos);
+        listViewAnnotations = (ListView) findViewById(R.id.lv_annotations);
 
+        spinnerCategorie = (Spinner) findViewById(R.id.spinner_cat);
+        spinnerSubCategorie = (Spinner) findViewById(R.id.spinner_sub_cat);
 
-        final VideoAnnotation videoAnnotations1;
-        final VideoAnnotation videoAnnotations2;
-        final VideoAnnotation videoAnnotations3;
+        videoList = initVideoList();
+        videosAdapter = new VideosAdapter(this, videoList);
+        annotationsAdapter = new AnnotationsAdapter(this, new ArrayList<Annotation>()); //Initilisatisation de la liste d'annotations (vide)
 
-        VAnnotation annotation1 = new VAnnotation("annotation1", null, null, null, VAnnotation.AnnotationType.TEXT.toString());
-        VAnnotation annotation2 = new VAnnotation("annotation2", null, null, null, VAnnotation.AnnotationType.TEXT.toString());
-        VAnnotation annotation3 = new VAnnotation("annotation3", null, null, null, VAnnotation.AnnotationType.TEXT.toString());
-        //TextAnnotation annotation2 = new TextAnnotation("annotation2", null, 0, 0, null);
-        //TextAnnotation annotation3 = new TextAnnotation("annotation3", null, 0, 0, null);
-
-        //List<TextAnnotation> arrayOfAnnotations1 = new ArrayList<>();
-        List<VAnnotation> arrayOfAnnotations1 = new ArrayList<>();
-
-        arrayOfAnnotations1.add(annotation1);
-        arrayOfAnnotations1.add(annotation2);
-        arrayOfAnnotations1.add(annotation3);
-
-
-        //List<TextAnnotation> arrayOfAnnotations2 = new ArrayList<>();
-        List<VAnnotation> arrayOfAnnotations2 = new ArrayList<>();
-        arrayOfAnnotations2.add(annotation2);
-        arrayOfAnnotations2.add(annotation1);
-        arrayOfAnnotations2.add(annotation3);
-
-        //ArrayList<TextAnnotation> arrayOfAnnotations3 = new ArrayList<>();
-        List<VAnnotation> arrayOfAnnotations3 = new ArrayList<>();
-        arrayOfAnnotations3.add(annotation3);
-        arrayOfAnnotations3.add(annotation2);
-        arrayOfAnnotations3.add(annotation1);
-
-        videoAnnotations1 = new VideoAnnotation(null, null, arrayOfAnnotations1);
-
-        videoAnnotations2 = new VideoAnnotation(null, null, arrayOfAnnotations2);
-
-        videoAnnotations3 = new VideoAnnotation(null, null, arrayOfAnnotations3);
-
-        List<Video> videoList = new ArrayList<>();
-        Video video1 = new Video("test", null, videoAnnotations1);
-        Video video2 = new Video("test2", null, videoAnnotations2);
-        Video video3 = new Video("nom3", null, videoAnnotations3);
-        videoList.add(video1);
-        videoList.add(video2);
-        videoList.add(video3);
-
-
-
-        final VideosAdapter videosAdapter = new VideosAdapter(this, videoList);
-
-        final AnnotationsAdapter annotationsAdapter = new AnnotationsAdapter(this, new ArrayList<VAnnotation>());
-        final AnnotationsAdapter annotationsAdapter2 = new AnnotationsAdapter(this, video1.getVideoAnnotation().getAnnotationList());
-
-
-        final ListView listViewVideos = (ListView) findViewById(R.id.lv_videos);
         listViewVideos.setAdapter(videosAdapter);
+        listViewVideos.setClickable(true);
+        listViewVideos.setOnItemClickListener(videoItemClickListener);
 
+        listViewVideos.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+       // listViewVideos.setSelection(selectedListItem);
 
-        final ListView listViewAnnotations = (ListView) findViewById(R.id.lv_annotations);
-        //listViewAnnotations.setAdapter(annotationsAdapter);
+        listViewAnnotations.setAdapter(annotationsAdapter);
+        listViewAnnotations.setClickable(true);
+        listViewAnnotations.setOnItemClickListener(annotationItemClickListener);
+
 
         //Spinner catégorie
-        ArrayList<String> spinnerList = new ArrayList<String>();
-        //Création temporaire de la liste des dossiers pour spinner (devra etre automatisé)
-        spinnerList.add("item1");
-        spinnerList.add("item2");
-        spinnerList.add("item3");
-        spinnerList.add("item4");
+        ArrayList<String> categorieList = new ArrayList<>();
+        categorieList.add("Categorie");
+        categorieList.add("item1");
+        categorieList.add("item2");
 
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-
-        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList);
-
+        ArrayAdapter<String> spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spinner.setAdapter(spinnerAdapter);
-
+        spinnerCategorie.setAdapter(spinnerAdapter);
 
         //Spinner sous-catégorie
-        //Création temporaire des listes de sous-dossiers pour spinner2 (devra etre automatisé)
+        ArrayList<String> spinnerList2 = new ArrayList<>();
+        spinnerList2.add("Sous-categorie");
+        spinnerList2.add("item1");
+        spinnerList2.add("item2");
 
-
-
-        ArrayList<String> spinnerList2_1 = new ArrayList<String>();
-        spinnerList2_1.add("item1_1");
-        spinnerList2_1.add("item1_2");
-        spinnerList2_1.add("item1_3");
-        spinnerList2_1.add("item1_4");
-
-        ArrayList<String> spinnerList2_2 = new ArrayList<String>();
-        spinnerList2_2.add("item2_1");
-        spinnerList2_2.add("item2_2");
-        spinnerList2_2.add("item2_3");
-        spinnerList2_2.add("item2_4");
-
-        ArrayList<String> spinnerList2_3 = new ArrayList<String>();
-        spinnerList2_3.add("item3_1");
-        spinnerList2_3.add("item3_2");
-        spinnerList2_3.add("item3_3");
-        spinnerList2_3.add("item3_4");
-
-        ArrayList<String> spinnerList2_4 = new ArrayList<String>();
-        spinnerList2_4.add("item4_1");
-        spinnerList2_4.add("item4_2");
-        spinnerList2_4.add("item4_3");
-        spinnerList2_4.add("item4_4");
-
-        final Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
-
-        final ArrayAdapter<String> spinnerAdapter2_1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList2_1);
-        final ArrayAdapter<String> spinnerAdapter2_2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList2_2);
-        final ArrayAdapter<String> spinnerAdapter2_3 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList2_3);
-        final ArrayAdapter<String> spinnerAdapter2_4 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList2_4);
-
-
-        spinnerAdapter2_1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerAdapter2_2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerAdapter2_3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerAdapter2_4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-
-
-        spinner2.setAdapter(spinnerAdapter2_1);
-        //spinner2.setVisibility(View.INVISIBLE);
-
-        final LinearLayout ll_subcat = findViewById(R.id.ll_subcat);
-        ll_subcat.setVisibility(View.INVISIBLE);
-
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast toast = Toast.makeText(getApplicationContext(),  parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT);
-                toast.show();
-
-                switch (position){
-                    case 0:  spinner2.setAdapter(spinnerAdapter2_1);
-                            break;
-                    case 1:  spinner2.setAdapter(spinnerAdapter2_2);
-                            break;
-                    case 2:  spinner2.setAdapter(spinnerAdapter2_3);
-                        break;
-                    case 3:  spinner2.setAdapter(spinnerAdapter2_4);
-                        break;
-
-                }
-
-
-
-            }
-
-            //sert à rien ?
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-                ll_subcat.setVisibility(View.INVISIBLE);
-            }
-
-
-        });
-
-
-
-        listViewVideos.setClickable(true);
-
-        listViewVideos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Video video = (Video) listViewVideos.getItemAtPosition(position);
-
-                AnnotationsAdapter annotationsAdapter2 = new AnnotationsAdapter(listViewVideos.getContext(), video.getVideoAnnotation().getAnnotationList());
-
-                listViewAnnotations.setAdapter(annotationsAdapter2);
-
-                videoName = video.getFileName();
-
-                player.stop();
-
-                initExoPlayer(); // crée des lecteurs en boucles
-            }
-        });
-
+        ArrayAdapter<String> spinnerAdapter2 = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, spinnerList2);
+        spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSubCategorie.setAdapter(spinnerAdapter2);
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-
-    public void initExoPlayer() {
-        String path = "android.resource://" + getPackageName() + "/" + R.raw.test;
-
-        SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
-
-        //1. creating an ExoPlayer with default parameters from Getting Started guide(https://google.github.io/ExoPlayer/guide.html)
-        DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
-        DataSourceFactory = new DefaultExtractorsFactory();
-        //2. prepare video source from url
-        //        videoSource = new ExtractorMediaSource(Uri.parse(path), DataSourceFactory,
-        //                new DefaultExtractorsFactory(), null, null);
-        Uri uri = Uri.fromFile(new java.io.File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + File.separator + "Camera" + File.separator + videoName+".mp4"));
-        //Uri uri = Uri.fromFile(new java.io.File("/sdcard/DCIM/Camera/" + videoName + ".mp4"));
-        DataSpec dataSpec = new DataSpec(uri);
-        FileDataSource fileDataSource = new FileDataSource();
-        try {
-            fileDataSource.open(dataSpec);
-        } catch (FileDataSource.FileDataSourceException e) {
-            e.printStackTrace();
-        }
-        videoSource = new ExtractorMediaSource(
-                uri,
-                new DefaultDataSourceFactory(this, "ua"),
-                new DefaultExtractorsFactory(), null, null);
-
-        //2. create the player
-        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector, new DefaultLoadControl());
-        exoPlayerView.setControllerShowTimeoutMs(0);
-        exoPlayerView.setPlayer(player);
-        player.setPlayWhenReady(false);
-        player.setRepeatMode(Player.REPEAT_MODE_ONE);
-        player.prepare(videoSource, false, false);
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -352,6 +168,118 @@ public class MainActivity extends Activity {
                 super.onBackPressed();
             }
         };
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        if (playerView == null) {
+
+            playerView = findViewById(R.id.player_view);
+            initFullscreenDialog();
+            initFullscreenButton();
+
+        }
+
+        initExoPlayer();
+
+        if (ExoPlayerFullscreen) {
+            ((ViewGroup) playerView.getParent()).removeView(playerView);
+            FullScreenDialog.addContentView(playerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_skrink));
+            FullScreenDialog.show();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+
+        super.onPause();
+
+        if (playerView != null && playerView.getPlayer() != null) {
+            ResumeWindow = playerView.getPlayer().getCurrentWindowIndex();
+            ResumePosition = Math.max(0, playerView.getPlayer().getContentPosition());
+
+            playerView.getPlayer().release();
+        }
+
+        if (FullScreenDialog != null)
+            FullScreenDialog.dismiss();
+    }
+
+    //Listener pour le clic sur la liste de vidéos
+    protected AdapterView.OnItemClickListener videoItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            videosAdapter.setSelectedListItem(position);
+            videosAdapter.notifyDataSetChanged();
+
+            Video video = (Video) listViewVideos.getItemAtPosition(position);
+
+            //Mise à jour de la liste
+            annotationsAdapter.clear();
+            annotationsAdapter.addAll(video.getVideoAnnotation().getAnnotationList());
+            annotationsAdapter.notifyDataSetChanged();
+
+            videoName = video.getFileName();
+
+            player.stop();
+
+            initExoPlayer(); // recrée le lecteur
+        }
+    };
+
+    //Listener pour le clic sur la liste d'annotations
+
+    protected AdapterView.OnItemClickListener annotationItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            Annotation annotation = (Annotation) listViewAnnotations.getItemAtPosition(position);
+
+            Toast.makeText(getApplicationContext(),"Annotation: "+ annotation.getAnnotationTitle() + " Type: " + annotation.getAnnotationType(),Toast.LENGTH_SHORT).show();
+
+
+
+        }
+    };
+
+    public void initExoPlayer() {
+        String path = "android.resource://" + getPackageName() + "/" + R.raw.test;
+
+        SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
+
+        //1. creating an ExoPlayer with default parameters from Getting Started guide(https://google.github.io/ExoPlayer/guide.html)
+        DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+        DataSourceFactory = new DefaultExtractorsFactory();
+        //2. prepare video source from url
+
+        Uri uri = Uri.fromFile(new java.io.File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + File.separator + "Camera" + File.separator + videoName + ".mp4"));
+        //Uri uri = Uri.fromFile(new java.io.File("/sdcard/DCIM/Camera/" + videoName + ".mp4"));
+        DataSpec dataSpec = new DataSpec(uri);
+        FileDataSource fileDataSource = new FileDataSource();
+        try {
+            fileDataSource.open(dataSpec);
+        } catch (FileDataSource.FileDataSourceException e) {
+            e.printStackTrace();
+        }
+        videoSource = new ExtractorMediaSource(
+                uri,
+                new DefaultDataSourceFactory(this, "ua"),
+                new DefaultExtractorsFactory(), null, null);
+
+        //2. create the player
+        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector, new DefaultLoadControl());
+        exoPlayerView.setControllerShowTimeoutMs(0);
+        exoPlayerView.setPlayer(player);
+        player.setPlayWhenReady(false);
+        player.setRepeatMode(Player.REPEAT_MODE_ONE);
+        player.prepare(videoSource, false, false);
     }
 
 
@@ -391,44 +319,52 @@ public class MainActivity extends Activity {
         });
     }
 
-    @Override
-    protected void onResume() {
+    //Initialise la liste de vidéos pous la session ( A BUT DE TESTES )
+    public List<Video> initVideoList() {
 
-        super.onResume();
+        List<Video> videoList = new ArrayList<>(); //Liste de vidéo
 
-        if (playerView == null) {
+        final VideoAnnotation videoAnnotations1;
+        final VideoAnnotation videoAnnotations2;
+        final VideoAnnotation videoAnnotations3;
 
-            playerView = findViewById(R.id.player_view);
-            initFullscreenDialog();
-            initFullscreenButton();
+        //Création des annotations
+        Annotation annotation1 = new Annotation("annotation1", null, null, null, AnnotationType.TEXT);
+        Annotation annotation2 = new Annotation("annotation2", null, null, null, AnnotationType.TEXT);
+        Annotation annotation3 = new Annotation("annotation3", null, null, null, AnnotationType.TEXT);
 
-        }
+        //Constructionn de listes d'annotation (3 dans ce cas)
+        List<Annotation> arrayOfAnnotations1 = new ArrayList<>();
+        arrayOfAnnotations1.add(annotation1);
+        arrayOfAnnotations1.add(annotation2);
+        arrayOfAnnotations1.add(annotation3);
 
-        initExoPlayer();
+        List<Annotation> arrayOfAnnotations2 = new ArrayList<>();
+        arrayOfAnnotations2.add(annotation2);
+        arrayOfAnnotations2.add(annotation1);
+        arrayOfAnnotations2.add(annotation3);
 
-        if (ExoPlayerFullscreen) {
-            ((ViewGroup) playerView.getParent()).removeView(playerView);
-            FullScreenDialog.addContentView(playerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_skrink));
-            FullScreenDialog.show();
-        }
-    }
+        List<Annotation> arrayOfAnnotations3 = new ArrayList<>();
+        arrayOfAnnotations3.add(annotation3);
+        arrayOfAnnotations3.add(annotation2);
+        arrayOfAnnotations3.add(annotation1);
 
+        //Instanciation des objets d'annotations
+        videoAnnotations1 = new VideoAnnotation(null, null, arrayOfAnnotations1);
+        videoAnnotations2 = new VideoAnnotation(null, null, arrayOfAnnotations2);
+        videoAnnotations3 = new VideoAnnotation(null, null, arrayOfAnnotations3);
 
-    @Override
-    protected void onPause() {
+        //Création d'instances de vidéos
+        Video video1 = new Video("test", null, videoAnnotations1);
+        Video video2 = new Video("test2", null, videoAnnotations2);
+        Video video3 = new Video("nom3", null, videoAnnotations3);
 
-        super.onPause();
+        //Ajout dans la liste
+        videoList.add(video1);
+        videoList.add(video2);
+        videoList.add(video3);
 
-        if (playerView != null && playerView.getPlayer() != null) {
-            ResumeWindow = playerView.getPlayer().getCurrentWindowIndex();
-            ResumePosition = Math.max(0, playerView.getPlayer().getContentPosition());
-
-            playerView.getPlayer().release();
-        }
-
-        if (FullScreenDialog != null)
-            FullScreenDialog.dismiss();
+        return videoList;
     }
 
 }

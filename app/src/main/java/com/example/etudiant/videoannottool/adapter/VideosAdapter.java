@@ -15,6 +15,8 @@ import java.util.List;
 
 public class VideosAdapter extends ArrayAdapter<Video> {
 
+    protected int selectedListItem=0;
+
     public VideosAdapter(Context context, List<Video> videos) {
 
         super(context, 0, videos);
@@ -45,8 +47,19 @@ public class VideosAdapter extends ArrayAdapter<Video> {
 
         // Return the completed view to render on screen
 
+        if (position == selectedListItem){
+            convertView.setBackgroundResource(android.R.color.darker_gray);
+        }
+        else{
+            convertView.setBackgroundResource(android.R.color.transparent);
+        }
+
+
         return convertView;
 
+    }
+    public void setSelectedListItem(int position){
+        selectedListItem=position;
     }
 }
 
