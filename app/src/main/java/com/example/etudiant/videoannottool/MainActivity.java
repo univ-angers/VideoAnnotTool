@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.support.v4.content.ContextCompat;
 
 import com.example.etudiant.videoannottool.adapter.AnnotationsAdapter;
+import com.example.etudiant.videoannottool.adapter.SpinnerAdapter;
 import com.example.etudiant.videoannottool.adapter.VideosAdapter;
 import com.example.etudiant.videoannottool.annotation.AnnotationType;
 import com.example.etudiant.videoannottool.annotation.Annotation;
@@ -44,11 +45,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.security.AccessController.getContext;
 
 public class MainActivity extends Activity {
 
@@ -80,6 +84,7 @@ public class MainActivity extends Activity {
 
     private List<Video> videoList;
 
+
     String videoName = "test"; // a modifié pour aller chercher le nom des video
 
     @Override
@@ -106,33 +111,42 @@ public class MainActivity extends Activity {
 
         videoList = initVideoList();
         videosAdapter = new VideosAdapter(this, videoList);
-        annotationsAdapter = new AnnotationsAdapter(this, new ArrayList<Annotation>()); //Initilisatisation de la liste de annotations (vide)
+        annotationsAdapter = new AnnotationsAdapter(this, new ArrayList<Annotation>()); //Initilisatisation de la liste d'annotations (vide)
 
         listViewVideos.setAdapter(videosAdapter);
         listViewVideos.setClickable(true);
         listViewVideos.setOnItemClickListener(videoItemClickListener);
 
+        listViewVideos.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+       // listViewVideos.setSelection(selectedListItem);
+
         listViewAnnotations.setAdapter(annotationsAdapter);
+        listViewAnnotations.setClickable(true);
+        listViewAnnotations.setOnItemClickListener(annotationItemClickListener);
+
 
         //Spinner catégorie
         ArrayList<String> categorieList = new ArrayList<>();
+        categorieList.add("Categorie");
         categorieList.add("item1");
         categorieList.add("item2");
 
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categorieList);
+        ArrayAdapter<String> spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategorie.setAdapter(spinnerAdapter);
 
         //Spinner sous-catégorie
         ArrayList<String> spinnerList2 = new ArrayList<>();
+        spinnerList2.add("Sous-categorie");
         spinnerList2.add("item1");
         spinnerList2.add("item2");
 
-        ArrayAdapter<String> spinnerAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerList2);
+        ArrayAdapter<String> spinnerAdapter2 = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, spinnerList2);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubCategorie.setAdapter(spinnerAdapter2);
 
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -200,6 +214,9 @@ public class MainActivity extends Activity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+            videosAdapter.setSelectedListItem(position);
+            videosAdapter.notifyDataSetChanged();
+
             Video video = (Video) listViewVideos.getItemAtPosition(position);
 
             //Mise à jour de la liste
@@ -212,6 +229,23 @@ public class MainActivity extends Activity {
             player.stop();
 
             initExoPlayer(); // recrée le lecteur
+        }
+    };
+
+    //Listener pour le clic sur la liste d'annotations
+
+    protected AdapterView.OnItemClickListener annotationItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            Annotation annotation = (Annotation) listViewAnnotations.getItemAtPosition(position);
+
+
+            //Exemple affichage d'informations de l'annotation
+            Toast.makeText(getApplicationContext(),"Annotation: "+ annotation.getAnnotationTitle() + " Type: " + annotation.getAnnotationType(),Toast.LENGTH_SHORT).show();
+
+
+
         }
     };
 

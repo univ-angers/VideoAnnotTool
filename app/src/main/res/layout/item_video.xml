@@ -10,14 +10,11 @@
 
         android:layout_width="152dp"
 
-        android:layout_height="66dp"
-
-        android:text="Name"
-
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+        android:layout_height="50dp"
 
         android:gravity="center"
-        />
+
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
     <TextView
 
@@ -25,10 +22,10 @@
 
         android:layout_width="85dp"
 
-        android:layout_height="66dp"
+        android:layout_height="50dp"
 
         android:text=""
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
         android:visibility="visible" />
 
 </LinearLayout>
