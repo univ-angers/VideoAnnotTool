@@ -240,6 +240,8 @@ public class MainActivity extends Activity {
 
             Annotation annotation = (Annotation) listViewAnnotations.getItemAtPosition(position);
 
+
+            //Exemple affichage d'informations de l'annotation
             Toast.makeText(getApplicationContext(),"Annotation: "+ annotation.getAnnotationTitle() + " Type: " + annotation.getAnnotationType(),Toast.LENGTH_SHORT).show();
 
 
