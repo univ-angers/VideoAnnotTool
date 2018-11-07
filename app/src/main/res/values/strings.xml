@@ -4,4 +4,8 @@
     <string name="video_annotations">Annotations de la vidéo</string>
     <string name="add_button">Nouvelle vidéo</string>
     <string name="subcategory">Sous-catégorie :</string>
+
+    <string name="TextDialogRecord">Enregistrement Audio</string>
+    <string name="TextBtnStartRecord">Start</string>
+    <string name="TextBtnStopRecord">Stop</string>
 </resources>
