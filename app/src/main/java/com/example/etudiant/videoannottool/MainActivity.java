@@ -361,9 +361,9 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 if(ExoplayerSpeed == 1f){
                     // reduit la vitesse
-                    setSpeed(0.25f);
+                    setSpeed(0.5f);
                     SpeedIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.speed_down));
-                    ExoplayerSpeed = 0.25f;
+                    ExoplayerSpeed = 0.5f;
 
                 }
                 else{
