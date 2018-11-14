@@ -73,6 +73,10 @@ public class MainActivity extends Activity {
     private ImageView FullScreenIcon;
     private Dialog FullScreenDialog;
 
+    private boolean ExoPlayerRepeat = false;
+    private FrameLayout RepeatButton;
+    private ImageView RepeatIcon;
+
     private ListView listViewVideos;
     private ListView listViewAnnotations;
 
@@ -184,6 +188,7 @@ public class MainActivity extends Activity {
         }
 
         initExoPlayer();
+        initRepeatButton();
 
         if (ExoPlayerFullscreen) {
             ((ViewGroup) playerView.getParent()).removeView(playerView);
@@ -304,6 +309,30 @@ public class MainActivity extends Activity {
         FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_expand));
     }
 
+    private void initRepeatButton() {
+
+        PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
+        RepeatIcon = controlView.findViewById(R.id.exo_repeat_icon);
+        RepeatButton = controlView.findViewById(R.id.exo_repeat_button);
+        RepeatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!ExoPlayerRepeat){
+                    // active le mode repeat
+                    player.setRepeatMode(Player.REPEAT_MODE_ONE);
+                    RepeatIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.repeat_button_on));
+                    ExoPlayerRepeat = true;
+
+                }
+                else{
+                    // desactive le mode repeat
+                    player.setRepeatMode(Player.REPEAT_MODE_OFF);
+                    RepeatIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.repeat_button_off));
+                    ExoPlayerRepeat = false;
+                }
+            }
+        });
+    }
 
     private void initFullscreenButton() {
 
