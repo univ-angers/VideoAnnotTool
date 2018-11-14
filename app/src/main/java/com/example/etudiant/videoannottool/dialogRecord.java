@@ -3,6 +3,7 @@ package com.example.etudiant.videoannottool;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -16,29 +17,72 @@ import java.io.IOException;
 public class dialogRecord {
     MediaRecorder recorder;
     String audioName="";
+
     public void showDialogRecord(final MainActivity main){
-        Dialog dialog = new Dialog(main);
+        final Dialog dialog = new Dialog(main);
 
         dialog.setContentView(R.layout.boite_dialog_record);
+        dialog.setCancelable(false);
+        final Button btnstart =  dialog.findViewById(R.id.btnStartRecord);
+        final Button btnstop =  dialog.findViewById(R.id.btnStopRecord);
+        final Button btnlisten = dialog.findViewById(R.id.btnListenRecord);
+        final Button btnValid = dialog.findViewById(R.id.btnValiderRecord);
+        final Button btnCancel = dialog.findViewById(R.id.btnAnnulerRecord);
+        dialog.show();
+        btnstart.setEnabled(true);
+        btnstop.setEnabled(false);
+        btnlisten.setEnabled(false);
+        btnValid.setEnabled(false);
 
-        Button btnstart =  dialog.findViewById(R.id.btnStartRecord);
-        Button btnstop =  dialog.findViewById(R.id.btnStopRecord);
+
 
         btnstart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnstart.setEnabled(false);
+                btnstop.setEnabled(true);
+                btnlisten.setEnabled(false);
+                btnValid.setEnabled(false);
+
                 StartRecord(main);
             }
         });
-
         btnstop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnstart.setEnabled(true);
+                btnstop.setEnabled(false);
+                btnlisten.setEnabled(true);
+                btnValid.setEnabled(true);
+
                 stopRecord(main);
             }
         });
+        btnlisten.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                btnstart.setEnabled(true);
+                btnstop.setEnabled(false);
+                btnlisten.setEnabled(false);
+                btnValid.setEnabled(true);
 
-        dialog.show();
+                ListenRecord(main);
+            }
+        });
+        btnValid.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                dialog.cancel();
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+
+                dialog.cancel();
+            }
+        });
+
+
+
     }
     public void StartRecord (MainActivity main){
 
@@ -61,8 +105,7 @@ public class dialogRecord {
             Toast messagedebut;
             messagedebut = Toast.makeText( main,"Début d'enregistrement", Toast.LENGTH_LONG);
             messagedebut.show();
-            System.out.println(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + audioName);
-            //ExportAnnotationRecord(5,player2);
+
 
         }
         catch (IOException e) {
@@ -80,8 +123,37 @@ public class dialogRecord {
             Toast messagefin;
             messagefin = Toast.makeText(main, "Fichier " + this.audioName + " enregistré", Toast.LENGTH_LONG);
             messagefin.show();
+
         } catch (Exception e) {
             System.out.println("stop fail");
+        }
+    }
+    public void ListenRecord (MainActivity main) {
+        MediaPlayer player;
+        try{
+
+            player= new MediaPlayer();
+            player.setDataSource(main.getFilesDir()+File.separator + audioName);
+
+            player.prepare();
+            player.start();
+            Toast messageplay;
+            messageplay = Toast.makeText(main,"Lecture "+audioName+" en cours", Toast.LENGTH_LONG);
+            messageplay.show();
+
+            while(player.isPlaying());
+            player.stop();
+            player=null;
+
+            Toast messagestop;
+            messagestop = Toast.makeText(main,"Fin de transmission", Toast.LENGTH_LONG);
+            messagestop.show();
+
+
+        }
+        catch (IOException e) {
+            System.out.println("listenning fail");
+            player=null;
         }
     }
 
