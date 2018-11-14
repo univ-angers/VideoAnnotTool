@@ -16,6 +16,21 @@
         android:gravity="center"
         android:paddingTop="4dp"
         android:orientation="horizontal">
+        <FrameLayout
+            android:id="@+id/exo_speed_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/exo_speed_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/speed_up" />
+        </FrameLayout>
+
 
         <ImageButton android:id="@id/exo_pause"
             style="@style/ExoMediaButton.Pause"/>
