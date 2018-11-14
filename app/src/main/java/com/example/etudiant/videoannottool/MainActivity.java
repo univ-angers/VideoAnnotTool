@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,7 +12,9 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import android.support.v4.content.ContextCompat;
@@ -49,6 +52,7 @@ import android.widget.Toast;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +88,8 @@ public class MainActivity extends Activity {
 
     private List<Video> videoList;
 
-
+    private MediaRecorder recorder;
+    private String audioName="";
     String videoName = "test"; // a modifié pour aller chercher le nom des video
 
     @Override
@@ -94,6 +99,17 @@ public class MainActivity extends Activity {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
             }
         }
+        //Autorisation enregistrement audio
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)!= PackageManager.PERMISSION_GRANTED)
+        {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.RECORD_AUDIO)) {
+            } else {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.RECORD_AUDIO},1);
+            }
+        }
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -144,6 +160,17 @@ public class MainActivity extends Activity {
         ArrayAdapter<String> spinnerAdapter2 = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, spinnerList2);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubCategorie.setAdapter(spinnerAdapter2);
+
+        //Listener btn audio_annot_btn
+        ImageButton btn_enregistrer= findViewById(R.id.audio_annot_btn);
+        btn_enregistrer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                dialogRecord dialog= new dialogRecord();
+                dialog.showDialogRecord(MainActivity.this);
+            }
+        });
 
     }
 
