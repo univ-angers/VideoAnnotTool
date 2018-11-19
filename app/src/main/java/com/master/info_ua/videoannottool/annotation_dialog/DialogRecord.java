@@ -1,28 +1,36 @@
-package com.example.etudiant.videoannottool;
+package com.master.info_ua.videoannottool.annotation_dialog;
 
 
 import android.app.Dialog;
-import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+
+import com.master.info_ua.videoannottool.MainActivity;
+import com.master.info_ua.videoannottool.R;
+
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class dialogRecord {
+public class DialogRecord {
     MediaRecorder recorder;
-    String audioName="";
+    String audioName;
 
-    public void showDialogRecord(final MainActivity main){
+    private String videoName;
+    public void showDialogRecord(final MainActivity main, String videoName){
         final Dialog dialog = new Dialog(main);
+
+        this.videoName=videoName;
 
         dialog.setContentView(R.layout.boite_dialog_record);
         dialog.setCancelable(false);
+        dialog.setTitle(R.string.TextDialogRecord);
         final Button btnstart =  dialog.findViewById(R.id.btnStartRecord);
         final Button btnstop =  dialog.findViewById(R.id.btnStopRecord);
         final Button btnlisten = dialog.findViewById(R.id.btnListenRecord);
@@ -76,6 +84,8 @@ public class dialogRecord {
 
         btnCancel.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                File file = new File(main.getFilesDir(), audioName);
+                file.delete();
 
                 dialog.cancel();
             }
@@ -83,6 +93,11 @@ public class dialogRecord {
 
 
 
+    }
+    public DialogRecord(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy-HHmmss");
+
+        this.audioName=videoName+"_"+dateFormat.format(new Date())+".mp3";
     }
     public void StartRecord (MainActivity main){
 
@@ -94,10 +109,9 @@ public class dialogRecord {
             recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-            this.audioName="audio.mp3";
 
 
-            recorder.setOutputFile(main.getFilesDir()+File.separator + audioName);
+            recorder.setOutputFile(main.getExternalFilesDir(Environment.DIRECTORY_MUSIC)+File.separator+audioName);
 
             recorder.prepare();
             recorder.start();
@@ -133,7 +147,7 @@ public class dialogRecord {
         try{
 
             player= new MediaPlayer();
-            player.setDataSource(main.getFilesDir()+File.separator + audioName);
+            player.setDataSource(main.getExternalFilesDir(Environment.DIRECTORY_MUSIC)+File.separator+audioName);
 
             player.prepare();
             player.start();

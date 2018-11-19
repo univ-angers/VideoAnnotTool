@@ -1,4 +1,4 @@
-package com.example.etudiant.videoannottool;
+package com.master.info_ua.videoannottool;
 
 import android.Manifest;
 import android.app.Activity;
@@ -12,20 +12,20 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import android.support.v4.content.ContextCompat;
 
-import com.example.etudiant.videoannottool.adapter.AnnotationsAdapter;
-import com.example.etudiant.videoannottool.adapter.SpinnerAdapter;
-import com.example.etudiant.videoannottool.adapter.VideosAdapter;
-import com.example.etudiant.videoannottool.annotation.AnnotationType;
-import com.example.etudiant.videoannottool.annotation.Annotation;
-import com.example.etudiant.videoannottool.annotation.Video;
-import com.example.etudiant.videoannottool.annotation.VideoAnnotation;
+import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
+import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
+import com.master.info_ua.videoannottool.adapter.VideosAdapter;
+import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
+import com.master.info_ua.videoannottool.annotation.AnnotationType;
+import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.annotation.Video;
+import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
@@ -52,13 +52,16 @@ import android.widget.Toast;
 
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.security.AccessController.getContext;
-
 public class MainActivity extends Activity {
+
+    private ImageButton audioAnnotBtn;
+    private ImageButton textAnnotBtn;
+    private ImageButton graphAnnotBtn;
+    private ImageButton zoomAnnotBtn;
+    private ImageButton slowAnnotBtn;
 
     private SimpleExoPlayer player;
     private SimpleExoPlayerView playerView;
@@ -161,16 +164,26 @@ public class MainActivity extends Activity {
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubCategorie.setAdapter(spinnerAdapter2);
 
-        //Listener btn audio_annot_btn
-        ImageButton btn_enregistrer= findViewById(R.id.audio_annot_btn);
-        btn_enregistrer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                dialogRecord dialog= new dialogRecord();
-                dialog.showDialogRecord(MainActivity.this);
-            }
-        });
+
+        //Listener btn audio_annot_btn
+        audioAnnotBtn= findViewById(R.id.audio_annot_btn);
+        audioAnnotBtn.setOnClickListener(btnClickListener);
+
+        textAnnotBtn= findViewById(R.id.text_annot_btn);
+        textAnnotBtn.setOnClickListener(btnClickListener);
+
+        graphAnnotBtn= findViewById(R.id.graphic_annot_btn);
+        graphAnnotBtn.setOnClickListener(btnClickListener);
+
+        zoomAnnotBtn= findViewById(R.id.zoom_mode_annot_btn);
+        zoomAnnotBtn.setOnClickListener(btnClickListener);
+
+        slowAnnotBtn= findViewById(R.id.slow_mode_annot_btn);
+        slowAnnotBtn.setOnClickListener(btnClickListener);
+
+
+
 
     }
 
@@ -396,4 +409,28 @@ public class MainActivity extends Activity {
         return videoList;
     }
 
+    View.OnClickListener btnClickListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            int btnId=view.getId();
+            switch (btnId){
+                case R.id.audio_annot_btn:
+                    DialogRecord dialog= new DialogRecord();
+                    dialog.showDialogRecord(MainActivity.this,videoName);
+                    break;
+                case R.id.graphic_annot_btn:
+                    break;
+                case R.id.slow_mode_annot_btn:
+                    break;
+                case R.id.text_annot_btn:
+                    break;
+                case R.id.zoom_mode_annot_btn:
+                    break;
+
+            }
+
+
+        }
+    };
 }
