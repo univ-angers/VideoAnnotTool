@@ -46,7 +46,7 @@ public class Exoplayer_Activity extends Activity {
 
         SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
 
-        //1. creating an ExoPlayer with default parameters
+        //1. creating an ExoPlayer with default parameters from Getting Started guide(https://google.github.io/ExoPlayer/guide.html)
         DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
