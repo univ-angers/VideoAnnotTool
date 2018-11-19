@@ -167,7 +167,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
 
-                dialogRecord dialog= new dialogRecord();
+                dialogRecord dialog= new dialogRecord(videoName,"testtime");
                 dialog.showDialogRecord(MainActivity.this);
             }
         });
