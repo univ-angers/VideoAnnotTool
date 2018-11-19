@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool;
+package com.master.info_ua.videoannottool.annotation_dialog;
 
 
 import android.app.Dialog;
@@ -10,19 +10,27 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
+import com.master.info_ua.videoannottool.MainActivity;
+import com.master.info_ua.videoannottool.R;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class dialogRecord {
+public class DialogRecord {
     MediaRecorder recorder;
     String audioName;
 
-    public void showDialogRecord(final MainActivity main){
+    private String videoName;
+    public void showDialogRecord(final MainActivity main, String videoName){
         final Dialog dialog = new Dialog(main);
+
+        this.videoName=videoName;
 
         dialog.setContentView(R.layout.boite_dialog_record);
         dialog.setCancelable(false);
+        dialog.setTitle(R.string.TextDialogRecord);
         final Button btnstart =  dialog.findViewById(R.id.btnStartRecord);
         final Button btnstop =  dialog.findViewById(R.id.btnStopRecord);
         final Button btnlisten = dialog.findViewById(R.id.btnListenRecord);
@@ -86,8 +94,10 @@ public class dialogRecord {
 
 
     }
-    public dialogRecord (String videoName, String time){
-        this.audioName=videoName+"_"+time+".mp3";
+    public DialogRecord(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy-HHmmss");
+
+        this.audioName=videoName+"_"+dateFormat.format(new Date())+".mp3";
     }
     public void StartRecord (MainActivity main){
 

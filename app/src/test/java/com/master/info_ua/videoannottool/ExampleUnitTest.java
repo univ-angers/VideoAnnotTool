@@ -1,4 +1,4 @@
-package com.example.etudiant.videoannottool;
+package com.master.info_ua.videoannottool;
 
 import org.junit.Test;
 

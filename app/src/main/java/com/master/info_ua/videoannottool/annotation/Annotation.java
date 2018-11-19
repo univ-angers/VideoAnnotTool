@@ -1,4 +1,4 @@
-package com.example.etudiant.videoannottool.annotation;
+package com.master.info_ua.videoannottool.annotation;
 
 import java.io.Serializable;
 import java.util.Date;

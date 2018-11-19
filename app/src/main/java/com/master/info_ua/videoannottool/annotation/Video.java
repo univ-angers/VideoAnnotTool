@@ -1,4 +1,4 @@
-package com.example.etudiant.videoannottool.annotation;
+package com.master.info_ua.videoannottool.annotation;
 
 public class Video{
 

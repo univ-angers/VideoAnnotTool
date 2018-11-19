@@ -1,8 +1,9 @@
-package com.example.etudiant.videoannottool;
+package com.master.info_ua.videoannottool;
 
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
