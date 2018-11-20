@@ -5,41 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context="com.master.info_ua.videoannottool.MainActivity"
-    android:baselineAligned="false">
+    tools:context="com.master.info_ua.videoannottool.MainActivity">
 
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:background="@color/colorLeftRight"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
 
                 <Spinner
                     android:id="@+id/spinner_cat"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="visible">
+                    android:layout_height="wrap_content" />
 
                 <Spinner
                     android:id="@+id/spinner_sub_cat"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
+
+
 
             <ListView
                 android:id="@+id/lv_videos"
@@ -95,45 +88,6 @@
             </ListView>
         </LinearLayout>
 
-
-        <!--
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:background="@color/colorPrimaryDark">
-
-            <ImageButton android:id="@+id/graphic_annot_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/draw_button_icon"/>
-
-            <ImageButton android:id="@+id/audio_annot_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/draw_button_icon"/>
-
-            <ImageButton android:id="@+id/text_annot_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/draw_button_icon"/>
-
-            <ImageButton android:id="@+id/slow_mode_annot_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/draw_button_icon"/>
-
-            <ImageButton android:id="@+id/zoom_mode_annot_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:src="@drawable/draw_button_icon"/>
-
-        </LinearLayout>
-        -->
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -146,34 +100,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:src="@drawable/draw_button_icon"/>
+                android:src="@drawable/draw_pencil_32"/>
 
             <ImageButton android:id="@+id/audio_annot_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@id/graphic_annot_btn"
-                android:src="@drawable/draw_button_icon"/>
+                android:src="@drawable/microphone_32"/>
 
             <ImageButton android:id="@+id/text_annot_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/audio_annot_btn"
-                android:src="@drawable/draw_button_icon"/>
+                android:src="@drawable/text_editor_32"/>
 
             <ImageButton android:id="@+id/slow_mode_annot_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/graphic_annot_btn"
                 android:layout_alignParentLeft="true"
-                android:src="@drawable/draw_button_icon"/>
+                android:src="@drawable/slow_motion_32"/>
 
             <ImageButton android:id="@+id/zoom_mode_annot_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/slow_mode_annot_btn"
                 android:layout_alignTop="@id/slow_mode_annot_btn"
-                android:src="@drawable/draw_button_icon"/>
+                android:src="@drawable/zoom_out_32"/>
 
         </RelativeLayout>
 
