@@ -9,4 +9,7 @@
     <color name="colorLeftRight">#a5b37e</color>
 
     <color name="exo_error_message_background_color">#fefefe</color>
+
+    <color name="btnAnnulerRecord">#ba1d18</color>
+    <color name="btnValiderRecord">#397938</color>
 </resources>
