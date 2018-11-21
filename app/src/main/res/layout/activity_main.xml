@@ -57,6 +57,12 @@
             android:gravity="center"
             app:resize_mode="fill" />
 
+        <com.master.info_ua.videoannottool.annotation_dessin.DrawView
+            android:id="@+id/draw_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+        />
+
     </FrameLayout>
 
     <LinearLayout

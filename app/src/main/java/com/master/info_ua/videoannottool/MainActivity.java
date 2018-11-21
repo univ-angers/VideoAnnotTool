@@ -21,6 +21,7 @@ import android.support.v4.content.ContextCompat;
 import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
+import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
 import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
 import com.master.info_ua.videoannottool.annotation.AnnotationType;
 import com.master.info_ua.videoannottool.annotation.Annotation;
@@ -420,6 +421,11 @@ public class MainActivity extends Activity {
                     dialog.showDialogRecord(MainActivity.this,videoName);
                     break;
                 case R.id.graphic_annot_btn:
+                    DrawView drawView = (DrawView)findViewById(R.id.draw_view);
+                    drawView.setOnTouchEnable(true);
+
+                    // faire apparaitre le fragment
+
                     break;
                 case R.id.slow_mode_annot_btn:
                     break;
