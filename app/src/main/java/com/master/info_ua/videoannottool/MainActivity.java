@@ -43,6 +43,7 @@ import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
+import com.google.android.exoplayer2.PlaybackParameters;
 
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -79,6 +80,13 @@ public class MainActivity extends Activity {
     private FrameLayout FullScreenButton;
     private ImageView FullScreenIcon;
     private Dialog FullScreenDialog;
+
+    private boolean ExoPlayerRepeat = false;
+    private FrameLayout RepeatButton;
+    private ImageView RepeatIcon;
+    private float ExoplayerSpeed = 1f;
+    private FrameLayout SpeedButton;
+    private ImageView SpeedIcon;
 
     private ListView listViewVideos;
     private ListView listViewAnnotations;
@@ -223,7 +231,9 @@ public class MainActivity extends Activity {
 
         }
 
+        initSlowButton();
         initExoPlayer();
+        initRepeatButton();
 
         if (ExoPlayerFullscreen) {
             ((ViewGroup) playerView.getParent()).removeView(playerView);
@@ -319,11 +329,21 @@ public class MainActivity extends Activity {
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector, new DefaultLoadControl());
         exoPlayerView.setControllerShowTimeoutMs(0);
         exoPlayerView.setPlayer(player);
+        setSpeed(1f);
         player.setPlayWhenReady(false);
-        player.setRepeatMode(Player.REPEAT_MODE_ONE);
+        if(!ExoPlayerRepeat){
+            player.setRepeatMode(Player.REPEAT_MODE_OFF);
+        }
+        else{
+            player.setRepeatMode(Player.REPEAT_MODE_ONE);
+        }
         player.prepare(videoSource, false, false);
     }
 
+    private void setSpeed(float speed){
+        PlaybackParameters speedParam = new PlaybackParameters(speed,speed);
+        player.setPlaybackParameters(speedParam);
+    }
 
     private void openFullscreenDialog() {
 
@@ -334,6 +354,51 @@ public class MainActivity extends Activity {
         FullScreenDialog.show();
     }
 
+    private void initRepeatButton() {
+        PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
+        RepeatIcon = controlView.findViewById(R.id.exo_repeat_icon);
+        RepeatButton = controlView.findViewById(R.id.exo_repeat_button);
+        RepeatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!ExoPlayerRepeat){
+                    // active le mode repeat
+                    player.setRepeatMode(Player.REPEAT_MODE_ONE);
+                    RepeatIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.repeat_button_on));
+                    ExoPlayerRepeat = true;
+                }
+                else{
+                    // desactive le mode repeat
+                    player.setRepeatMode(Player.REPEAT_MODE_OFF);
+                    RepeatIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.repeat_button_off));
+                    ExoPlayerRepeat = false;
+                }
+            }
+        });
+    }
+
+    private void initSlowButton(){
+        PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
+        SpeedIcon = controlView.findViewById(R.id.exo_speed_icon);
+        SpeedButton = controlView.findViewById(R.id.exo_speed_button);
+        SpeedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ExoplayerSpeed == 1f){
+                    // reduit la vitesse
+                    setSpeed(0.5f);
+                    SpeedIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.speed_down));
+                    ExoplayerSpeed = 0.5f;
+                }
+                else{
+                    // augmente la vitesse
+                    setSpeed(1f);
+                    SpeedIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.speed_up));
+                    ExoplayerSpeed = 1f;
+                }
+            }
+        });
+    }
 
     private void closeFullscreenDialog() {
 
