@@ -1,4 +1,4 @@
-package com.example.etudiant.videoannottool.adapter;
+package com.master.info_ua.videoannottool.adapter;
 
 import android.content.Context;
 import android.graphics.Color;

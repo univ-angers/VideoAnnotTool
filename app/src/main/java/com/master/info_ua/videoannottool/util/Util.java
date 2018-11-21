@@ -1,10 +1,10 @@
-package com.example.etudiant.videoannottool.util;
+package com.master.info_ua.videoannottool.util;
 
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-import com.example.etudiant.videoannottool.annotation.VideoAnnotation;
+import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

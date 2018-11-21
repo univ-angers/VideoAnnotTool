@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="15dip"
+    android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:layout_weight="50"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/TextBtnStartRecord"
+                android:id="@+id/btnStartRecord"/>
+            <Button
+                android:layout_weight="50"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/TextBtnStopRecord"
+                android:id="@+id/btnStopRecord"/>
+
+        </LinearLayout>
+
+        <Button
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/TextBtnEcouterRecord"
+            android:id="@+id/btnListenRecord"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:layout_weight="50"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/TextBtnValiderRecord"
+                android:id="@+id/btnValiderRecord"
+                android:background="@color/btnValiderRecord"/>
+            <Button
+                android:layout_weight="50"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/TextBtnAnnulerRecord"
+                android:id="@+id/btnAnnulerRecord"
+                android:background="@color/btnAnnulerRecord"/>
+        </LinearLayout>
+
+
+
+</LinearLayout>

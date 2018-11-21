@@ -1,4 +1,4 @@
-package com.example.etudiant.videoannottool.adapter;
+package com.master.info_ua.videoannottool.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.etudiant.videoannottool.R;
-import com.example.etudiant.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.R;
+import com.master.info_ua.videoannottool.annotation.Annotation;
 
 import java.util.List;
 
