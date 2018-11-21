@@ -23,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
+import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
 
 import com.master.info_ua.videoannottool.annotation.Annotation;
@@ -59,10 +60,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
+import static com.master.info_ua.videoannottool.util.Util.creerFichier;
 import static com.master.info_ua.videoannottool.util.Util.parseJSON;
-import static com.master.info_ua.videoannottool.util.Util.initFiles;
-import static com.master.info_ua.videoannottool.util.Util.getPublicStorageDir;
 import static com.master.info_ua.videoannottool.util.Util.isExternalStorageWritable;
 
 
@@ -142,9 +141,7 @@ public class MainActivity extends Activity {
 
         //TEST FICHIERS
         if(isExternalStorageWritable()){
-            File file =getPublicStorageDir("repertoire_videos");
-            initFiles(file);
-            Log.d("FICHIER",file.list()[1]);
+            creerFichier(DirPath.CATEGORIE1_SUB1,"test.txt",this);
         }
 
         //FIN TEST FICHIERS

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -42,23 +43,16 @@ public class Util {
         }
         return false;
     }
-    public static File getPublicStorageDir(String dirName) {
-        // Get the directory for the user's public pictures directory.
-        File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), dirName);
-        if (!file.mkdirs()) {
-            Log.e("Erreur fichier", "Directory not created");
-        }
-        return file;
-    }
-    //getFreeSpace()     comparer les tailles
 
-    public static void initFiles(File dir){
-        File file1 = new File(dir,"cat1");
-        File file2 = new File(dir,"cat2");
 
-        file1.mkdir();
-        file2.mkdir();
+    public static void creerFichier(DirPath repertoire,String nomFichier,Context context){
+        boolean dans_enum=false;
+        DirPath[] tab = DirPath.values();
+        for(int i=0;i<tab.length;i++)
+            if(tab[i].toString()==repertoire.toString())
+                dans_enum=true;
+        if(dans_enum)
+            context.getExternalFilesDir(repertoire.toString()+nomFichier);
 
     }
 
