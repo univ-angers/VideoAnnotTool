@@ -5,12 +5,14 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.content.pm.PackageManager;
+
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -22,9 +24,11 @@ import android.support.v4.content.ContextCompat;
 import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
+
 import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
+import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
-import com.master.info_ua.videoannottool.annotation.AnnotationType;
+
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.Video;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
@@ -59,6 +63,12 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+
+import static com.master.info_ua.videoannottool.util.Util.getFile;
+import static com.master.info_ua.videoannottool.util.Util.parseJSON;
+import static com.master.info_ua.videoannottool.util.Util.isExternalStorageWritable;
+
 
 public class MainActivity extends Activity {
 
@@ -139,13 +149,23 @@ public class MainActivity extends Activity {
             ExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
         }
 
+        //TEST FICHIERS
+        if(isExternalStorageWritable()){
+            File file =getFile(DirPath.CATEGORIE1_SUB1,"test.txt",this);
+        }
+
+        //FIN TEST FICHIERS
+
+
         listViewVideos = (ListView) findViewById(R.id.lv_videos);
 
 
         spinnerCategorie = (Spinner) findViewById(R.id.spinner_cat);
         spinnerSubCategorie = (Spinner) findViewById(R.id.spinner_sub_cat);
 
-        videoList = initVideoList();
+
+            videoList = initVideoList();
+
         videosAdapter = new VideosAdapter(this, videoList);
 
         listViewVideos.setAdapter(videosAdapter);
@@ -420,15 +440,23 @@ public class MainActivity extends Activity {
         });
     }
 
-    //Initialise la liste de vidéos pous la session ( A BUT DE TESTES )
-    public List<Video> initVideoList() {
+    //Initialise la liste de vidéos pous la session ( A BUT DE TESTS )
+    public List<Video> initVideoList()  {
 
         List<Video> videoList = new ArrayList<>(); //Liste de vidéo
-
+        /*
         final VideoAnnotation videoAnnotations1;
         final VideoAnnotation videoAnnotations2;
         final VideoAnnotation videoAnnotations3;
+        */
+        VideoAnnotation videoAnnotations1 = parseJSON("annot_video1.json",this);
 
+        VideoAnnotation videoAnnotations2 = parseJSON("annot_video2.json",this);
+        VideoAnnotation videoAnnotations3 = parseJSON("annot_video3.json",this);
+
+        VideoAnnotation videoAnnotations4 = parseJSON("annot_video4.json",this);
+
+    /*
         //Création des annotations
         Annotation annotation1 = new Annotation("annotation1", null, null, null, AnnotationType.TEXT);
         Annotation annotation2 = new Annotation("annotation2", null, null, null, AnnotationType.TEXT);
@@ -451,19 +479,23 @@ public class MainActivity extends Activity {
         arrayOfAnnotations3.add(annotation1);
 
         //Instanciation des objets d'annotations
+
         videoAnnotations1 = new VideoAnnotation(null, null, arrayOfAnnotations1);
         videoAnnotations2 = new VideoAnnotation(null, null, arrayOfAnnotations2);
         videoAnnotations3 = new VideoAnnotation(null, null, arrayOfAnnotations3);
+        */
 
         //Création d'instances de vidéos
-        Video video1 = new Video("test", null, videoAnnotations1);
-        Video video2 = new Video("test2", null, videoAnnotations2);
-        Video video3 = new Video("nom3", null, videoAnnotations3);
+        Video video1 = new Video("video 1", null, videoAnnotations1);
+        Video video2 = new Video("video 2", null, videoAnnotations2);
+        Video video3 = new Video("video 3", null, videoAnnotations3);
+        Video video4 = new Video("video 4",null, videoAnnotations4);
 
         //Ajout dans la liste
         videoList.add(video1);
         videoList.add(video2);
         videoList.add(video3);
+        videoList.add(video4);
 
         return videoList;
     }
