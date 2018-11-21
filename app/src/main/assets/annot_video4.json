@@ -1,0 +1,90 @@
+{
+  "creationDate": "24-12-2017 12:56:55",
+  "lastModified": "06-09-2015 02:42:41",
+  "annotationList": [
+    {
+      "annotationTitle": "mollit veniam aliquip",
+      "annotationDate": "27-11-2017 21:04:32",
+      "annotationStartTime": 24,
+      "annotationDuration": 7,
+      "annotationType": "AUDIO",
+      "audioFileName": "audio_file_name",
+      "drawFileName": null,
+      "textComment": null,
+      "zoomRate": null,
+      "slowMotionSpeed": null
+    },
+    {
+      "annotationTitle": "minim ex sit",
+      "annotationDate": "06-01-2014 20:07:34",
+      "annotationStartTime": 12,
+      "annotationDuration": 4,
+      "annotationType": "GRAPHIC",
+      "audioFileName": null,
+      "drawFileName": "draw_file_name",
+      "textComment": null,
+      "zoomRate": null,
+      "slowMotionSpeed": null
+    },
+    {
+      "annotationTitle": "laborum et magna",
+      "annotationDate": "09-06-2014 02:21:59",
+      "annotationStartTime": 11,
+      "annotationDuration": 6,
+      "annotationType": "TEXT",
+      "audioFileName": null,
+      "drawFileName": null,
+      "textComment": "Proident enim nostrud ex eu. Laboris Lorem aliquip aute anim reprehenderit elit enim commodo voluptate ea ullamco. Nisi eiusmod occaecat dolor mollit eiusmod esse magna officia reprehenderit sit Lorem amet. Consectetur id commodo do consectetur nisi reprehenderit ut. Anim occaecat ullamco amet et incididunt cupidatat minim ex elit deserunt duis nisi.\r\n",
+      "zoomRate": null,
+      "slowMotionSpeed": null
+    },
+    {
+      "annotationTitle": "fugiat ea amet",
+      "annotationDate": "27-12-2014 23:47:34",
+      "annotationStartTime": 9,
+      "annotationDuration": 10,
+      "annotationType": "TEXT",
+      "audioFileName": null,
+      "drawFileName": null,
+      "textComment": "Sint elit nostrud id consectetur deserunt fugiat qui Lorem sit. Eu proident culpa dolore laboris. Elit culpa ad laboris anim. Eiusmod reprehenderit esse elit ex Lorem tempor elit ullamco veniam magna.\r\n",
+      "zoomRate": null,
+      "slowMotionSpeed": null
+    },
+    {
+      "annotationTitle": "adipisicing ipsum duis",
+      "annotationDate": "19-07-2018 16:49:32",
+      "annotationStartTime": 5,
+      "annotationDuration": 5,
+      "annotationType": "GRAPHIC",
+      "audioFileName": null,
+      "drawFileName": "draw_file_name",
+      "textComment": null,
+      "zoomRate": null,
+      "slowMotionSpeed": null
+    },
+    {
+      "annotationTitle": "cupidatat est non",
+      "annotationDate": "25-01-2014 17:38:55",
+      "annotationStartTime": 17,
+      "annotationDuration": 5,
+      "annotationType": "AUDIO",
+      "audioFileName": "audion_file_name",
+      "drawFileName": null,
+      "textComment": null,
+      "zoomRate": null,
+      "slowMotionSpeed": null
+    },
+    {
+      "annotationTitle": "ex pariatur commodo",
+      "annotationDate": "03-08-2017 06:00:06",
+      "annotationStartTime": 20,
+      "annotationDuration": 6,
+      "annotationType": "TEXT",
+      "audioFileName": null,
+      "drawFileName": null,
+      "textComment": "Eu ad pariatur officia culpa enim. Exercitation quis cupidatat magna cupidatat amet quis consequat magna dolor cupidatat officia. Quis ut labore do ipsum laboris sit consequat tempor commodo est labore. Minim ea occaecat sint proident amet occaecat ullamco Lorem fugiat adipisicing dolore.\r\n",
+      "zoomRate": null,
+      "slowMotionSpeed": null
+    }
+  ]
+}
