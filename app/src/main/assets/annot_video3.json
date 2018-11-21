@@ -1,0 +1,66 @@
+{
+  "creationDate": "14-10-2017 08:15:55",
+  "lastModified": "12-02-2015 20:08:33",
+  "annotationList": [
+    {
+      "annotationTitle": "sunt eiusmod id",
+      "annotationDate": "18-10-2014 23:46:47",
+      "annotationStartTime": 18,
+      "annotationDuration": 2,
+      "annotationType": "GRAPHIC",
+      "audioFileName": null,
+      "drawFileName": "draw_file_name",
+      "textComment": null,
+      "zoomRate": null,
+      "slowMotionSpeed": null
+    },
+    {
+      "annotationTitle": "tempor labore mollit",
+      "annotationDate": "23-09-2015 17:24:27",
+      "annotationStartTime": 9,
+      "annotationDuration": 4,
+      "annotationType": "TEXT",
+      "audioFileName": null,
+      "drawFileName": null,
+      "textComment": "Magna quis ad consectetur deserunt sit non qui. Pariatur incididunt nisi aliqua adipisicing minim minim. Ea commodo anim velit cupidatat occaecat anim. Veniam commodo excepteur Lorem officia pariatur id anim aliquip proident ea duis elit qui. Commodo aute occaecat cillum nisi culpa enim cupidatat. Incididunt veniam laborum fugiat consequat fugiat. Anim minim veniam tempor amet non ea enim minim laboris dolor do est non ullamco.\r\n",
+      "zoomRate": null,
+      "slowMotionSpeed": null
+    },
+    {
+      "annotationTitle": "qui qui et",
+      "annotationDate": "27-06-2014 01:35:31",
+      "annotationStartTime": 14,
+      "annotationDuration": 6,
+      "annotationType": "AUDIO",
+      "audioFileName": "audio_file_name",
+      "drawFileName": null,
+      "textComment": null,
+      "zoomRate": null,
+      "slowMotionSpeed": null
+    },
+    {
+      "annotationTitle": "labore ullamco proident",
+      "annotationDate": "25-04-2017 22:30:26",
+      "annotationStartTime": 5,
+      "annotationDuration": 9,
+      "annotationType": "AUDIO",
+      "audioFileName": "audio_file_name",
+      "drawFileName": null,
+      "textComment": null,
+      "zoomRate": null,
+      "slowMotionSpeed": null
+    },
+    {
+      "annotationTitle": "in officia pariatur",
+      "annotationDate": "02-05-2015 16:17:43",
+      "annotationStartTime": 2,
+      "annotationDuration": 19,
+      "annotationType": "TEXT",
+      "audioFileName": null,
+      "drawFileName": null,
+      "textComment": "Lorem exercitation eiusmod officia sit anim consequat elit ea ullamco aute. Anim adipisicing anim dolore ut cupidatat. Occaecat cupidatat sint aliquip mollit quis Lorem nulla aliqua magna anim duis magna enim sint. Do pariatur ullamco ad voluptate culpa mollit est voluptate.\r\n",
+      "zoomRate": null,
+      "slowMotionSpeed": null
+    }
+  ]
+}
