@@ -30,8 +30,6 @@ public class draw_fragment extends Fragment {
         // Required empty public constructor
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +88,7 @@ public class draw_fragment extends Fragment {
                     drawView.setOnTouchEnable(false);
                     break;
                 case R.id.b_draw_save:
-                    dialogCallback.onCloseDrawDialog();
+                    drawView.enregistrer_image();
                     break;
                 case R.id.b_draw_blue:
                     drawView.setColor("blue");

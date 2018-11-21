@@ -150,4 +150,17 @@ public class DrawView extends View{
         }
     }
 
+    public void enregistrer_image() {
+        saveBitmap();
+        SaveBitmap.saveBitmapImage(context, mBitmap, "testbitmap.png"); // ici mettre un nom unique pour chaque
+        mPath.reset();
+        invalidate();
+    }
+
+    public void saveBitmap(){
+        this.mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        mCanvas = new Canvas(this.mBitmap);
+        mCanvas.drawPath(mPath, mPaint);
+    }
+
 }

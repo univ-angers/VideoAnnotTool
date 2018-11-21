@@ -33,7 +33,6 @@
             </LinearLayout>
 
 
-
             <ListView
                 android:id="@+id/lv_videos"
                 android:layout_width="match_parent"
