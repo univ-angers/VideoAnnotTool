@@ -60,7 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import static com.master.info_ua.videoannottool.util.Util.creerFichier;
+import static com.master.info_ua.videoannottool.util.Util.getFile;
 import static com.master.info_ua.videoannottool.util.Util.parseJSON;
 import static com.master.info_ua.videoannottool.util.Util.isExternalStorageWritable;
 
@@ -141,7 +141,7 @@ public class MainActivity extends Activity {
 
         //TEST FICHIERS
         if(isExternalStorageWritable()){
-            creerFichier(DirPath.CATEGORIE1_SUB1,"test.txt",this);
+            File file =getFile(DirPath.CATEGORIE1_SUB1,"test.txt",this);
         }
 
         //FIN TEST FICHIERS

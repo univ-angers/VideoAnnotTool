@@ -45,14 +45,15 @@ public class Util {
     }
 
 
-    public static void creerFichier(DirPath repertoire,String nomFichier,Context context){
+    public static File getFile(DirPath repertoire,String nomFichier,Context context){
         boolean dans_enum=false;
         DirPath[] tab = DirPath.values();
         for(int i=0;i<tab.length;i++)
             if(tab[i].toString()==repertoire.toString())
                 dans_enum=true;
         if(dans_enum)
-            context.getExternalFilesDir(repertoire.toString()+nomFichier);
+            return context.getExternalFilesDir(repertoire.toString()+nomFichier);
+        else return null;
 
     }
 
