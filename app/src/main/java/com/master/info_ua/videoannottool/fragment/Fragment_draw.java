@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool.annotation_dialog;
+package com.master.info_ua.videoannottool.fragment;
 
 import android.os.Bundle;
 import android.app.Fragment;
@@ -11,7 +11,7 @@ import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
 
 
-public class draw_fragment extends Fragment {
+public class Fragment_draw extends Fragment {
 
     private Button b_clear;
     private Button b_cancel;
@@ -26,7 +26,7 @@ public class draw_fragment extends Fragment {
 
     private DrawView drawView;
 
-    public draw_fragment() {
+    public Fragment_draw() {
         // Required empty public constructor
     }
 
@@ -39,7 +39,7 @@ public class draw_fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.draw_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_draw, container, false);
 
         b_clear = view.findViewById(R.id.b_draw_reset);
         b_clear.setOnClickListener(btnClickListener);

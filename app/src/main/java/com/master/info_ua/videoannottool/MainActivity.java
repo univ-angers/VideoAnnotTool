@@ -3,6 +3,7 @@ package com.master.info_ua.videoannottool;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -45,6 +46,8 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.google.android.exoplayer2.PlaybackParameters;
+import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
+import com.master.info_ua.videoannottool.fragment.Fragment_draw;
 
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -90,19 +93,24 @@ public class MainActivity extends Activity {
     private ImageView SpeedIcon;
 
     private ListView listViewVideos;
-    private ListView listViewAnnotations;
 
     private Spinner spinnerCategorie;
     private Spinner spinnerSubCategorie;
 
     private VideosAdapter videosAdapter;
-    private AnnotationsAdapter annotationsAdapter;
 
     private List<Video> videoList;
 
     private MediaRecorder recorder;
     private String audioName="";
     String videoName = "test"; // a modifié pour aller chercher le nom des video
+
+    private Fragment_draw drawFragment;
+    private Fragment_annotation annotFragment;
+    private static final String FRAGMENT_DRAW_TAG = "FRAGMENT_DRAW_TAG";
+    private static final String FRAGMENT_ANNOT_TAG = "FRAGMENT_ANNOT_TAG";
+    private FragmentManager fragmentManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,14 +140,13 @@ public class MainActivity extends Activity {
         }
 
         listViewVideos = (ListView) findViewById(R.id.lv_videos);
-        listViewAnnotations = (ListView) findViewById(R.id.lv_annotations);
+
 
         spinnerCategorie = (Spinner) findViewById(R.id.spinner_cat);
         spinnerSubCategorie = (Spinner) findViewById(R.id.spinner_sub_cat);
 
         videoList = initVideoList();
         videosAdapter = new VideosAdapter(this, videoList);
-        annotationsAdapter = new AnnotationsAdapter(this, new ArrayList<Annotation>()); //Initilisatisation de la liste d'annotations (vide)
 
         listViewVideos.setAdapter(videosAdapter);
         listViewVideos.setClickable(true);
@@ -147,10 +154,6 @@ public class MainActivity extends Activity {
 
         listViewVideos.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
        // listViewVideos.setSelection(selectedListItem);
-
-        listViewAnnotations.setAdapter(annotationsAdapter);
-        listViewAnnotations.setClickable(true);
-        listViewAnnotations.setOnItemClickListener(annotationItemClickListener);
 
 
         //Spinner catégorie
@@ -192,6 +195,14 @@ public class MainActivity extends Activity {
         slowAnnotBtn.setOnClickListener(btnClickListener);
 
 
+
+        fragmentManager = getFragmentManager();
+        annotFragment = (Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
+
+        if(annotFragment == null){
+            annotFragment = new Fragment_annotation();
+            fragmentManager.beginTransaction().replace(R.id.annotation_menu, annotFragment,FRAGMENT_ANNOT_TAG).commit();
+        }
 
 
     }
@@ -270,10 +281,7 @@ public class MainActivity extends Activity {
 
             Video video = (Video) listViewVideos.getItemAtPosition(position);
 
-            //Mise à jour de la liste
-            annotationsAdapter.clear();
-            annotationsAdapter.addAll(video.getVideoAnnotation().getAnnotationList());
-            annotationsAdapter.notifyDataSetChanged();
+            annotFragment.updateAnnotationListe(video.getVideoAnnotation());
 
             videoName = video.getFileName();
 
@@ -283,22 +291,7 @@ public class MainActivity extends Activity {
         }
     };
 
-    //Listener pour le clic sur la liste d'annotations
 
-    protected AdapterView.OnItemClickListener annotationItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            Annotation annotation = (Annotation) listViewAnnotations.getItemAtPosition(position);
-
-
-            //Exemple affichage d'informations de l'annotation
-            Toast.makeText(getApplicationContext(),"Annotation: "+ annotation.getAnnotationTitle() + " Type: " + annotation.getAnnotationType(),Toast.LENGTH_SHORT).show();
-
-
-
-        }
-    };
 
     public void initExoPlayer() {
         String path = "android.resource://" + getPackageName() + "/" + R.raw.test;
