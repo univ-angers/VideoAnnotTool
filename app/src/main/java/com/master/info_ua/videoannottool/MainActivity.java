@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.pm.PackageManager;
 
 import android.media.MediaRecorder;
@@ -512,9 +513,20 @@ public class MainActivity extends Activity {
                     break;
                 case R.id.graphic_annot_btn:
                     DrawView drawView = (DrawView)findViewById(R.id.draw_view);
-                    drawView.setOnTouchEnable(true);
-
-                    // faire apparaitre le fragment
+                    FragmentTransaction ft = fragmentManager.beginTransaction();
+                    drawFragment =(Fragment_draw) fragmentManager.findFragmentByTag(FRAGMENT_DRAW_TAG);
+                    if (drawFragment == null) {
+                        drawFragment = new Fragment_draw();
+                        ft.add(R.id.annotation_menu,drawFragment,FRAGMENT_DRAW_TAG);
+                        ft.hide(annotFragment);
+                        ft.show(drawFragment);
+                        ft.commit();
+                    }else {
+                        ft.hide(annotFragment);
+                        ft.show(drawFragment);
+                        ft.commit();
+                    }
+                    drawView.setOnTouchEnable(false);
 
                     break;
                 case R.id.slow_mode_annot_btn:
