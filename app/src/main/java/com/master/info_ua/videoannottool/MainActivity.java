@@ -6,35 +6,26 @@ import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.pm.PackageManager;
-
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Spinner;
 
-import android.support.v4.content.ContextCompat;
-
-import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
-import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
-import com.master.info_ua.videoannottool.adapter.VideosAdapter;
-
-import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
-import com.master.info_ua.videoannottool.annotation.DirPath;
-import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
-
-import com.master.info_ua.videoannottool.annotation.Annotation;
-import com.master.info_ua.videoannottool.annotation.Video;
-import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -50,25 +41,26 @@ import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
-import com.google.android.exoplayer2.PlaybackParameters;
+import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
+import com.master.info_ua.videoannottool.adapter.VideosAdapter;
+import com.master.info_ua.videoannottool.annotation.DirPath;
+import com.master.info_ua.videoannottool.annotation.Video;
+import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
+import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
+import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
-
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.Toast;
-
+import com.master.info_ua.videoannottool.util.Util;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-
 import static com.master.info_ua.videoannottool.util.Util.getFile;
-import static com.master.info_ua.videoannottool.util.Util.parseJSON;
 import static com.master.info_ua.videoannottool.util.Util.isExternalStorageWritable;
+import static com.master.info_ua.videoannottool.util.Util.parseJSON;
 
 
 public class MainActivity extends Activity {
@@ -111,16 +103,18 @@ public class MainActivity extends Activity {
     private VideosAdapter videosAdapter;
 
     private List<Video> videoList;
+    private Video currentVideo;
 
-    private MediaRecorder recorder;
-    private String audioName="";
     String videoName = "test"; // a modifié pour aller chercher le nom des video
 
     private Fragment_draw drawFragment;
     private Fragment_annotation annotFragment;
-    private static final String FRAGMENT_DRAW_TAG = "FRAGMENT_DRAW_TAG";
-    private static final String FRAGMENT_ANNOT_TAG = "FRAGMENT_ANNOT_TAG";
+    private static final String FRAGMENT_DRAW_TAG = "drawFragment";
+    private static final String FRAGMENT_ANNOT_TAG = "annotFragment";
+
     private FragmentManager fragmentManager;
+
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 
     @Override
@@ -131,13 +125,12 @@ public class MainActivity extends Activity {
             }
         }
         //Autorisation enregistrement audio
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)!= PackageManager.PERMISSION_GRANTED)
-        {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.RECORD_AUDIO)) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)) {
             } else {
 
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.RECORD_AUDIO},1);
+                        new String[]{Manifest.permission.RECORD_AUDIO}, 1);
             }
         }
 
@@ -151,21 +144,19 @@ public class MainActivity extends Activity {
         }
 
         //TEST FICHIERS
-        if(isExternalStorageWritable()){
-            File file =getFile(DirPath.CATEGORIE1_SUB1,"test.txt",this);
+        if (isExternalStorageWritable()) {
+            File file = getFile(DirPath.CATEGORIE1_SUB1, "test.txt", this);
         }
 
-        //FIN TEST FICHIERS
+
+        listViewVideos = findViewById(R.id.lv_videos);
+
+        spinnerCategorie = findViewById(R.id.spinner_cat);
+        spinnerSubCategorie = findViewById(R.id.spinner_sub_cat);
 
 
-        listViewVideos = (ListView) findViewById(R.id.lv_videos);
-
-
-        spinnerCategorie = (Spinner) findViewById(R.id.spinner_cat);
-        spinnerSubCategorie = (Spinner) findViewById(R.id.spinner_sub_cat);
-
-
-            videoList = initVideoList();
+        videoList = initVideoList();
+        currentVideo = videoList.get(0);
 
         videosAdapter = new VideosAdapter(this, videoList);
 
@@ -174,8 +165,6 @@ public class MainActivity extends Activity {
         listViewVideos.setOnItemClickListener(videoItemClickListener);
 
         listViewVideos.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-       // listViewVideos.setSelection(selectedListItem);
-
 
         //Spinner catégorie
         ArrayList<String> categorieList = new ArrayList<>();
@@ -198,34 +187,39 @@ public class MainActivity extends Activity {
         spinnerSubCategorie.setAdapter(spinnerAdapter2);
 
 
-
         //Listener btn audio_annot_btn
-        audioAnnotBtn= findViewById(R.id.audio_annot_btn);
+        audioAnnotBtn = findViewById(R.id.audio_annot_btn);
         audioAnnotBtn.setOnClickListener(btnClickListener);
 
-        textAnnotBtn= findViewById(R.id.text_annot_btn);
+        textAnnotBtn = findViewById(R.id.text_annot_btn);
         textAnnotBtn.setOnClickListener(btnClickListener);
 
-        graphAnnotBtn= findViewById(R.id.graphic_annot_btn);
+        graphAnnotBtn = findViewById(R.id.graphic_annot_btn);
         graphAnnotBtn.setOnClickListener(btnClickListener);
 
-        zoomAnnotBtn= findViewById(R.id.zoom_mode_annot_btn);
+        zoomAnnotBtn = findViewById(R.id.zoom_mode_annot_btn);
         zoomAnnotBtn.setOnClickListener(btnClickListener);
 
-        slowAnnotBtn= findViewById(R.id.slow_mode_annot_btn);
+        slowAnnotBtn = findViewById(R.id.slow_mode_annot_btn);
         slowAnnotBtn.setOnClickListener(btnClickListener);
-
 
 
         fragmentManager = getFragmentManager();
         annotFragment = (Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
 
-        if(annotFragment == null){
+        if (annotFragment == null) {
             annotFragment = new Fragment_annotation();
-            fragmentManager.beginTransaction().replace(R.id.annotation_menu, annotFragment,FRAGMENT_ANNOT_TAG).commit();
+            fragmentManager.beginTransaction().replace(R.id.annotation_menu, annotFragment, FRAGMENT_ANNOT_TAG).commit();
         }
 
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //Affichage de la liste des annotation de la vidéo courante
+        annotFragment.updateAnnotationList(currentVideo.getVideoAnnotation());
     }
 
 
@@ -253,7 +247,6 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onResume() {
-
         super.onResume();
 
         if (playerView == null) {
@@ -261,7 +254,6 @@ public class MainActivity extends Activity {
             playerView = findViewById(R.id.player_view);
             initFullscreenDialog();
             initFullscreenButton();
-
         }
 
         initSlowButton();
@@ -300,11 +292,11 @@ public class MainActivity extends Activity {
             videosAdapter.setSelectedListItem(position);
             videosAdapter.notifyDataSetChanged();
 
-            Video video = (Video) listViewVideos.getItemAtPosition(position);
+            currentVideo = (Video) listViewVideos.getItemAtPosition(position);
 
-            annotFragment.updateAnnotationListe(video.getVideoAnnotation());
+            annotFragment.updateAnnotationList(currentVideo.getVideoAnnotation());
 
-            videoName = video.getFileName();
+            videoName = currentVideo.getFileName();
 
             player.stop();
 
@@ -313,9 +305,7 @@ public class MainActivity extends Activity {
     };
 
 
-
     public void initExoPlayer() {
-        String path = "android.resource://" + getPackageName() + "/" + R.raw.test;
 
         SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
 
@@ -327,7 +317,6 @@ public class MainActivity extends Activity {
         //2. prepare video source from url
 
         Uri uri = Uri.fromFile(new java.io.File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + File.separator + "Camera" + File.separator + videoName + ".mp4"));
-        //Uri uri = Uri.fromFile(new java.io.File("/sdcard/DCIM/Camera/" + videoName + ".mp4"));
         DataSpec dataSpec = new DataSpec(uri);
         FileDataSource fileDataSource = new FileDataSource();
         try {
@@ -346,17 +335,16 @@ public class MainActivity extends Activity {
         exoPlayerView.setPlayer(player);
         setSpeed(1f);
         player.setPlayWhenReady(false);
-        if(!ExoPlayerRepeat){
+        if (!ExoPlayerRepeat) {
             player.setRepeatMode(Player.REPEAT_MODE_OFF);
-        }
-        else{
+        } else {
             player.setRepeatMode(Player.REPEAT_MODE_ONE);
         }
         player.prepare(videoSource, false, false);
     }
 
-    private void setSpeed(float speed){
-        PlaybackParameters speedParam = new PlaybackParameters(speed,speed);
+    private void setSpeed(float speed) {
+        PlaybackParameters speedParam = new PlaybackParameters(speed, speed);
         player.setPlaybackParameters(speedParam);
     }
 
@@ -376,13 +364,12 @@ public class MainActivity extends Activity {
         RepeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!ExoPlayerRepeat){
+                if (!ExoPlayerRepeat) {
                     // active le mode repeat
                     player.setRepeatMode(Player.REPEAT_MODE_ONE);
                     RepeatIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.repeat_button_on));
                     ExoPlayerRepeat = true;
-                }
-                else{
+                } else {
                     // desactive le mode repeat
                     player.setRepeatMode(Player.REPEAT_MODE_OFF);
                     RepeatIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.repeat_button_off));
@@ -392,20 +379,19 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void initSlowButton(){
+    private void initSlowButton() {
         PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
         SpeedIcon = controlView.findViewById(R.id.exo_speed_icon);
         SpeedButton = controlView.findViewById(R.id.exo_speed_button);
         SpeedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ExoplayerSpeed == 1f){
+                if (ExoplayerSpeed == 1f) {
                     // reduit la vitesse
                     setSpeed(0.5f);
                     SpeedIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.speed_down));
                     ExoplayerSpeed = 0.5f;
-                }
-                else{
+                } else {
                     // augmente la vitesse
                     setSpeed(1f);
                     SpeedIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.speed_up));
@@ -442,55 +428,20 @@ public class MainActivity extends Activity {
     }
 
     //Initialise la liste de vidéos pous la session ( A BUT DE TESTS )
-    public List<Video> initVideoList()  {
+    public List<Video> initVideoList() {
 
         List<Video> videoList = new ArrayList<>(); //Liste de vidéo
-        /*
-        final VideoAnnotation videoAnnotations1;
-        final VideoAnnotation videoAnnotations2;
-        final VideoAnnotation videoAnnotations3;
-        */
-        VideoAnnotation videoAnnotations1 = parseJSON("annot_video1.json",this);
 
-        VideoAnnotation videoAnnotations2 = parseJSON("annot_video2.json",this);
-        VideoAnnotation videoAnnotations3 = parseJSON("annot_video3.json",this);
-
-        VideoAnnotation videoAnnotations4 = parseJSON("annot_video4.json",this);
-
-    /*
-        //Création des annotations
-        Annotation annotation1 = new Annotation("annotation1", null, null, null, AnnotationType.TEXT);
-        Annotation annotation2 = new Annotation("annotation2", null, null, null, AnnotationType.TEXT);
-        Annotation annotation3 = new Annotation("annotation3", null, null, null, AnnotationType.TEXT);
-
-        //Constructionn de listes d'annotation (3 dans ce cas)
-        List<Annotation> arrayOfAnnotations1 = new ArrayList<>();
-        arrayOfAnnotations1.add(annotation1);
-        arrayOfAnnotations1.add(annotation2);
-        arrayOfAnnotations1.add(annotation3);
-
-        List<Annotation> arrayOfAnnotations2 = new ArrayList<>();
-        arrayOfAnnotations2.add(annotation2);
-        arrayOfAnnotations2.add(annotation1);
-        arrayOfAnnotations2.add(annotation3);
-
-        List<Annotation> arrayOfAnnotations3 = new ArrayList<>();
-        arrayOfAnnotations3.add(annotation3);
-        arrayOfAnnotations3.add(annotation2);
-        arrayOfAnnotations3.add(annotation1);
-
-        //Instanciation des objets d'annotations
-
-        videoAnnotations1 = new VideoAnnotation(null, null, arrayOfAnnotations1);
-        videoAnnotations2 = new VideoAnnotation(null, null, arrayOfAnnotations2);
-        videoAnnotations3 = new VideoAnnotation(null, null, arrayOfAnnotations3);
-        */
+        VideoAnnotation videoAnnotations1 = parseJSON(this, "annot_video1.json");
+        VideoAnnotation videoAnnotations2 = parseJSON(this,"annot_video2.json");
+        VideoAnnotation videoAnnotations3 = parseJSON(this,"annot_video3.json");
+        VideoAnnotation videoAnnotations4 = parseJSON(this, "annot_video4.json");
 
         //Création d'instances de vidéos
         Video video1 = new Video("video 1", null, videoAnnotations1);
         Video video2 = new Video("video 2", null, videoAnnotations2);
         Video video3 = new Video("video 3", null, videoAnnotations3);
-        Video video4 = new Video("video 4",null, videoAnnotations4);
+        Video video4 = new Video("video 4", null, videoAnnotations4);
 
         //Ajout dans la liste
         videoList.add(video1);
@@ -501,15 +452,15 @@ public class MainActivity extends Activity {
         return videoList;
     }
 
-    View.OnClickListener btnClickListener=new View.OnClickListener() {
+    View.OnClickListener btnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
 
-            int btnId=view.getId();
-            switch (btnId){
+            int btnId = view.getId();
+            switch (btnId) {
                 case R.id.audio_annot_btn:
-                    DialogRecord dialog= new DialogRecord();
-                    dialog.showDialogRecord(MainActivity.this,videoName);
+                    DialogRecord dialog = new DialogRecord();
+                    dialog.showDialogRecord(MainActivity.this, videoName);
                     break;
                 case R.id.graphic_annot_btn:
                     DrawView drawView = (DrawView)findViewById(R.id.draw_view);

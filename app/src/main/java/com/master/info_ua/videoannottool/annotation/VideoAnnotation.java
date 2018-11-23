@@ -16,8 +16,8 @@ import java.util.Date;
 import java.util.List;
 
 public class VideoAnnotation{
-    private Date creationDate;
-    private Date lastModified;
+    private String creationDate;
+    private String lastModified;
     private List<Annotation> annotationList;
 
 
@@ -26,25 +26,25 @@ public class VideoAnnotation{
 
     }
 
-    public VideoAnnotation(Date creationDate, Date lastModified, List<Annotation> annotationList) {
+    public VideoAnnotation(String creationDate, String lastModified, List<Annotation> annotationList) {
         this.creationDate = creationDate;
         this.lastModified = lastModified;
         this.annotationList = annotationList;
     }
 
-    public Date getCreationDate() {
+    public String getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
 
-    public Date getLastModified() {
+    public String getLastModified() {
         return lastModified;
     }
 
-    public void setLastModified(Date lastModified) {
+    public void setLastModified(String lastModified) {
         this.lastModified = lastModified;
     }
 

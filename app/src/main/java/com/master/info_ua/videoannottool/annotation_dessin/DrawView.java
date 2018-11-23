@@ -13,17 +13,17 @@ import android.view.View;
 
 public class DrawView extends View{
 
-
-    public int width;
-    public int height;
     private Bitmap mBitmap;
     private Canvas mCanvas;
     private Path mPath;
     private Paint mBitmapPaint;
     private Paint mPaint;
 
+    private float mX, mY;
+    private static final float TOUCH_TOLERANCE = 4;
+
     private boolean onTouchEnable; // vrai si on peut dessiner, faux sinon, à activer uniquement quand l'annotation de dessin est enclenchée
-    Context context;
+    private Context context;
 
     public DrawView(Context context) {
         super(context);
@@ -62,9 +62,6 @@ public class DrawView extends View{
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         canvas.drawPath(mPath, mPaint);
     }
-
-    private float mX, mY;
-    private static final float TOUCH_TOLERANCE = 4;
 
     private void touch_start(float x, float y) {
 
