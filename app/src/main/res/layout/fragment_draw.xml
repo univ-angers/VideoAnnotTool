@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragment.Fragment_draw">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <Button
+        android:id="@+id/b_draw_reset"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="effacer" />
+
+    <Button
+        android:id="@+id/b_draw_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="annuler" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/b_draw_blue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Bleu" />
+
+            <Button
+                android:id="@+id/b_draw_yellow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Jaune" />
+
+            <Button
+                android:id="@+id/b_draw_green"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Vert" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/b_draw_red"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="rouge" />
+
+            <Button
+                android:id="@+id/b_draw_black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Noir" />
+
+            <Button
+                android:id="@+id/b_draw_white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Blanc" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/b_draw_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="save" />
+
+</LinearLayout>

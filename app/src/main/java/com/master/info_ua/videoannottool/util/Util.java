@@ -4,23 +4,26 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-import com.master.info_ua.videoannottool.annotation.DirPath;
-import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.master.info_ua.videoannottool.annotation.DirPath;
+import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Writer;
+import java.text.SimpleDateFormat;
 
 
 public class Util {
 
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-
-    public static VideoAnnotation parseJSON(String fichier, Context context) {
+    public static VideoAnnotation parseJSON(Context context, String fichier) {
 
         try {
             InputStream inputStream = context.getAssets().open(fichier);
@@ -36,6 +39,35 @@ public class Util {
         return null;
     }
 
+    /**
+     * Sauvegarde l'objet videoAnnotation dans un fichier Json
+     * @param context
+     * @param videoAnnotation
+     * @param dirPath
+     * @param videoName
+     */
+    public static void saveVideoAnnotaion(Context context, VideoAnnotation videoAnnotation, String dirPath, String videoName){
+
+        Writer writer;
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("dd-MM-yyyy HH:mm:ss");
+        gsonBuilder.serializeNulls(); //Ne pas ignorer les attributs avec valeur null
+        gsonBuilder.setPrettyPrinting();
+        Gson gson = gsonBuilder.create();
+        try {
+            writer = new FileWriter(context.getExternalFilesDir(dirPath).getAbsolutePath()+"/"+videoName+".json");
+            String jsonStr = gson.toJson(videoAnnotation);
+            writer.write(jsonStr);
+            writer.close();
+            Log.e("VANNOT", "Annotation saved ");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ERR_VANNOT", "Unable to save annotation ");
+        }
+    }
+
+
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -43,6 +75,20 @@ public class Util {
         }
         return false;
     }
+
+
+    public static void createDir(Context context){
+        if (isExternalStorageWritable()){
+            File file = context.getExternalFilesDir(DirPath.CATEGORIE1_SUB1.toString());
+            if(file != null){
+                Log.e("SUCCESS", "Directory created: ["+file.getAbsolutePath()+"]");
+            }else{
+                Log.e("FAIL", "Unable to create dir");
+            }
+        }
+    }
+
+
 
     //Vérifie si le repertoire est correcte et crée le fichier à l'endroit demandé et le renvoie sous forme de File
     public static File getFile(DirPath repertoire,String nomFichier,Context context){
@@ -52,9 +98,41 @@ public class Util {
             if(tab[i].toString()==repertoire.toString())
                 dans_enum=true;
         if(dans_enum)
-            return context.getExternalFilesDir(repertoire.toString()+nomFichier);
+            return context.getExternalFilesDir(repertoire.toString()+"/"+nomFichier);
         else return null;
+    }
 
+    /**
+     * Permet de vérifier la validité d'un nom de dossier: existe comme catégorie  pour l'application
+     *
+     * @param path
+     * @return
+     */
+    public static boolean isAppDirectory(String path){
+
+        for (DirPath dirPath : DirPath.values()){
+            if (dirPath.toString().equals(path)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Permet de vérifier la validité d'un nom de dossier: existe comme catégorie avec sous-catégorie pour l'application
+     * @param dirName: nom du répertoire
+     * @param subDirName: nom du sous-repertoire
+     * @return
+     */
+    public static boolean isAppDirectory(String dirName, String subDirName){
+
+        String directory = dirName+File.separator+subDirName;
+        for (DirPath dirPath : DirPath.values()){
+            if (dirPath.toString().equals(directory)){
+                return true;
+            }
+        }
+        return false;
     }
 
 
