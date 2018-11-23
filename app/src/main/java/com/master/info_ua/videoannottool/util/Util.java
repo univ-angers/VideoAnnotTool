@@ -44,7 +44,7 @@ public class Util {
         return false;
     }
 
-
+    //Vérifie si le repertoire est correcte et crée le fichier à l'endroit demandé et le renvoie sous forme de File
     public static File getFile(DirPath repertoire,String nomFichier,Context context){
         boolean dans_enum=false;
         DirPath[] tab = DirPath.values();

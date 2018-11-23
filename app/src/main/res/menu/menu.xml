@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:id="@+id/action_import"
+
+        android:title="Importer une vidéo"
+
+        android:showAsAction="ifRoom"></item>
+
+    <item android:id="@+id/action_partager"
+
+
+        android:title="Partager une vidéo"
+
+        android:showAsAction="ifRoom"></item>
+
+    <item android:id="@+id/action_profil"
+
+
+        android:title="Profil"
+
+        android:showAsAction="ifRoom"></item>
+
+</menu>
