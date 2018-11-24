@@ -62,8 +62,8 @@ import static com.master.info_ua.videoannottool.util.Util.getFile;
 import static com.master.info_ua.videoannottool.util.Util.isExternalStorageWritable;
 import static com.master.info_ua.videoannottool.util.Util.parseJSON;
 
+public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction{
 
-public class MainActivity extends Activity implements Fragment_draw.Listener_fonction{
 
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
@@ -346,7 +346,7 @@ public class MainActivity extends Activity implements Fragment_draw.Listener_fon
         player.prepare(videoSource, false, false);
     }
 
-    private void setSpeed(float speed) {
+    public void setSpeed(float speed) {
         PlaybackParameters speedParam = new PlaybackParameters(speed, speed);
         player.setPlaybackParameters(speedParam);
     }
@@ -495,6 +495,23 @@ public class MainActivity extends Activity implements Fragment_draw.Listener_fon
         }
     };
 
+
+    // methode dans Main activity qui renvoie le moment de la position pour les anotation sous forme de long
+    @Override
+    public long getVideoTime(){
+        return player.getCurrentPosition();
+    }
+
+    //methode pour fixer le curseur de lecture a une position donné sous forme de long
+    public void setVideoTime(long positionCurseur){
+        player.seekTo(positionCurseur);
+    }
+
+    @Override
+    public SimpleExoPlayer getPlayer() {
+        return player; 
+    }
+  
     @Override
     public void resetCanvas() {
         drawView.resetCanvas();
@@ -532,7 +549,6 @@ public class MainActivity extends Activity implements Fragment_draw.Listener_fon
             ft.show(annotFragment);
             ft.commit();
         }
-
     }
 
 }
