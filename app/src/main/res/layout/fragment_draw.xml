@@ -35,21 +35,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Bleu" />
+                android:background="@color/BLUE" />
 
             <Button
                 android:id="@+id/b_draw_yellow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Jaune" />
+                android:background="@color/YELLOW" />
 
             <Button
                 android:id="@+id/b_draw_green"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Vert" />
+                android:background="@color/GREEN" />
         </LinearLayout>
 
         <LinearLayout
@@ -62,19 +62,19 @@
                 android:id="@+id/b_draw_red"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="rouge" />
+                android:background="@color/RED" />
 
             <Button
                 android:id="@+id/b_draw_black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Noir" />
+                android:background="@color/BLACK" />
 
             <Button
                 android:id="@+id/b_draw_white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Blanc" />
+                android:background="@color/WHITE" />
         </LinearLayout>
 
     </LinearLayout>

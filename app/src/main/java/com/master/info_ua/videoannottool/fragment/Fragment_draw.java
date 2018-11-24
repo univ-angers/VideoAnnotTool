@@ -1,6 +1,7 @@
 package com.master.info_ua.videoannottool.fragment;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -25,8 +26,6 @@ public class Fragment_draw extends Fragment {
     private Button b_white;
 
     private Listener_fonction listener;
-
-    private DrawView drawView;
 
     public Fragment_draw() {
         // Required empty public constructor
@@ -70,8 +69,6 @@ public class Fragment_draw extends Fragment {
         b_white = view.findViewById(R.id.b_draw_white);
         b_white.setOnClickListener(btnClickListener);
 
-        drawView = view.findViewById(R.id.draw_view);
-
         return view;
     }
 
@@ -100,27 +97,30 @@ public class Fragment_draw extends Fragment {
                     break;
                 case R.id.b_draw_cancel:
                     listener.setOnTouchEnable(false);
+                    listener.fermer_fragment();
                     break;
                 case R.id.b_draw_save:
+                    listener.setOnTouchEnable(false);
                     listener.enregistrer_image();
+                    listener.fermer_fragment();
                     break;
                 case R.id.b_draw_blue:
-                    listener.setColor("blue");
+                    listener.setColor(Color.BLUE);
                     break;
                 case R.id.b_draw_red:
-                    listener.setColor("red");
+                    listener.setColor(Color.RED);
                     break;
                 case R.id.b_draw_yellow:
-                    listener.setColor("yellow");
+                    listener.setColor(Color.YELLOW);
                     break;
                 case R.id.b_draw_black:
-                    listener.setColor("black");
+                    listener.setColor(Color.BLACK);
                     break;
                 case R.id.b_draw_green:
-                    listener.setColor("green");
+                    listener.setColor(Color.GREEN);
                     break;
                 case R.id.b_draw_white:
-                    listener.setColor("white");
+                    listener.setColor(Color.WHITE);
                     break;
             }
         }
@@ -131,7 +131,8 @@ public class Fragment_draw extends Fragment {
         void resetCanvas();
         void setOnTouchEnable(boolean bool);
         void enregistrer_image();
-        void setColor(String color);
+        void setColor(int color);
+        void fermer_fragment();
     }
 
     @Override

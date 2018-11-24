@@ -63,7 +63,7 @@ import static com.master.info_ua.videoannottool.util.Util.isExternalStorageWrita
 import static com.master.info_ua.videoannottool.util.Util.parseJSON;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements Fragment_draw.Listener_fonction{
 
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
@@ -113,6 +113,8 @@ public class MainActivity extends Activity {
     private static final String FRAGMENT_ANNOT_TAG = "annotFragment";
 
     private FragmentManager fragmentManager;
+
+    private DrawView drawView;
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
@@ -212,6 +214,7 @@ public class MainActivity extends Activity {
             fragmentManager.beginTransaction().replace(R.id.annotation_menu, annotFragment, FRAGMENT_ANNOT_TAG).commit();
         }
 
+        drawView = findViewById(R.id.draw_view);
     }
 
     @Override
@@ -463,7 +466,7 @@ public class MainActivity extends Activity {
                     dialog.showDialogRecord(MainActivity.this, videoName);
                     break;
                 case R.id.graphic_annot_btn:
-                    DrawView drawView = (DrawView)findViewById(R.id.draw_view);
+                    drawView.setOnTouchEnable(true);
                     FragmentTransaction ft = fragmentManager.beginTransaction();
                     drawFragment =(Fragment_draw) fragmentManager.findFragmentByTag(FRAGMENT_DRAW_TAG);
                     if (drawFragment == null) {
@@ -477,7 +480,6 @@ public class MainActivity extends Activity {
                         ft.show(drawFragment);
                         ft.commit();
                     }
-                    drawView.setOnTouchEnable(false);
 
                     break;
                 case R.id.slow_mode_annot_btn:
@@ -492,4 +494,45 @@ public class MainActivity extends Activity {
 
         }
     };
+
+    @Override
+    public void resetCanvas() {
+        drawView.resetCanvas();
+    }
+
+    @Override
+    public void setOnTouchEnable(boolean bool) {
+        drawView.setOnTouchEnable(bool);
+    }
+
+    @Override
+    public void enregistrer_image() {
+        // création de l'annotation
+    }
+
+    @Override
+    public void setColor(int color) {
+        drawView.setColor(color);
+    }
+
+    @Override
+    public void fermer_fragment(){
+
+        drawView.resetCanvas();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        annotFragment =(Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
+        if (annotFragment == null) {
+            annotFragment = new Fragment_annotation();
+            ft.add(R.id.annotation_menu,annotFragment,FRAGMENT_ANNOT_TAG);
+            ft.hide(drawFragment);
+            ft.show(annotFragment);
+            ft.commit();
+        }else {
+            ft.hide(drawFragment);
+            ft.show(annotFragment);
+            ft.commit();
+        }
+
+    }
+
 }
