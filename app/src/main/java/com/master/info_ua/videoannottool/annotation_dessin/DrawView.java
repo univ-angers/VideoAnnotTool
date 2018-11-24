@@ -19,6 +19,8 @@ public class DrawView extends View{
     private Paint mBitmapPaint;
     private Paint mPaint;
 
+    private int lineColor;
+
     private float mX, mY;
     private static final float TOUCH_TOLERANCE = 4;
 
@@ -35,14 +37,18 @@ public class DrawView extends View{
 
         this.context = context;
 
+        lineColor = Color.RED;
+
         mPath = new Path();
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.RED);
+        mPaint.setColor(lineColor);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.MITER);
         mPaint.setStrokeWidth(4f);
+
+
 
         onTouchEnable = false;
     }
@@ -123,28 +129,8 @@ public class DrawView extends View{
         onTouchEnable = value;
     }
 
-    public void setColor(String color){
-
-        switch(color){
-            case "red" :
-                mPaint.setColor(Color.RED);
-                break;
-            case "blue" :
-                mPaint.setColor(Color.BLUE);
-                break;
-            case "green" :
-                mPaint.setColor(Color.GREEN);
-                break;
-            case "yellow" :
-                mPaint.setColor(Color.YELLOW);
-                break;
-            case "black" :
-                mPaint.setColor(Color.BLACK);
-                break;
-            case "white" :
-                mPaint.setColor(Color.WHITE);
-                break;
-        }
+    public void setColor(int color){
+        mPaint.setColor(color);
     }
 
     public void enregistrer_image() {

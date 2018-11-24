@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -61,8 +62,8 @@ import static com.master.info_ua.videoannottool.util.Util.getFile;
 import static com.master.info_ua.videoannottool.util.Util.isExternalStorageWritable;
 import static com.master.info_ua.videoannottool.util.Util.parseJSON;
 
+public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction{
 
-public class MainActivity extends Activity implements Ecouteur{
 
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
@@ -112,6 +113,8 @@ public class MainActivity extends Activity implements Ecouteur{
     private static final String FRAGMENT_ANNOT_TAG = "annotFragment";
 
     private FragmentManager fragmentManager;
+
+    private DrawView drawView;
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
@@ -211,6 +214,7 @@ public class MainActivity extends Activity implements Ecouteur{
             fragmentManager.beginTransaction().replace(R.id.annotation_menu, annotFragment, FRAGMENT_ANNOT_TAG).commit();
         }
 
+        drawView = findViewById(R.id.draw_view);
     }
 
     @Override
@@ -462,10 +466,20 @@ public class MainActivity extends Activity implements Ecouteur{
                     dialog.showDialogRecord(MainActivity.this, videoName);
                     break;
                 case R.id.graphic_annot_btn:
-                    DrawView drawView = (DrawView)findViewById(R.id.draw_view);
                     drawView.setOnTouchEnable(true);
-
-                    // faire apparaitre le fragment
+                    FragmentTransaction ft = fragmentManager.beginTransaction();
+                    drawFragment =(Fragment_draw) fragmentManager.findFragmentByTag(FRAGMENT_DRAW_TAG);
+                    if (drawFragment == null) {
+                        drawFragment = new Fragment_draw();
+                        ft.add(R.id.annotation_menu,drawFragment,FRAGMENT_DRAW_TAG);
+                        ft.hide(annotFragment);
+                        ft.show(drawFragment);
+                        ft.commit();
+                    }else {
+                        ft.hide(annotFragment);
+                        ft.show(drawFragment);
+                        ft.commit();
+                    }
 
                     break;
                 case R.id.slow_mode_annot_btn:
@@ -481,6 +495,7 @@ public class MainActivity extends Activity implements Ecouteur{
         }
     };
 
+
     // methode dans Main activity qui renvoie le moment de la position pour les anotation sous forme de long
     @Override
     public long getVideoTime(){
@@ -494,7 +509,46 @@ public class MainActivity extends Activity implements Ecouteur{
 
     @Override
     public SimpleExoPlayer getPlayer() {
-        return player;
+        return player; 
+    }
+  
+    @Override
+    public void resetCanvas() {
+        drawView.resetCanvas();
+    }
+
+    @Override
+    public void setOnTouchEnable(boolean bool) {
+        drawView.setOnTouchEnable(bool);
+    }
+
+    @Override
+    public void enregistrer_image() {
+        // création de l'annotation
+    }
+
+    @Override
+    public void setColor(int color) {
+        drawView.setColor(color);
+    }
+
+    @Override
+    public void fermer_fragment(){
+
+        drawView.resetCanvas();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        annotFragment =(Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
+        if (annotFragment == null) {
+            annotFragment = new Fragment_annotation();
+            ft.add(R.id.annotation_menu,annotFragment,FRAGMENT_ANNOT_TAG);
+            ft.hide(drawFragment);
+            ft.show(annotFragment);
+            ft.commit();
+        }else {
+            ft.hide(drawFragment);
+            ft.show(annotFragment);
+            ft.commit();
+        }
     }
 
 }
