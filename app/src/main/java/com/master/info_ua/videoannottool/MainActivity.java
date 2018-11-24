@@ -62,7 +62,7 @@ import static com.master.info_ua.videoannottool.util.Util.isExternalStorageWrita
 import static com.master.info_ua.videoannottool.util.Util.parseJSON;
 
 
-public class MainActivity extends Activity implements Ecouteur {
+public class MainActivity extends Activity {
 
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
@@ -342,7 +342,7 @@ public class MainActivity extends Activity implements Ecouteur {
         player.prepare(videoSource, false, false);
     }
 
-    public void setSpeed(float speed) {
+    private void setSpeed(float speed) {
         PlaybackParameters speedParam = new PlaybackParameters(speed, speed);
         player.setPlaybackParameters(speedParam);
     }
@@ -449,22 +449,6 @@ public class MainActivity extends Activity implements Ecouteur {
         videoList.add(video4);
 
         return videoList;
-    }
-
-    // methode dans Main activity qui renvoie le moment de la position pour les anotation sous forme de long
-    @Override
-    public long getVideoTime(){
-        return player.getCurrentPosition();
-    }
-
-    //methode pour fixer le curseur de lecture a une position donné sous forme de long
-    public void setVideoTime(long positionCurseur){
-        player.seekTo(positionCurseur);
-    }
-
-    @Override
-    public SimpleExoPlayer getPlayer() {
-        return player;
     }
 
     View.OnClickListener btnClickListener = new View.OnClickListener() {

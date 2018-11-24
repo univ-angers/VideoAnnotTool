@@ -1,24 +1,20 @@
 package com.master.info_ua.videoannottool.annotation;
 
-import android.content.Context;
-
 import java.io.Serializable;
 import java.util.Date;
-
-import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 
 public class Annotation implements Serializable {
 
     private String annotationTitle;
     private Date annotationDate;
-    private long annotationStartTime;
-    private long annotationDuration;
+    private Integer annotationStartTime;
+    private Integer annotationDuration;
     private AnnotationType annotationType;
     private String audioFileName;
     private String  drawFileName;
     private String textComment;
     private Integer zoomRate;
-    private float slowMotionSpeed;
+    private Integer slowMotionSpeed;
 
     public Annotation(String annotationTitle) {
         this.annotationTitle = annotationTitle;
@@ -64,19 +60,19 @@ public class Annotation implements Serializable {
         this.annotationDate = annotationDate;
     }
 
-    public long getAnnotationStartTime() {
+    public Integer getAnnotationStartTime() {
         return annotationStartTime;
     }
 
-    public void setAnnotationStartTime(long annotationStartTime) {
+    public void setAnnotationStartTime(Integer annotationStartTime) {
         this.annotationStartTime = annotationStartTime;
     }
 
-    public long getAnnotationDuration() {
+    public Integer getAnnotationDuration() {
         return annotationDuration;
     }
 
-    public void setAnnotationDuration(long annotationDuration) {
+    public void setAnnotationDuration(Integer annotationDuration) {
         this.annotationDuration = annotationDuration;
     }
 
@@ -120,11 +116,12 @@ public class Annotation implements Serializable {
         this.zoomRate = zoomRate;
     }
 
-    public float getSlowMotionSpeed() {
+    public Integer getSlowMotionSpeed() {
         return slowMotionSpeed;
     }
 
-    public void setSlowMotionSpeed(float slowMotionSpeed) {
+    public void setSlowMotionSpeed(Integer slowMotionSpeed) {
         this.slowMotionSpeed = slowMotionSpeed;
     }
+
 }
