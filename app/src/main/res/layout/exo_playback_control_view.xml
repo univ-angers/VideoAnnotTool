@@ -24,6 +24,7 @@
             android:id="@+id/exo_speed_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:id="@+id/exo_speed_icon"
                 android:layout_width="wrap_content"
@@ -31,14 +32,30 @@
                 android:layout_gravity="right"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                android:src="@drawable/speed_up" />
+                android:src="@drawable/speed_up"
+                android:layout_marginLeft="25px"
+                android:layout_marginRight="25px"
+                android:layout_marginTop="25px"
+                android:layout_marginBottom="25px"/>
         </FrameLayout>
 
-        <ImageButton android:id="@id/exo_play"
-            style="@style/ExoMediaButton.Play"/>
-
-        <ImageButton android:id="@id/exo_pause"
-            style="@style/ExoMediaButton.Pause"/>
+        <FrameLayout
+            android:id="@+id/exo_play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/exo_play_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/exo_controls_play"
+                android:layout_marginLeft="25px"
+                android:layout_marginRight="25px"
+                android:layout_marginTop="25px"
+                android:layout_marginBottom="25px"/>
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/exo_repeat_button"
@@ -51,7 +68,11 @@
                 android:layout_gravity="right"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                android:src="@drawable/repeat_button_off" />
+                android:src="@drawable/repeat_button_off"
+                android:layout_marginLeft="25px"
+                android:layout_marginRight="25px"
+                android:layout_marginTop="25px"
+                android:layout_marginBottom="25px" />
         </FrameLayout>
 
         <ImageButton android:id="@id/exo_next"
