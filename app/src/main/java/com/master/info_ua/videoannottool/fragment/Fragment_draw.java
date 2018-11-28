@@ -1,5 +1,7 @@
 package com.master.info_ua.videoannottool.fragment;
 
+import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,8 +25,7 @@ public class Fragment_draw extends Fragment {
     private Button b_green;
     private Button b_white;
 
-
-    private DrawView drawView;
+    private Listener_fonction listener;
 
     public Fragment_draw() {
         // Required empty public constructor
@@ -68,11 +69,21 @@ public class Fragment_draw extends Fragment {
         b_white = view.findViewById(R.id.b_draw_white);
         b_white.setOnClickListener(btnClickListener);
 
-        drawView = view.findViewById(R.id.draw_view);
-
         return view;
     }
 
+    @Override
+    public void onAttach(Activity context) {
+        super.onAttach(context);
+
+        if (context instanceof Listener_fonction){
+            listener = (Listener_fonction) context;
+        }
+        else {
+            throw new ClassCastException(context.toString()
+                    + " must implemenet MyListFragment.OnItemSelectedListener");
+        }
+    }
     //Listener des boutons
     View.OnClickListener btnClickListener = new View.OnClickListener() {
         @Override
@@ -82,33 +93,51 @@ public class Fragment_draw extends Fragment {
 
             switch (btnId){
                 case R.id.b_draw_reset:
-                    drawView.resetCanvas();
+                    listener.resetCanvas();
                     break;
                 case R.id.b_draw_cancel:
-                    drawView.setOnTouchEnable(false);
+                    listener.setOnTouchEnable(false);
+                    listener.fermer_fragment();
                     break;
                 case R.id.b_draw_save:
-                    drawView.enregistrer_image();
+                    listener.setOnTouchEnable(false);
+                    listener.enregistrer_image();
+                    listener.fermer_fragment();
                     break;
                 case R.id.b_draw_blue:
-                    drawView.setColor("blue");
+                    listener.setColor(Color.BLUE);
                     break;
                 case R.id.b_draw_red:
-                    drawView.setColor("red");
+                    listener.setColor(Color.RED);
                     break;
                 case R.id.b_draw_yellow:
-                    drawView.setColor("yellow");
+                    listener.setColor(Color.YELLOW);
                     break;
                 case R.id.b_draw_black:
-                    drawView.setColor("black");
+                    listener.setColor(Color.BLACK);
                     break;
                 case R.id.b_draw_green:
-                    drawView.setColor("green");
+                    listener.setColor(Color.GREEN);
                     break;
                 case R.id.b_draw_white:
-                    drawView.setColor("white");
+                    listener.setColor(Color.WHITE);
                     break;
             }
         }
     };
+
+    public interface Listener_fonction
+    {
+        void resetCanvas();
+        void setOnTouchEnable(boolean bool);
+        void enregistrer_image();
+        void setColor(int color);
+        void fermer_fragment();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
 }
