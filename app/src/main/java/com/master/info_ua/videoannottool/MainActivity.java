@@ -47,7 +47,8 @@ import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation.Video;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
-import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
+import com.master.info_ua.videoannottool.annotation_audio.DialogRecord;
+import com.master.info_ua.videoannottool.annotation_texte.DialogTextAnnot;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
 import com.master.info_ua.videoannottool.util.Util;
@@ -489,6 +490,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                 case R.id.slow_mode_annot_btn:
                     break;
                 case R.id.text_annot_btn:
+                    DialogTextAnnot dialogtext = new DialogTextAnnot();
+                    dialogtext.showDialogText(MainActivity.this);
                     break;
                 case R.id.zoom_mode_annot_btn:
                     break;
