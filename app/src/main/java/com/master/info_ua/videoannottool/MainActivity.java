@@ -43,6 +43,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
+import com.master.info_ua.videoannottool.annotation.ControlerAnnotation;
 import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation.Video;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
@@ -92,9 +93,14 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private boolean ExoPlayerRepeat = false;
     private FrameLayout RepeatButton;
     private ImageView RepeatIcon;
+
     private float ExoplayerSpeed = 1f;
     private FrameLayout SpeedButton;
     private ImageView SpeedIcon;
+
+    private boolean ExoplayerPlay = false;
+    private FrameLayout PlayButton;
+    private ImageView PlayIcon;
 
     private ListView listViewVideos;
 
@@ -119,6 +125,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
+    private Thread ControleurThread;
+    private ControlerAnnotation controlerAnnotation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,6 +227,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
         // il faut mettre la visibilité a GONE pour pouvoir cliquer sur la vidéo, la visibilitè de la vue est rétablie en lancant la saisie d'une annotation
         drawView.setVisibility(View.GONE);
+
+        controlerAnnotation = new ControlerAnnotation(this,this,currentVideo.getVideoAnnotation());
     }
 
     @Override
@@ -266,6 +276,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         initSlowButton();
         initExoPlayer();
         initRepeatButton();
+        initPlayButton();
 
         if (ExoPlayerFullscreen) {
             ((ViewGroup) playerView.getParent()).removeView(playerView);
@@ -403,6 +414,32 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     setSpeed(1f);
                     SpeedIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.speed_up));
                     ExoplayerSpeed = 1f;
+                }
+            }
+        });
+    }
+
+    private void initPlayButton() {
+        PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
+        PlayIcon = controlView.findViewById(R.id.exo_play_icon);
+        PlayButton = controlView.findViewById(R.id.exo_play_button);
+        PlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ExoplayerPlay == false) {
+                    // lance la video
+                    PlayIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
+                    ExoplayerPlay = true;
+                    controlerAnnotation.setLast_pos(0);
+
+                    player.setPlayWhenReady(true);
+                    new Thread(controlerAnnotation).start();
+                } else {
+                    // augmente la vitesse
+                    PlayIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+                    ExoplayerPlay = false;
+                    player.setPlayWhenReady(false);
+                    controlerAnnotation.cancel();
                 }
             }
         });
