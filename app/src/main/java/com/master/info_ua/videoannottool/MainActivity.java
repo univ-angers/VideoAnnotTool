@@ -215,6 +215,9 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         }
 
         drawView = findViewById(R.id.draw_view);
+
+        // il faut mettre la visibilité a GONE pour pouvoir cliquer sur la vidéo, la visibilitè de la vue est rétablie en lancant la saisie d'une annotation
+        drawView.setVisibility(View.GONE);
     }
 
     @Override
@@ -466,6 +469,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     dialog.showDialogRecord(MainActivity.this, videoName);
                     break;
                 case R.id.graphic_annot_btn:
+                    drawView.setVisibility(View.VISIBLE);
                     drawView.setOnTouchEnable(true);
                     FragmentTransaction ft = fragmentManager.beginTransaction();
                     drawFragment =(Fragment_draw) fragmentManager.findFragmentByTag(FRAGMENT_DRAW_TAG);
@@ -549,6 +553,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             ft.show(annotFragment);
             ft.commit();
         }
-    }
+
+        drawView.setVisibility(View.GONE);
+        }
 
 }
