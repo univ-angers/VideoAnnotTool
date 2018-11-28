@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool.annotation_dialog;
+package com.master.info_ua.videoannottool.annotation_audio;
 
 
 import android.app.Dialog;
@@ -30,7 +30,7 @@ public class DialogRecord {
 
         dialog.setContentView(R.layout.boite_dialog_record);
         dialog.setCancelable(false);
-        dialog.setTitle(R.string.TextDialogRecord);
+        dialog.setTitle(R.string.TitleDialogRecord);
         final Button btnstart =  dialog.findViewById(R.id.btnStartRecord);
         final Button btnstop =  dialog.findViewById(R.id.btnStopRecord);
         final Button btnlisten = dialog.findViewById(R.id.btnListenRecord);
