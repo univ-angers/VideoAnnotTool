@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -59,6 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 import static com.master.info_ua.videoannottool.util.Util.getFile;
 import static com.master.info_ua.videoannottool.util.Util.isExternalStorageWritable;
@@ -127,9 +129,11 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private Thread ControleurThread;
     private ControlerAnnotation controlerAnnotation;
+    private Handler mainHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
@@ -228,7 +232,9 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         // il faut mettre la visibilité a GONE pour pouvoir cliquer sur la vidéo, la visibilitè de la vue est rétablie en lancant la saisie d'une annotation
         drawView.setVisibility(View.GONE);
 
-        controlerAnnotation = new ControlerAnnotation(this,this,currentVideo.getVideoAnnotation());
+        mainHandler = new Handler(getApplicationContext().getMainLooper());
+
+        controlerAnnotation = new ControlerAnnotation(this,this,currentVideo.getVideoAnnotation(),mainHandler);
     }
 
     @Override
@@ -482,8 +488,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         VideoAnnotation videoAnnotations4 = parseJSON(this, "annot_video4.json");
 
         //Création d'instances de vidéos
-        Video video1 = new Video("video 1", null, videoAnnotations1);
-        Video video2 = new Video("video 2", null, videoAnnotations2);
+        Video video1 = new Video("test", null, videoAnnotations1);
+        Video video2 = new Video("test2", null, videoAnnotations2);
         Video video3 = new Video("video 3", null, videoAnnotations3);
         Video video4 = new Video("video 4", null, videoAnnotations4);
 
