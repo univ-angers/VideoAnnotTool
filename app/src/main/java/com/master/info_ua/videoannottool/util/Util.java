@@ -10,6 +10,7 @@ import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +24,7 @@ public class Util {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-    public static VideoAnnotation parseJSON(Context context, String fichier) {
+    public static VideoAnnotation parseJSONAssets(Context context, String fichier) {
 
         try {
             InputStream inputStream = context.getAssets().open(fichier);
@@ -39,6 +40,27 @@ public class Util {
         return null;
     }
 
+    public static VideoAnnotation parseJSON(Context context,String dirName, String fileName) {
+
+        try {
+            File file = context.getExternalFilesDir(dirName+"/"+fileName);
+            FileInputStream fileInputStream = new FileInputStream(file);
+
+            Reader reader = new InputStreamReader(fileInputStream);
+            Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
+            VideoAnnotation videoAnnotation = gson.fromJson(reader, VideoAnnotation.class);
+                Log.d("ERR_JSON", "Lecture JSON OK ");
+            return videoAnnotation;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ERR_JSON", "ERREUR Lecture JSON ");
+
+        }
+        return null;
+    }
+
+
     /**
      * Sauvegarde l'objet videoAnnotation dans un fichier Json
      * @param context
@@ -46,25 +68,32 @@ public class Util {
      * @param dirPath
      * @param videoName
      */
-    public static void saveVideoAnnotaion(Context context, VideoAnnotation videoAnnotation, String dirPath, String videoName){
+    public static void saveVideoAnnotation(Context context, VideoAnnotation videoAnnotation, String dirPath, String videoName){
+        if(isAppDirectory(dirPath)) {
+            Writer writer;
 
-        Writer writer;
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.setDateFormat("dd-MM-yyyy HH:mm:ss");
+            gsonBuilder.serializeNulls(); //Ne pas ignorer les attributs avec valeur null
+            gsonBuilder.setPrettyPrinting();
+            Gson gson = gsonBuilder.create();
+            try {
+                File file = new File(context.getExternalFilesDir(dirPath + "/" + videoName),videoName + ".json");
 
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setDateFormat("dd-MM-yyyy HH:mm:ss");
-        gsonBuilder.serializeNulls(); //Ne pas ignorer les attributs avec valeur null
-        gsonBuilder.setPrettyPrinting();
-        Gson gson = gsonBuilder.create();
-        try {
-            writer = new FileWriter(context.getExternalFilesDir(dirPath).getAbsolutePath()+"/"+videoName+".json");
-            String jsonStr = gson.toJson(videoAnnotation);
-            writer.write(jsonStr);
-            writer.close();
-            Log.e("VANNOT", "Annotation saved ");
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("ERR_VANNOT", "Unable to save annotation ");
-        }
+
+                writer = new FileWriter(file );
+                Log.d("VANNOT", "Annotation saved TEST"+ file);
+
+                String jsonStr = gson.toJson(videoAnnotation);
+                writer.write(jsonStr);
+                writer.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("ERR_VANNOT", "Unable to save annotation ");
+            }
+        }else
+            Log.d("ERR_REP","chemin du repertoire erroné");
     }
 
 
@@ -91,14 +120,14 @@ public class Util {
 
 
     //Vérifie si le repertoire est correcte et crée le fichier à l'endroit demandé et le renvoie sous forme de File
-    public static File getFile(DirPath repertoire,String nomFichier,Context context){
+    public static File getFile(Context context,String repertoire,String nomFichier){
         boolean dans_enum=false;
         DirPath[] tab = DirPath.values();
         for(int i=0;i<tab.length;i++)
-            if(tab[i].toString()==repertoire.toString())
+            if(tab[i].toString()==repertoire)
                 dans_enum=true;
         if(dans_enum)
-            return context.getExternalFilesDir(repertoire.toString()+"/"+nomFichier);
+            return context.getExternalFilesDir(repertoire+"/"+nomFichier);
         else return null;
     }
 

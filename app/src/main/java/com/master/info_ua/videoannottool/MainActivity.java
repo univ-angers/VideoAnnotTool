@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -52,17 +53,17 @@ import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
 import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
-import com.master.info_ua.videoannottool.util.Util;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.master.info_ua.videoannottool.util.Util.getFile;
 import static com.master.info_ua.videoannottool.util.Util.isExternalStorageWritable;
 import static com.master.info_ua.videoannottool.util.Util.parseJSON;
+import static com.master.info_ua.videoannottool.util.Util.parseJSONAssets;
+import static com.master.info_ua.videoannottool.util.Util.saveVideoAnnotation;
 
 public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction{
 
@@ -106,6 +107,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private List<Video> videoList;
     private Video currentVideo;
+    private VideoAnnotation currentVideoAnnotation;
 
     String videoName = "test"; // a modifié pour aller chercher le nom des video
 
@@ -147,10 +149,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             ExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
         }
 
-        //TEST FICHIERS
-        if (isExternalStorageWritable()) {
-            File file = getFile(DirPath.CATEGORIE1_SUB1, "test.txt", this);
-        }
+
 
 
         listViewVideos = findViewById(R.id.lv_videos);
@@ -161,6 +160,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
         videoList = initVideoList();
         currentVideo = videoList.get(0);
+        currentVideoAnnotation=currentVideo.getVideoAnnotation();
 
         videosAdapter = new VideosAdapter(this, videoList);
 
@@ -171,22 +171,42 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         listViewVideos.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         //Spinner catégorie
-        ArrayList<String> categorieList = new ArrayList<>();
-        categorieList.add("Categorie");
-        categorieList.add("item1");
-        categorieList.add("item2");
 
+        ArrayList<String> categorieList = new ArrayList<>();
+        categorieList.add("Catégorie");
+        categorieList.add(DirPath.CATEGORIE1.toString());
+        categorieList.add(DirPath.CATEGORIE2.toString());
+        categorieList.add(DirPath.CATEGORIE3.toString());
+        categorieList.add(DirPath.CATEGORIE4.toString());
+
+        //Adaptateur et listener
         ArrayAdapter<String> spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategorie.setAdapter(spinnerAdapter);
+        /*
+        spinnerCategorie.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                 //Toast.makeText(MainActivity.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //Another interface callback
+            }
+        });
+        */
 
         //Spinner sous-catégorie
-        ArrayList<String> spinnerList2 = new ArrayList<>();
-        spinnerList2.add("Sous-categorie");
-        spinnerList2.add("item1");
-        spinnerList2.add("item2");
 
-        ArrayAdapter<String> spinnerAdapter2 = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, spinnerList2);
+        ArrayList<String> sousCategorieList = new ArrayList<>();
+        sousCategorieList.add("Sous-Catégorie");
+        sousCategorieList.add(DirPath.CATEGORIE1_SUB1.toString().substring(11));
+        sousCategorieList.add(DirPath.CATEGORIE1_SUB2.toString().substring(11));
+        sousCategorieList.add(DirPath.CATEGORIE1_SUB3.toString().substring(11));
+        sousCategorieList.add(DirPath.CATEGORIE1_SUB4.toString().substring(11));
+
+        ArrayAdapter<String> spinnerAdapter2 = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, sousCategorieList);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubCategorie.setAdapter(spinnerAdapter2);
 
@@ -224,13 +244,33 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         super.onStart();
 
         //Affichage de la liste des annotation de la vidéo courante
-        annotFragment.updateAnnotationList(currentVideo.getVideoAnnotation());
+        annotFragment.updateAnnotationList(currentVideoAnnotation);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        Dialog dialog = new Dialog(this);
+        switch (item.getItemId()) {
+            case R.id.action_import:
+                dialog.setContentView(R.layout.boite_dialog_import);
+                dialog.show();
+                return true;
+            case R.id.action_share:
+                dialog.setContentView(R.layout.boite_dialog_share);
+                dialog.show();
+                return true;
+            case R.id.action_profile:
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -302,11 +342,16 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             videosAdapter.setSelectedListItem(position);
             videosAdapter.notifyDataSetChanged();
 
-            currentVideo = (Video) listViewVideos.getItemAtPosition(position);
+            //Sauvegarde de currentVideoAnnotation dans le fichier json
+            saveVideoAnnotation(MainActivity.this,currentVideoAnnotation,currentVideo.getPath(),currentVideo.getFileName()+".json");
 
-            annotFragment.updateAnnotationList(currentVideo.getVideoAnnotation());
+            currentVideo = (Video) listViewVideos.getItemAtPosition(position);
+            currentVideoAnnotation=currentVideo.getVideoAnnotation();
+
+            annotFragment.updateAnnotationList(currentVideoAnnotation);
 
             videoName = currentVideo.getFileName();
+
 
             player.stop();
 
@@ -440,24 +485,36 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     //Initialise la liste de vidéos pous la session ( A BUT DE TESTS )
     public List<Video> initVideoList() {
 
+
         List<Video> videoList = new ArrayList<>(); //Liste de vidéo
 
-        VideoAnnotation videoAnnotations1 = parseJSON(this, "annot_video1.json");
-        VideoAnnotation videoAnnotations2 = parseJSON(this,"annot_video2.json");
-        VideoAnnotation videoAnnotations3 = parseJSON(this,"annot_video3.json");
-        VideoAnnotation videoAnnotations4 = parseJSON(this, "annot_video4.json");
+        VideoAnnotation videoAnnotations1 = parseJSONAssets(this, "annot_video1.json");
+        VideoAnnotation videoAnnotations2 = parseJSONAssets(this,"annot_video2.json");
+        VideoAnnotation videoAnnotations3 = parseJSONAssets(this,"annot_video3.json");
+        VideoAnnotation videoAnnotations4 = parseJSONAssets(this, "annot_video4.json");
+
+        saveVideoAnnotation(this,videoAnnotations1,DirPath.CATEGORIE1_SUB3.toString(),"video1");
+
+        //File fileTest = getFile(DirPath.CATEGORIE1_SUB3,"video1.json",this);
+        VideoAnnotation videoAnnotations5 =parseJSONAssets(this, "annot_video1.json");;
+       // VideoAnnotation videoAnnotations5 = parseJSON(this,DirPath.CATEGORIE1_SUB3.toString()+"/video1","video1.json");
+
 
         //Création d'instances de vidéos
-        Video video1 = new Video("video 1", null, videoAnnotations1);
-        Video video2 = new Video("video 2", null, videoAnnotations2);
-        Video video3 = new Video("video 3", null, videoAnnotations3);
-        Video video4 = new Video("video 4", null, videoAnnotations4);
+        Video video1 = new Video("video1", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations1);
+        Video video2 = new Video("video2", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations2);
+        Video video3 = new Video("video3", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations3);
+        Video video4 = new Video("video4", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations4);
+        Video video5 = new Video("video5", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations5);
+
 
         //Ajout dans la liste
         videoList.add(video1);
         videoList.add(video2);
         videoList.add(video3);
         videoList.add(video4);
+        videoList.add(video5);
+
 
         return videoList;
     }
