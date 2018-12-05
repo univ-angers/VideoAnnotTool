@@ -46,11 +46,13 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
+import com.master.info_ua.videoannottool.annotation.ControlerAnnotation;
 import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation.Video;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
-import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
+import com.master.info_ua.videoannottool.annotation_audio.DialogRecord;
+import com.master.info_ua.videoannottool.annotation_texte.DialogTextAnnot;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
 
@@ -94,9 +96,14 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private boolean ExoPlayerRepeat = false;
     private FrameLayout RepeatButton;
     private ImageView RepeatIcon;
+
     private float ExoplayerSpeed = 1f;
     private FrameLayout SpeedButton;
     private ImageView SpeedIcon;
+
+    private boolean ExoplayerPlay = false;
+    private FrameLayout PlayButton;
+    private ImageView PlayIcon;
 
     private ListView listViewVideos;
 
@@ -122,6 +129,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
+    private Thread ControleurThread;
+    private ControlerAnnotation controlerAnnotation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,6 +246,11 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         }
 
         drawView = findViewById(R.id.draw_view);
+
+        // il faut mettre la visibilité a GONE pour pouvoir cliquer sur la vidéo, la visibilitè de la vue est rétablie en lancant la saisie d'une annotation
+        drawView.setVisibility(View.GONE);
+
+        controlerAnnotation = new ControlerAnnotation(this,this,currentVideo.getVideoAnnotation());
     }
 
     @Override
@@ -309,6 +323,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         initSlowButton();
         initExoPlayer();
         initRepeatButton();
+        initPlayButton();
 
         if (ExoPlayerFullscreen) {
             ((ViewGroup) playerView.getParent()).removeView(playerView);
@@ -456,6 +471,32 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         });
     }
 
+    private void initPlayButton() {
+        PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
+        PlayIcon = controlView.findViewById(R.id.exo_play_icon);
+        PlayButton = controlView.findViewById(R.id.exo_play_button);
+        PlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ExoplayerPlay == false) {
+                    // lance la video
+                    PlayIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
+                    ExoplayerPlay = true;
+                    controlerAnnotation.setLast_pos(0);
+
+                    player.setPlayWhenReady(true);
+                    new Thread(controlerAnnotation).start();
+                } else {
+                    // augmente la vitesse
+                    PlayIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+                    ExoplayerPlay = false;
+                    player.setPlayWhenReady(false);
+                    controlerAnnotation.cancel();
+                }
+            }
+        });
+    }
+
     private void closeFullscreenDialog() {
 
         ((ViewGroup) playerView.getParent()).removeView(playerView);
@@ -496,8 +537,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         saveVideoAnnotation(this,videoAnnotations1,DirPath.CATEGORIE1_SUB3.toString(),"video1");
 
         //File fileTest = getFile(DirPath.CATEGORIE1_SUB3,"video1.json",this);
-        VideoAnnotation videoAnnotations5 =parseJSONAssets(this, "annot_video1.json");;
-       // VideoAnnotation videoAnnotations5 = parseJSON(this,DirPath.CATEGORIE1_SUB3.toString()+"/video1","video1.json");
+       // VideoAnnotation videoAnnotations5 =parseJSONAssets(this, "annot_video1.json");;
+        VideoAnnotation videoAnnotations5 = parseJSON(this,DirPath.CATEGORIE1_SUB3.toString()+"/video1","video1.json");
 
 
         //Création d'instances de vidéos
@@ -530,6 +571,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     dialog.showDialogRecord(MainActivity.this, videoName);
                     break;
                 case R.id.graphic_annot_btn:
+                    drawView.setVisibility(View.VISIBLE);
                     drawView.setOnTouchEnable(true);
                     FragmentTransaction ft = fragmentManager.beginTransaction();
                     drawFragment =(Fragment_draw) fragmentManager.findFragmentByTag(FRAGMENT_DRAW_TAG);
@@ -549,6 +591,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                 case R.id.slow_mode_annot_btn:
                     break;
                 case R.id.text_annot_btn:
+                    DialogTextAnnot dialogtext = new DialogTextAnnot();
+                    dialogtext.showDialogText(MainActivity.this);
                     break;
                 case R.id.zoom_mode_annot_btn:
                     break;
@@ -613,6 +657,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             ft.show(annotFragment);
             ft.commit();
         }
-    }
+
+        drawView.setVisibility(View.GONE);
+        }
 
 }

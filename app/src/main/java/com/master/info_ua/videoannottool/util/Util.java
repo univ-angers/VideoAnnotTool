@@ -11,6 +11,7 @@ import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,13 +44,24 @@ public class Util {
     public static VideoAnnotation parseJSON(Context context,String dirName, String fileName) {
 
         try {
-            File file = context.getExternalFilesDir(dirName+"/"+fileName);
-            FileInputStream fileInputStream = new FileInputStream(file);
+            File file;
+            file = new File(context.getExternalFilesDir(dirName),fileName);
 
-            Reader reader = new InputStreamReader(fileInputStream);
+
+            FileReader reader = new FileReader(file);
+
+            //InputStream inputStream = new FileInputStream(file);
+            Log.d("ERR_JSON", "Lecture JSON OK "+file);
+
+
+            //Reader reader = new InputStreamReader(inputStream);
+
+            //JsonReader reader = new JsonReader(new FileReader(filename));
+
+           // Reader reader = new InputStreamReader(fileReader);
             Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
             VideoAnnotation videoAnnotation = gson.fromJson(reader, VideoAnnotation.class);
-                Log.d("ERR_JSON", "Lecture JSON OK ");
+
             return videoAnnotation;
 
         } catch (IOException e) {
