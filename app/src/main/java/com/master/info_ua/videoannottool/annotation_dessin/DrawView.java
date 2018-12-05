@@ -8,10 +8,20 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.annotation.AnnotationType;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class DrawView extends View{
+
+    private int currentWidth;
+    private int currentHeignt;
 
     private Bitmap mBitmap;
     private Canvas mCanvas;
@@ -48,10 +58,33 @@ public class DrawView extends View{
         mPaint.setStrokeJoin(Paint.Join.MITER);
         mPaint.setStrokeWidth(4f);
 
-
-
         onTouchEnable = false;
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        int screenWidth = displayMetrics.widthPixels;
+        int screenHeight = displayMetrics.heightPixels;
+
+        currentWidth = screenWidth;
+        currentHeignt = screenHeight;
+
+
+        if (MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.UNSPECIFIED) {
+            currentWidth = MeasureSpec.getSize(widthMeasureSpec);
+        }
+
+        if (MeasureSpec.getMode(heightMeasureSpec) != MeasureSpec.UNSPECIFIED) {
+            currentHeignt = MeasureSpec.getSize(heightMeasureSpec);
+        }
+
+        setMeasuredDimension(currentWidth, currentHeignt);
+
+    }
+
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -61,11 +94,13 @@ public class DrawView extends View{
         mCanvas = new Canvas(mBitmap);
     }
 
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
+        mCanvas.drawPath(mPath, mPaint);
         canvas.drawPath(mPath, mPaint);
     }
 
@@ -133,17 +168,18 @@ public class DrawView extends View{
         mPaint.setColor(color);
     }
 
-    public void enregistrer_image() {
-        saveBitmap();
-        SaveBitmap.saveBitmapImage(context, mBitmap, "testbitmap.png"); // ici mettre un nom unique pour chaque
+    public Annotation enregistrer_image(String path, String videoName) {
+
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy-HHmmss");
+        String drawFileName = videoName+"_"+dateFormat.format(new Date())+".png";
+
+        Annotation annotation = new Annotation("Graphic annot", new Date(), 5000, 5000, AnnotationType.DRAW);
+        annotation.setDrawFileName(drawFileName);
+        SaveBitmap.saveBitmapImage(context, mBitmap, path, drawFileName); // ici mettre un nom unique pour chaque
         mPath.reset();
         invalidate();
-    }
 
-    public void saveBitmap(){
-        this.mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(this.mBitmap);
-        mCanvas.drawPath(mPath, mPaint);
+        return annotation;
     }
 
 }

@@ -43,15 +43,18 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
+import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.annotation.AnnotationType;
 import com.master.info_ua.videoannottool.annotation.ControlerAnnotation;
 import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation.Video;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
-import com.master.info_ua.videoannottool.annotation_audio.DialogRecord;
-import com.master.info_ua.videoannottool.annotation_texte.DialogTextAnnot;
+import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
+import com.master.info_ua.videoannottool.annotation_dialog.DialogTextAnnot;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
+import com.master.info_ua.videoannottool.util.Categorie;
 import com.master.info_ua.videoannottool.util.Util;
 
 import java.io.File;
@@ -60,11 +63,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.master.info_ua.videoannottool.util.Util.getFile;
-import static com.master.info_ua.videoannottool.util.Util.isExternalStorageWritable;
 import static com.master.info_ua.videoannottool.util.Util.parseJSON;
 
-public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction{
+public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction, DialogRecord.DialogRecordListener {
 
 
     private ImageButton audioAnnotBtn;
@@ -128,6 +129,16 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private Thread ControleurThread;
     private ControlerAnnotation controlerAnnotation;
 
+
+    private VideoAnnotation currentVAnnot;
+    private Categorie currentCategorie;
+    private Categorie currentSubCategorie;
+
+    private ArrayAdapter<Categorie> spinnerAdapter;
+    private ArrayAdapter<Categorie> spinnerAdapter2;
+
+    private boolean newAnnotIsAdded = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -154,11 +165,6 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             ExoPlayerFullscreen = savedInstanceState.getBoolean(STATE_PLAYER_FULLSCREEN);
         }
 
-        //TEST FICHIERS
-        if (isExternalStorageWritable()) {
-            File file = getFile(DirPath.CATEGORIE1_SUB1, "test.txt", this);
-        }
-
 
         listViewVideos = findViewById(R.id.lv_videos);
 
@@ -168,6 +174,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
         videoList = initVideoList();
         currentVideo = videoList.get(0);
+        currentVAnnot = currentVideo.getVideoAnnotation();
 
         videosAdapter = new VideosAdapter(this, videoList);
 
@@ -178,22 +185,20 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         listViewVideos.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         //Spinner catégorie
-        ArrayList<String> categorieList = new ArrayList<>();
-        categorieList.add("Categorie");
-        categorieList.add("item1");
-        categorieList.add("item2");
+        List<Categorie> categorieList = new ArrayList<>();
+        categorieList.add(new Categorie("Categorie", null, "/"));
+        categorieList.addAll(setCatSpinnerList());
 
-        ArrayAdapter<String> spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
+        spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategorie.setAdapter(spinnerAdapter);
 
         //Spinner sous-catégorie
-        ArrayList<String> spinnerList2 = new ArrayList<>();
-        spinnerList2.add("Sous-categorie");
-        spinnerList2.add("item1");
-        spinnerList2.add("item2");
+        List<Categorie> spinnerList2 = new ArrayList<>();
+        spinnerList2.add(new Categorie("Sous-categorie", null, "/"));
 
-        ArrayAdapter<String> spinnerAdapter2 = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, spinnerList2);
+
+        spinnerAdapter2 = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, spinnerList2);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubCategorie.setAdapter(spinnerAdapter2);
 
@@ -228,15 +233,20 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         // il faut mettre la visibilité a GONE pour pouvoir cliquer sur la vidéo, la visibilitè de la vue est rétablie en lancant la saisie d'une annotation
         drawView.setVisibility(View.GONE);
 
-        controlerAnnotation = new ControlerAnnotation(this,this,currentVideo.getVideoAnnotation());
+        controlerAnnotation = new ControlerAnnotation(this, this, currentVideo.getVideoAnnotation());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
+        spinnerCategorie.setOnItemSelectedListener(catItemSelectedListener);
+        spinnerCategorie.setSelection(1);
+        spinnerSubCategorie.setOnItemSelectedListener(subCatItemSelectedListener);
         //Affichage de la liste des annotation de la vidéo courante
-        annotFragment.updateAnnotationList(currentVideo.getVideoAnnotation());
+        annotFragment.updateAnnotationList(currentVAnnot);
+
+        //Util.appDirExist(this);
     }
 
 
@@ -302,7 +312,9 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             FullScreenDialog.dismiss();
     }
 
-    //Listener pour le clic sur la liste de vidéos
+    /**
+     * Listener pour le clic sur la liste de vidéos
+     */
     protected AdapterView.OnItemClickListener videoItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -310,14 +322,24 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             videosAdapter.setSelectedListItem(position);
             videosAdapter.notifyDataSetChanged();
 
-            currentVideo = (Video) listViewVideos.getItemAtPosition(position);
+            if (newAnnotIsAdded){
+                if(currentVAnnot!= null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null){
+                    Util.saveVideoAnnotaion(MainActivity.this, currentVAnnot, currentSubCategorie.getPath(), videoName);
+                }else {
+                    Log.e("NULL_OBJECT", "One of initialization object is null");
+                }
+            }
 
-            annotFragment.updateAnnotationList(currentVideo.getVideoAnnotation());
+            newAnnotIsAdded = false;
+
+            currentVideo = (Video) listViewVideos.getItemAtPosition(position);
+            currentVAnnot = currentVideo.getVideoAnnotation();
+
+            annotFragment.updateAnnotationList(currentVAnnot);
 
             videoName = currentVideo.getFileName();
 
             player.stop();
-
             initExoPlayer(); // recrée le lecteur
         }
     };
@@ -477,8 +499,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         List<Video> videoList = new ArrayList<>(); //Liste de vidéo
 
         VideoAnnotation videoAnnotations1 = parseJSON(this, "annot_video1.json");
-        VideoAnnotation videoAnnotations2 = parseJSON(this,"annot_video2.json");
-        VideoAnnotation videoAnnotations3 = parseJSON(this,"annot_video3.json");
+        VideoAnnotation videoAnnotations2 = parseJSON(this, "annot_video2.json");
+        VideoAnnotation videoAnnotations3 = parseJSON(this, "annot_video3.json");
         VideoAnnotation videoAnnotations4 = parseJSON(this, "annot_video4.json");
 
         //Création d'instances de vidéos
@@ -496,6 +518,51 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         return videoList;
     }
 
+    /**
+     * initialise la liste d'item du spinner categorie
+     *
+     * @return
+     */
+    protected List<Categorie> setCatSpinnerList() {
+        List<Categorie> categorieList = new ArrayList<>();
+
+        if (Util.appDirExist(this)) {
+            for (DirPath dirPath : DirPath.values()) {
+                if (!dirPath.isSubDir()) {
+                    categorieList.add(new Categorie(dirPath.getName(), null, dirPath.toString()));
+                }
+            }
+        }else {
+            Util.createDir(this);
+            categorieList = setCatSpinnerList();
+        }
+        return categorieList;
+    }
+
+
+    /**
+     * initialise la liste d'item du spinner sub-categorie
+     *
+     * @return
+     */
+    protected List<Categorie> setSubCatSpinnerList(String parentDir) {
+        List<Categorie> categorieList = new ArrayList<>();
+
+        categorieList.add(new Categorie("Sous-categorie", null, "../"));
+        if (Util.isAppDirectory(parentDir)){
+            for (DirPath dirPath : DirPath.values()) {
+                if (dirPath.isSubDir() && dirPath.getPath().substring(0, dirPath.getPath().indexOf("/")).equals(parentDir)) {
+                    //Log.e("SUB_CAT", dirPath.toString());
+                    categorieList.add(new Categorie(dirPath.getName(), parentDir, dirPath.toString()));
+                }
+            }
+        }
+        return categorieList;
+    }
+
+    /**
+     * listener de clic sur les button d'annotation
+     */
     View.OnClickListener btnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -503,21 +570,22 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             int btnId = view.getId();
             switch (btnId) {
                 case R.id.audio_annot_btn:
-                    DialogRecord dialog = new DialogRecord();
-                    dialog.showDialogRecord(MainActivity.this, videoName);
+                    DialogRecord dialog = new DialogRecord(MainActivity.this, currentSubCategorie.getPath());
+                    Annotation auDdioAnnotation = new Annotation("Audio annot ", AnnotationType.AUDIO);
+                    dialog.showDialogRecord(auDdioAnnotation, videoName);
                     break;
                 case R.id.graphic_annot_btn:
                     drawView.setVisibility(View.VISIBLE);
                     drawView.setOnTouchEnable(true);
                     FragmentTransaction ft = fragmentManager.beginTransaction();
-                    drawFragment =(Fragment_draw) fragmentManager.findFragmentByTag(FRAGMENT_DRAW_TAG);
+                    drawFragment = (Fragment_draw) fragmentManager.findFragmentByTag(FRAGMENT_DRAW_TAG);
                     if (drawFragment == null) {
                         drawFragment = new Fragment_draw();
-                        ft.add(R.id.annotation_menu,drawFragment,FRAGMENT_DRAW_TAG);
+                        ft.add(R.id.annotation_menu, drawFragment, FRAGMENT_DRAW_TAG);
                         ft.hide(annotFragment);
                         ft.show(drawFragment);
                         ft.commit();
-                    }else {
+                    } else {
                         ft.hide(annotFragment);
                         ft.show(drawFragment);
                         ft.commit();
@@ -532,30 +600,69 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     break;
                 case R.id.zoom_mode_annot_btn:
                     break;
-
             }
+        }
+    };
 
 
+    /**
+     * listener d'écoute pour la sélection d'un item catégorie
+     */
+    AdapterView.OnItemSelectedListener catItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+            // Here you get the current item that is selected by its position
+            currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
+
+            spinnerAdapter2.clear();
+            spinnerAdapter2.addAll(setSubCatSpinnerList(currentCategorie.getPath()));
+            spinnerAdapter2.notifyDataSetChanged();
+            spinnerSubCategorie.setSelection(1);
+            Log.e("SELECT_CAT", currentCategorie.getPath());
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapter) {
+        }
+    };
+
+    /**
+     * listener d'écoute pour la sélection d'un item sous-catégorie
+     */
+    AdapterView.OnItemSelectedListener subCatItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+            if (position > 0) {
+                // Here you get the current item that is selected by its position
+                currentSubCategorie = (Categorie) adapterView.getItemAtPosition(position);
+                Log.e("SELECT_SUB_CAT", currentSubCategorie.getPath());
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapter) {
         }
     };
 
 
     // methode dans Main activity qui renvoie le moment de la position pour les anotation sous forme de long
     @Override
-    public long getVideoTime(){
+    public long getVideoTime() {
         return player.getCurrentPosition();
     }
 
     //methode pour fixer le curseur de lecture a une position donné sous forme de long
-    public void setVideoTime(long positionCurseur){
+    public void setVideoTime(long positionCurseur) {
         player.seekTo(positionCurseur);
     }
 
     @Override
     public SimpleExoPlayer getPlayer() {
-        return player; 
+        return player;
     }
-  
+
     @Override
     public void resetCanvas() {
         drawView.resetCanvas();
@@ -569,6 +676,14 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     @Override
     public void enregistrer_image() {
         // création de l'annotation
+
+        Annotation drawAnnotation = drawView.enregistrer_image(currentSubCategorie.getPath(), this.videoName);
+        Log.e("AUDIO_ANNOT", "Annotation file name "+drawAnnotation.getDrawFileName()+"Annotation title "+drawAnnotation.getAnnotationTitle());
+
+        currentVAnnot.getAnnotationList().add(drawAnnotation);
+        currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
+        newAnnotIsAdded = true;
+        drawView.setVisibility(View.GONE);
     }
 
     @Override
@@ -577,24 +692,31 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     }
 
     @Override
-    public void fermer_fragment(){
+    public void fermer_fragment() {
 
         drawView.resetCanvas();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        annotFragment =(Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
+        annotFragment = (Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
         if (annotFragment == null) {
             annotFragment = new Fragment_annotation();
-            ft.add(R.id.annotation_menu,annotFragment,FRAGMENT_ANNOT_TAG);
+            ft.add(R.id.annotation_menu, annotFragment, FRAGMENT_ANNOT_TAG);
             ft.hide(drawFragment);
             ft.show(annotFragment);
             ft.commit();
-        }else {
+        } else {
             ft.hide(drawFragment);
             ft.show(annotFragment);
             ft.commit();
         }
-
         drawView.setVisibility(View.GONE);
-        }
+    }
 
+    @Override
+    public void addAudioAnnot(Annotation annotation) {
+        Log.e("AUDIO_ANNOT", "Annotation file name "+annotation.getAudioFileName()+" Annotation title: "+annotation.getAnnotationTitle()+"["+annotation.getAnnotationStartTime()+"]");
+
+        newAnnotIsAdded = true;
+        currentVAnnot.getAnnotationList().add(annotation);
+        currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
+    }
 }
