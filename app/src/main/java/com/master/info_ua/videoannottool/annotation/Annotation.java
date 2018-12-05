@@ -1,11 +1,7 @@
 package com.master.info_ua.videoannottool.annotation;
 
-import android.content.Context;
-
 import java.io.Serializable;
 import java.util.Date;
-
-import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 
 public class Annotation implements Serializable {
 
@@ -20,8 +16,9 @@ public class Annotation implements Serializable {
     private Integer zoomRate;
     private float slowMotionSpeed;
 
-    public Annotation(String annotationTitle) {
+    public Annotation(String annotationTitle, AnnotationType annotationType) {
         this.annotationTitle = annotationTitle;
+        this.annotationType = annotationType;
     }
 
     public Annotation(String annotationTitle, Date annotationDate, Integer annotationStartTime, Integer annotationDuration, AnnotationType annotationType) {

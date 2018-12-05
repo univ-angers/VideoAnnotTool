@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool.annotation_texte;
+package com.master.info_ua.videoannottool.annotation_dialog;
 
 import android.app.Dialog;
 import android.content.res.ColorStateList;
@@ -41,10 +41,6 @@ public class DialogTextAnnot {
                 Toast messagefin;
                 messagefin = Toast.makeText(main, "Annotation Enregistrée", Toast.LENGTH_LONG);
                 messagefin.show();
-
-
-
-
             }
         });
         btnAnnuler.setOnClickListener(new View.OnClickListener() {
