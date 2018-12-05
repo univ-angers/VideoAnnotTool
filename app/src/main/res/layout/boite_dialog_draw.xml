@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="15dip">
+
+
+    <TextView
+        android:id="@+id/tv_draw_titre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Titre de l'annotation :" />
+
+    <EditText
+        android:id="@+id/ed_draw_titre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Titre"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/tv_draw_temps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Durée de l'annotation (temps d'apparition) :" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/ed_draw_temps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Durée"
+            android:inputType="number" />
+
+        <TextView
+            android:id="@+id/tv_draw_duree"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="secondes" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnValiderDraw"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:background="@color/btnValiderRecord"
+            android:text="@string/TextBtnValiderRecord" />
+
+        <Button
+            android:id="@+id/btnAnnulerDraw"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:background="@color/btnAnnulerRecord"
+            android:text="@string/TextBtnAnnulerRecord" />
+    </LinearLayout>
+</LinearLayout>
