@@ -101,7 +101,7 @@ public class Fragment_draw extends Fragment {
                     break;
                 case R.id.b_draw_save:
                     listener.setOnTouchEnable(false);
-                    listener.enregistrer_image();
+                    listener.lancement_dialogue();
                     listener.fermer_fragment();
                     break;
                 case R.id.b_draw_blue:
@@ -130,7 +130,7 @@ public class Fragment_draw extends Fragment {
     {
         void resetCanvas();
         void setOnTouchEnable(boolean bool);
-        void enregistrer_image();
+        void lancement_dialogue();
         void setColor(int color);
         void fermer_fragment();
     }

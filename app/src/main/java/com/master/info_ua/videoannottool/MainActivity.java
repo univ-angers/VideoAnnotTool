@@ -50,6 +50,8 @@ import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation.Video;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
+import com.master.info_ua.videoannottool.annotation_dessin.SaveBitmap;
+import com.master.info_ua.videoannottool.annotation_dialog.DialogDraw;
 import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
 import com.master.info_ua.videoannottool.annotation_dialog.DialogTextAnnot;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
@@ -662,7 +664,13 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     }
 
     @Override
-    public void enregistrer_image() {
+    public void lancement_dialogue(){
+        DialogDraw mon_dialogue = new DialogDraw();
+        mon_dialogue.showDialogDraw(MainActivity.this, videoName);
+    }
+
+    public void enregistrer_image(String titre, int duree) {
+
         // création de l'annotation
 
         Annotation drawAnnotation = drawView.enregistrer_image(currentSubCategorie.getPath(), this.videoName);
