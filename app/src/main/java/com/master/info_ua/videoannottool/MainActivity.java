@@ -570,11 +570,13 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             int btnId = view.getId();
             switch (btnId) {
                 case R.id.audio_annot_btn:
+                    player.setPlayWhenReady(false);
                     DialogRecord dialog = new DialogRecord(MainActivity.this, currentSubCategorie.getPath());
                     Annotation auDdioAnnotation = new Annotation("Audio annot ", AnnotationType.AUDIO);
                     dialog.showDialogRecord(auDdioAnnotation, videoName);
                     break;
                 case R.id.graphic_annot_btn:
+                    player.setPlayWhenReady(false);
                     drawView.setVisibility(View.VISIBLE);
                     drawView.setOnTouchEnable(true);
                     FragmentTransaction ft = fragmentManager.beginTransaction();
@@ -593,6 +595,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
                     break;
                 case R.id.text_annot_btn:
+                    player.setPlayWhenReady(false);
                     DialogTextAnnot dialogtext = new DialogTextAnnot();
                     dialogtext.showDialogText(MainActivity.this);
                     break;
