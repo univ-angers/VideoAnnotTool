@@ -47,6 +47,8 @@ import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation.Video;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
+import com.master.info_ua.videoannottool.annotation_dessin.SaveBitmap;
+import com.master.info_ua.videoannottool.annotation_dialog.DialogDraw;
 import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
@@ -515,7 +517,11 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     public SimpleExoPlayer getPlayer() {
         return player; 
     }
-  
+
+    /*
+    FONCTION POUR LES ANNOTATIONS GRAPHIQUES
+    */
+
     @Override
     public void resetCanvas() {
         drawView.resetCanvas();
@@ -528,7 +534,14 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     @Override
     public void enregistrer_image() {
-        // création de l'annotation
+        DialogDraw dialog = new DialogDraw();
+        dialog.showDialogDraw(MainActivity.this, videoName);
+
+    }
+
+    // création de l'annotation, il faut encore utiliser le titre et la durée, voir a passer en paramètre de creer_annotation()
+    public void creer_annotation_draw(){
+        drawView.enregistrer_image(videoName,0,"titre");
     }
 
     @Override

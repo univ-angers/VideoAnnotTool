@@ -1,6 +1,7 @@
 package com.master.info_ua.videoannottool.annotation_dessin;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,8 +9,15 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.master.info_ua.videoannottool.R;
+
+import java.text.Annotation;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DrawView extends View{
 
@@ -34,7 +42,6 @@ public class DrawView extends View{
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-
         this.context = context;
 
         lineColor = Color.RED;
@@ -51,6 +58,24 @@ public class DrawView extends View{
 
 
         onTouchEnable = false;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        int screenWidth = displayMetrics.widthPixels;
+        int screenHeight = displayMetrics.heightPixels;
+        int currentWidth = screenWidth;
+        int currentHeignt = screenHeight;
+        if (MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.UNSPECIFIED) {
+            currentWidth = MeasureSpec.getSize(widthMeasureSpec);
+        }        if (MeasureSpec.getMode(heightMeasureSpec) != MeasureSpec.UNSPECIFIED) {
+            currentHeignt = MeasureSpec.getSize(heightMeasureSpec);
+        }
+        setMeasuredDimension(currentWidth, currentHeignt);
+        this.mBitmap = Bitmap.createBitmap(currentWidth, currentHeignt, Bitmap.Config.ARGB_8888);
+        mCanvas = new Canvas(this.mBitmap);
     }
 
     @Override
@@ -133,16 +158,34 @@ public class DrawView extends View{
         mPaint.setColor(color);
     }
 
-    public void enregistrer_image() {
-        saveBitmap();
-        SaveBitmap.saveBitmapImage(context, mBitmap, "testbitmap.png"); // ici mettre un nom unique pour chaque
+    public void enregistrer_image(String videoName, float duree, String titre) {
+
+        Annotation nouvelle_annotation;
+        String date_annotation;
+        String start_time_annotation;
+
+        String nom_image;
+
+        //nouvelle_annotation = new Annotation(videoName,date_annotation,duree,start_time_annotation,titre);
+        // new Annotation();
+        // setfile_name
+
+        // récuperer le nom de la video
+
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy-HHmmss");
+
+        nom_image =videoName+"_"+dateFormat.format(new Date())+".png";
+
+        //saveBitmap();
+        SaveBitmap.saveBitmapImage(context, mBitmap, nom_image); // ici mettre un nom unique pour chaque
         mPath.reset();
         invalidate();
     }
 
     public void saveBitmap(){
         this.mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(this.mBitmap);
+      //  mCanvas = new Canvas(this.mBitmap);
         mCanvas.drawPath(mPath, mPaint);
     }
 

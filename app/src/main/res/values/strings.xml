@@ -12,6 +12,8 @@
     <string name="TextBtnValiderRecord">Valider</string>
     <string name="TextBtnAnnulerRecord">Cancel</string>
 
+    <string name="TextDialogDraw">Enregistrement Graphique</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
