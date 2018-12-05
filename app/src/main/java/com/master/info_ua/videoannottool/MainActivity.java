@@ -71,8 +71,6 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
-    private ImageButton zoomAnnotBtn;
-    private ImageButton slowAnnotBtn;
 
     private SimpleExoPlayer player;
     private SimpleExoPlayerView playerView;
@@ -212,12 +210,6 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
         graphAnnotBtn = findViewById(R.id.graphic_annot_btn);
         graphAnnotBtn.setOnClickListener(btnClickListener);
-
-        zoomAnnotBtn = findViewById(R.id.zoom_mode_annot_btn);
-        zoomAnnotBtn.setOnClickListener(btnClickListener);
-
-        slowAnnotBtn = findViewById(R.id.slow_mode_annot_btn);
-        slowAnnotBtn.setOnClickListener(btnClickListener);
 
 
         fragmentManager = getFragmentManager();
@@ -592,13 +584,9 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     }
 
                     break;
-                case R.id.slow_mode_annot_btn:
-                    break;
                 case R.id.text_annot_btn:
                     DialogTextAnnot dialogtext = new DialogTextAnnot();
                     dialogtext.showDialogText(MainActivity.this);
-                    break;
-                case R.id.zoom_mode_annot_btn:
                     break;
             }
         }
