@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 
 public class Util {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     public static VideoAnnotation parseJSON(Context context, String fichier) {
 
@@ -78,11 +78,13 @@ public class Util {
 
     public static void createDir(Context context){
         if (isExternalStorageWritable()){
-            File file = context.getExternalFilesDir(DirPath.CATEGORIE1_SUB1.toString());
-            if(file != null){
-                Log.e("SUCCESS", "Directory created: ["+file.getAbsolutePath()+"]");
-            }else{
-                Log.e("FAIL", "Unable to create dir");
+            for (DirPath dirPath : DirPath.values()){
+                File file = context.getExternalFilesDir(dirPath.toString());
+                if(file != null){
+                    Log.e("SUCCESS", "Directory created: ["+file.getAbsolutePath()+"]");
+                }else{
+                    Log.e("FAIL", "Unable to create dir");
+                }
             }
         }
     }
@@ -132,6 +134,22 @@ public class Util {
         return false;
     }
 
-
+    /**
+     * vérifie l'existence des sous-répertoires de l'application
+     * @param context
+     * @return
+     */
+    public static boolean appDirExist(Context context){
+        File root = context.getExternalFilesDir(null);
+        Log.e("ROOT", root.getAbsolutePath());
+        if(root.listFiles().length > 0){
+            for (File file: root.listFiles()){
+                Log.e("CONT_FILE", file.getAbsolutePath());
+            }
+        }else {
+            Log.e("ROOT_CONT", "No sub dir");
+        }
+        return root.listFiles().length > 0;
+    }
 
 }

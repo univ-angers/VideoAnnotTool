@@ -5,12 +5,15 @@
     <string name="add_button">Nouvelle vidéo</string>
     <string name="subcategory">Sous-catégorie :</string>
 
-    <string name="TextDialogRecord">Enregistrement Audio</string>
+    <string name="TitleDialogRecord">Enregistrement Audio</string>
     <string name="TextBtnStartRecord">Start</string>
     <string name="TextBtnStopRecord">Stop</string>
     <string name="TextBtnEcouterRecord">Ecouter</string>
     <string name="TextBtnValiderRecord">Valider</string>
     <string name="TextBtnAnnulerRecord">Cancel</string>
+    <string name="BtnValiderDialogText">Valider</string>
+    <string name="TitleDialogText">Entrez le texte à afficher</string>
+
 
     <string name="TextDialogDraw">Enregistrement Graphique</string>
 

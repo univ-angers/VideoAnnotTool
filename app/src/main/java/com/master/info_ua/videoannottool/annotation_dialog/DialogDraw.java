@@ -34,7 +34,7 @@ public class DialogDraw {
         btnValid.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 if(titre.getText().length() != 0  && duree.getText().length() != 0) { // vérifie si les champs sont vides
-                    main.creer_annotation_draw();
+                   // main.creer_annotation_draw();
                     // création de l'annotation, il faut encore utiliser le titre et la durée, voir a passer en paramètre de creer_annotation()
                     dialog.cancel();
                 }
