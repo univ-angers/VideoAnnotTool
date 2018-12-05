@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -128,6 +129,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private Thread ControleurThread;
     private ControlerAnnotation controlerAnnotation;
+    private Handler mainHandler;
 
 
     private VideoAnnotation currentVAnnot;
@@ -227,7 +229,11 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         // il faut mettre la visibilité a GONE pour pouvoir cliquer sur la vidéo, la visibilitè de la vue est rétablie en lancant la saisie d'une annotation
         drawView.setVisibility(View.GONE);
 
-        controlerAnnotation = new ControlerAnnotation(this, this, currentVideo.getVideoAnnotation());
+
+        mainHandler = new Handler(getApplicationContext().getMainLooper());
+
+
+        controlerAnnotation = new ControlerAnnotation(this,this,currentVideo.getVideoAnnotation(),mainHandler);
     }
 
     @Override
