@@ -2,14 +2,9 @@ package com.master.info_ua.videoannottool.annotation;
 
 import android.content.Context;
 import android.os.Handler;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.master.info_ua.videoannottool.MainActivity;
-import com.master.info_ua.videoannottool.annotation.Annotation;
-import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.Ecouteur;
-import com.master.info_ua.videoannottool.annotation.infoAnno;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +14,7 @@ import java.util.List;
 public class ControlerAnnotation implements Runnable {
     private Context _mainActivity;
     private Ecouteur m_ecouteur = null;
-    private ArrayList<infoAnno> ListInfoAnno = new ArrayList<infoAnno>();
+    private ArrayList<InfoAnno> listInfoAnno = new ArrayList<InfoAnno>();
     private List<Annotation> listAnno;
     private int last_pos = 0;
     private ArrayList<Integer> annotActive = new ArrayList<>();
@@ -35,16 +30,20 @@ public class ControlerAnnotation implements Runnable {
         _mainActivity = context;
         m_ecouteur = m_e;
         listAnno = videoAnnotation.getAnnotationList();
+        System.out.print(listAnno.get(0).getAnnotationStartTime());
         //ttt de videoAnnotation
         int i = 0;
         for (Annotation elt : listAnno) {
-            infoAnno tmp = new infoAnno(arronditSeconde(elt.getAnnotationStartTime()), i, true);
-            ListInfoAnno.add(tmp);
+            //System.out.println(elt.getAnnotationStartTime())+"****f*sef*se*f*sef*sef*se*fs*ef*sef**************************************************************************************************************************************************************************************************************************************************************************************************************");
+            InfoAnno tmp = new InfoAnno(arronditSeconde(elt.getAnnotationStartTime()), i, true);
+            listInfoAnno.add(tmp);
             long fin = arronditSeconde(elt.getAnnotationStartTime() + elt.getAnnotationDuration());
-            tmp = new infoAnno(fin, i, false);
-            ListInfoAnno.add(tmp);
+            tmp = new InfoAnno(fin, i, false);
+            listInfoAnno.add(tmp);
+            i++;
         }
-        Collections.sort(ListInfoAnno);
+        Collections.sort(listInfoAnno);
+        System.out.println(listInfoAnno.get(0).getTime()+"*****************************************************************************************************************************************************");
 
     }
 
@@ -58,27 +57,28 @@ public class ControlerAnnotation implements Runnable {
         ;
         //verifier le temps et lancer launch avec le paramétre correspondant
         if (m_ecouteur.getPlayer().getDuration() >= m_ecouteur.getVideoTime()) {
-            while ((last_pos < ListInfoAnno.size() && (arronditSeconde(m_ecouteur.getVideoTime()) <= ListInfoAnno.get(last_pos).getTime()))) {
-                if (arronditSeconde(m_ecouteur.getVideoTime()) == ListInfoAnno.get(last_pos).getTime()) {
-                    if (ListInfoAnno.get(last_pos).isDebut()) {
-                        launch(listAnno.get(ListInfoAnno.get(last_pos).getIndex()));
-                        annotActive.add(ListInfoAnno.get(last_pos).getIndex());
+            while (last_pos < listInfoAnno.size()) {
+                System.out.println("\n\n\n\n"+arronditSeconde(m_ecouteur.getVideoTime())+"\n\n" + listInfoAnno.get(last_pos).getTime()+"\n\n\n\n" );
+                if (arronditSeconde(m_ecouteur.getVideoTime()) == listInfoAnno.get(last_pos).getTime()) {
+                    if (listInfoAnno.get(last_pos).isDebut()) {
+                        launch(listAnno.get(listInfoAnno.get(last_pos).getIndex()));
+                        annotActive.add(listInfoAnno.get(last_pos).getIndex());
                     } else {
-                        stop(listAnno.get(ListInfoAnno.get(last_pos).getIndex()));
-                        annotActive.remove(ListInfoAnno.get(last_pos).getIndex());
+                        stop(listAnno.get(listInfoAnno.get(last_pos).getIndex()));
+                        annotActive.remove(annotActive.lastIndexOf(listInfoAnno.get(last_pos).getIndex()));
                     }
                 }
                 last_pos++;
             }
+            last_pos = 0;
             return true;
         } else {
-            this.cancel();
             return false;
         }
     }
 
     public long arronditSeconde(long time) {
-        return (time % 1000) * 1000;
+        return (time / 1000) * 1000;
     }
 
     public void launch(Annotation anno) {
@@ -235,10 +235,14 @@ public class ControlerAnnotation implements Runnable {
 
     @Override
     public void run() {
+        cancelled = false;
         while (checkTime() && (!cancelled)) {
             synchronized (this) {
                 try {
+                    System.out.println("coucou j'ai exécuter un tour de boucle");
+
                     this.wait(1000);
+                    System.out.println("coucou j'ai exécuter un tour de boucle");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

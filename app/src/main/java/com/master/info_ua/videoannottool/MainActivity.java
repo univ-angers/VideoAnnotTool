@@ -437,7 +437,6 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     PlayIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
                     ExoplayerPlay = true;
                     controlerAnnotation.setLast_pos(0);
-
                     player.setPlayWhenReady(true);
                     new Thread(controlerAnnotation).start();
                 } else {
