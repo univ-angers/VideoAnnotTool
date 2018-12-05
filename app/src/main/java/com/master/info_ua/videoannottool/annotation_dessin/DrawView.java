@@ -152,7 +152,6 @@ public class DrawView extends View{
             }
         }
         return true;
-
     }
 
     public void resetCanvas() {
@@ -181,7 +180,6 @@ public class DrawView extends View{
         invalidate();
 
         return annotation;
-
     }
 
 }

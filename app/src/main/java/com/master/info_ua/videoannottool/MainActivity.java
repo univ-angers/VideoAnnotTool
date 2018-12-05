@@ -676,7 +676,12 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     }
 
     @Override
-    public void enregistrer_image() {
+    public void lancement_dialogue(){
+        DialogDraw mon_dialogue = new DialogDraw();
+        mon_dialogue.showDialogDraw(MainActivity.this, videoName);
+    }
+
+    public void enregistrer_image(String titre, int duree) {
 
         // création de l'annotation
 
