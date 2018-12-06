@@ -20,6 +20,12 @@
         android:layout_height="wrap_content"
         android:text="annuler" />
 
+    <Button
+        android:id="@+id/b_draw_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="save" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -78,11 +84,5 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/b_draw_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="save" />
 
 </LinearLayout>

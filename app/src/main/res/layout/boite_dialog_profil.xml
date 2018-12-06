@@ -24,8 +24,10 @@
 
     <Button
         android:id="@+id/btnAnnulerPasserCoach"
-        android:layout_width="match_parent"
+        android:layout_width="211dp"
         android:layout_height="wrap_content"
+
+        android:layout_gravity="center"
         android:text="@string/TextBtnCancel" />
 
 </android.widget.LinearLayout>

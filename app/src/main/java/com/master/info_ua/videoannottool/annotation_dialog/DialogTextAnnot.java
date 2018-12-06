@@ -41,10 +41,6 @@ public class DialogTextAnnot {
                 Toast messagefin;
                 messagefin = Toast.makeText(main, "Annotation Enregistrée", Toast.LENGTH_LONG);
                 messagefin.show();
-
-
-
-
             }
         });
         btnAnnuler.setOnClickListener(new View.OnClickListener() {

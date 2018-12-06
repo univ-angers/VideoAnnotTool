@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -53,6 +54,8 @@ import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation.Video;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
+import com.master.info_ua.videoannottool.annotation_dessin.SaveBitmap;
+import com.master.info_ua.videoannottool.annotation_dialog.DialogDraw;
 import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
 import com.master.info_ua.videoannottool.annotation_dialog.DialogTextAnnot;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
@@ -78,8 +81,6 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
-    private ImageButton zoomAnnotBtn;
-    private ImageButton slowAnnotBtn;
 
     private SimpleExoPlayer player;
     private SimpleExoPlayerView playerView;
@@ -136,6 +137,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private Thread ControleurThread;
     private ControlerAnnotation controlerAnnotation;
+    private Handler mainHandler;
 
 
     private VideoAnnotation currentVAnnot;
@@ -147,9 +149,9 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private boolean newAnnotIsAdded = false;
 
-    private static final boolean ELEVE = false;
-    private static final boolean COACH= true;
-    private boolean statut_profil = ELEVE;                    //flag pour savoir si utilisateur = eleve ou coach
+    public static final boolean ELEVE = false;
+    public static final boolean COACH= true;
+    private boolean statut_profil = ELEVE;                    //flag pour savoir si utilisateur = eleve ou coach. L'app se lance en eleve
 
 
     @Override
@@ -236,19 +238,16 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
         //Listener btn audio_annot_btn
         audioAnnotBtn = findViewById(R.id.audio_annot_btn);
+        audioAnnotBtn.setEnabled(false);        //bouton desactivés de base
         audioAnnotBtn.setOnClickListener(btnClickListener);
 
         textAnnotBtn = findViewById(R.id.text_annot_btn);
+       textAnnotBtn.setEnabled(false);        //bouton desactivés de base
         textAnnotBtn.setOnClickListener(btnClickListener);
 
         graphAnnotBtn = findViewById(R.id.graphic_annot_btn);
+        graphAnnotBtn.setEnabled(false);        //bouton desactivés de base
         graphAnnotBtn.setOnClickListener(btnClickListener);
-
-        zoomAnnotBtn = findViewById(R.id.zoom_mode_annot_btn);
-        zoomAnnotBtn.setOnClickListener(btnClickListener);
-
-        slowAnnotBtn = findViewById(R.id.slow_mode_annot_btn);
-        slowAnnotBtn.setOnClickListener(btnClickListener);
 
 
         fragmentManager = getFragmentManager();
@@ -264,7 +263,11 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         // il faut mettre la visibilité a GONE pour pouvoir cliquer sur la vidéo, la visibilitè de la vue est rétablie en lancant la saisie d'une annotation
         drawView.setVisibility(View.GONE);
 
-        controlerAnnotation = new ControlerAnnotation(this, this, currentVideo.getVideoAnnotation());
+
+        mainHandler = new Handler(getApplicationContext().getMainLooper());
+
+
+        controlerAnnotation = new ControlerAnnotation(this,this,currentVideo.getVideoAnnotation(),mainHandler);
     }
 
     @Override
@@ -298,15 +301,13 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                 return true;
             case R.id.action_profile:
                 if(statut_profil==ELEVE) {
-                    dialog.setContentView(R.layout.boite_dialog_profil);
-                    dialog.show();
+                    DialogProfil dialogProfil = new DialogProfil();
+                    dialogProfil.showDialogProfil(MainActivity.this);
 
                 }else if (statut_profil==COACH){
                     audioAnnotBtn.setEnabled(false);
                     textAnnotBtn.setEnabled(false);
                     graphAnnotBtn.setEnabled(false);
-                    zoomAnnotBtn.setEnabled(false);
-                    slowAnnotBtn.setEnabled(false);
 
                     statut_profil=ELEVE;
                 }
@@ -652,11 +653,13 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             int btnId = view.getId();
             switch (btnId) {
                 case R.id.audio_annot_btn:
+                    player.setPlayWhenReady(false);
                     DialogRecord dialog = new DialogRecord(MainActivity.this, currentSubCategorie.getPath());
                     Annotation auDdioAnnotation = new Annotation("Audio annot ", AnnotationType.AUDIO);
                     dialog.showDialogRecord(auDdioAnnotation, videoName);
                     break;
                 case R.id.graphic_annot_btn:
+                    player.setPlayWhenReady(false);
                     drawView.setVisibility(View.VISIBLE);
                     drawView.setOnTouchEnable(true);
                     FragmentTransaction ft = fragmentManager.beginTransaction();
@@ -674,13 +677,10 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     }
 
                     break;
-                case R.id.slow_mode_annot_btn:
-                    break;
                 case R.id.text_annot_btn:
+                    player.setPlayWhenReady(false);
                     DialogTextAnnot dialogtext = new DialogTextAnnot();
                     dialogtext.showDialogText(MainActivity.this);
-                    break;
-                case R.id.zoom_mode_annot_btn:
                     break;
             }
         }
@@ -756,7 +756,13 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     }
 
     @Override
-    public void enregistrer_image() {
+    public void lancement_dialogue(){
+        DialogDraw mon_dialogue = new DialogDraw();
+        mon_dialogue.showDialogDraw(MainActivity.this, videoName);
+    }
+
+    public void enregistrer_image(String titre, int duree) {
+
         // création de l'annotation
 
         Annotation drawAnnotation = drawView.enregistrer_image(currentSubCategorie.getPath(), this.videoName);
@@ -800,6 +806,10 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         newAnnotIsAdded = true;
         currentVAnnot.getAnnotationList().add(annotation);
         currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
+    }
+
+    public void setStatutProfil(boolean nouveauStatut){
+        statut_profil=nouveauStatut;
     }
 
 }

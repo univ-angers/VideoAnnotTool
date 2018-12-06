@@ -17,7 +17,7 @@
     <string name="BtnValiderDialogText">Valider</string>
     <string name="TitleDialogText">Entrez le texte à afficher</string>
 
-
+    <string name="TextDialogDraw">Enregistrement Graphique</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="TextBtnImport">Importer la vidéo</string>

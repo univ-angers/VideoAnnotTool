@@ -1,6 +1,7 @@
 package com.master.info_ua.videoannottool.annotation_dessin;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+
 
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.AnnotationType;
@@ -43,7 +45,6 @@ public class DrawView extends View{
 
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
 
         this.context = context;
 
@@ -84,7 +85,6 @@ public class DrawView extends View{
         setMeasuredDimension(currentWidth, currentHeignt);
 
     }
-
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -152,7 +152,6 @@ public class DrawView extends View{
             }
         }
         return true;
-
     }
 
     public void resetCanvas() {
@@ -167,6 +166,7 @@ public class DrawView extends View{
     public void setColor(int color){
         mPaint.setColor(color);
     }
+
 
     public Annotation enregistrer_image(String path, String videoName) {
 

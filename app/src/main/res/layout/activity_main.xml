@@ -106,20 +106,6 @@
                 android:layout_toRightOf="@id/audio_annot_btn"
                 android:src="@drawable/text_editor_32"/>
 
-            <ImageButton android:id="@+id/slow_mode_annot_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/graphic_annot_btn"
-                android:layout_alignParentLeft="true"
-                android:src="@drawable/slow_motion_32"/>
-
-            <ImageButton android:id="@+id/zoom_mode_annot_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/slow_mode_annot_btn"
-                android:layout_alignTop="@id/slow_mode_annot_btn"
-                android:src="@drawable/zoom_out_32"/>
-
         </RelativeLayout>
 
     </LinearLayout>
