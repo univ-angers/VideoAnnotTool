@@ -13,7 +13,7 @@
         android:layout_gravity="center"
         android:ems="10"
         android:hint="@string/TextBtnPassword"
-        android:inputType="text|textPersonName" />
+        android:inputType="textPassword" />
 
     <Button
         android:id="@+id/btnPasserCoach"
