@@ -51,10 +51,9 @@ import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation.Video;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
-import com.master.info_ua.videoannottool.annotation_dessin.SaveBitmap;
 import com.master.info_ua.videoannottool.annotation_dialog.DialogDraw;
-import com.master.info_ua.videoannottool.annotation_dialog.DialogRecord;
-import com.master.info_ua.videoannottool.annotation_dialog.DialogTextAnnot;
+import com.master.info_ua.videoannottool.annotation_dialog.DialogAudio;
+import com.master.info_ua.videoannottool.annotation_dialog.DialogText;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
 import com.master.info_ua.videoannottool.util.Categorie;
@@ -68,7 +67,7 @@ import java.util.List;
 
 import static com.master.info_ua.videoannottool.util.Util.parseJSON;
 
-public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction, DialogRecord.DialogRecordListener {
+public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction, DialogAudio.DialogRecordListener,DialogText.DialogTextListener {
 
 
     private ImageButton audioAnnotBtn;
@@ -571,7 +570,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             switch (btnId) {
                 case R.id.audio_annot_btn:
                     player.setPlayWhenReady(false);
-                    DialogRecord dialog = new DialogRecord(MainActivity.this, currentSubCategorie.getPath());
+                    DialogAudio dialog = new DialogAudio(MainActivity.this, currentSubCategorie.getPath(),1);
                     Annotation auDdioAnnotation = new Annotation("Audio annot ", AnnotationType.AUDIO);
                     dialog.showDialogRecord(auDdioAnnotation, videoName);
                     break;
@@ -596,8 +595,10 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     break;
                 case R.id.text_annot_btn:
                     player.setPlayWhenReady(false);
-                    DialogTextAnnot dialogtext = new DialogTextAnnot();
-                    dialogtext.showDialogText(MainActivity.this);
+                    Annotation textAnnotation = new Annotation("Text Annot ", AnnotationType.TEXT);
+                    DialogText dialogtext = new DialogText(MainActivity.this,1);
+                    dialogtext.showDialogBox(textAnnotation,MainActivity.this);
+
                     break;
             }
         }
@@ -718,10 +719,19 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     @Override
     public void addAudioAnnot(Annotation annotation) {
-        Log.e("AUDIO_ANNOT", "Annotation file name "+annotation.getAudioFileName()+" Annotation title: "+annotation.getAnnotationTitle()+"["+annotation.getAnnotationStartTime()+"]");
+        Log.i("AUDIO_ANNOT", "Annotation file name "+annotation.getAudioFileName()+" Annotation title: "+annotation.getAnnotationTitle()+"["+annotation.getAnnotationStartTime()+"]"+" Duration :"+annotation.getAnnotationDuration());
 
         newAnnotIsAdded = true;
         currentVAnnot.getAnnotationList().add(annotation);
         currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
     }
+
+    public void addTextAnnot(Annotation annotation) {
+        Log.i("TEXT_ANNOT", " Annotation title: "+annotation.getAnnotationTitle()+"["+annotation.getAnnotationStartTime()+"]"+"Duration : "+annotation.getAnnotationDuration());
+
+        newAnnotIsAdded = true;
+        currentVAnnot.getAnnotationList().add(annotation);
+        currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
+    }
+
 }
