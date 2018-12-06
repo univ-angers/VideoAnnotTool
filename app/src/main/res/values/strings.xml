@@ -13,11 +13,21 @@
     <string name="TextBtnValiderRecord">Valider</string>
     <string name="TextBtnAnnulerRecord">Annuler</string>
 
+
     <string name="BtnValiderDialogText">Valider</string>
     <string name="TitleDialogText">Entrez le texte à afficher</string>
 
 
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="TextBtnImport">Importer la vidéo</string>
+    <string name="TextBtnCancel">Annuler</string>
+    <string name="TextBtnPassword">Mot de passe</string>
+    <string name="TextBtnOK">Passer en mode coach</string>
+    <string name="ImportVideo">Importer une vidéo</string>
+    <string name="profil">Profil</string>
+
+
+
+
 </resources>

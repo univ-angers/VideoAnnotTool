@@ -63,7 +63,7 @@ public class SaveBitmap {
                 outputStream.write(bitmapStr.getBytes());
                 outputStream.close();
 
-                Log.d("TAG", "Writed to "+externalFile.getAbsolutePath());
+                Log.e("TAG", "Writed to "+externalFile.getAbsolutePath());
             }
 
         } catch (Exception e) {
@@ -71,10 +71,10 @@ public class SaveBitmap {
         }
     }
 
-    public static void saveBitmapImage(Context context, Bitmap imageToSave, String fileName) {
+    public static void saveBitmapImage(Context context, Bitmap imageToSave,String path, String fileName) {
 
         if (isExternalStorageWritable()) {
-            externalFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
+            externalFile = new File(context.getExternalFilesDir(path), fileName);
             if (externalFile.exists()) {
                 externalFile.delete();
             }
@@ -83,7 +83,7 @@ public class SaveBitmap {
                 imageToSave.compress(Bitmap.CompressFormat.PNG, 100, out);
                 out.flush();
                 out.close();
-                Log.d("TAG", "Bitmap writed to "+externalFile.getAbsolutePath());
+                Log.e("TAG", "Bitmap writed to "+externalFile.getAbsolutePath());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -134,5 +134,4 @@ public class SaveBitmap {
         encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
         return encodedImage;
     }
-
 }
