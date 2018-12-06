@@ -14,6 +14,9 @@ import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -56,8 +59,10 @@ import com.master.info_ua.videoannottool.annotation_dialog.DialogAudio;
 import com.master.info_ua.videoannottool.annotation_dialog.DialogText;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
+
 import com.master.info_ua.videoannottool.util.Categorie;
 import com.master.info_ua.videoannottool.util.Util;
+
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -66,6 +71,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.master.info_ua.videoannottool.util.Util.parseJSON;
+import static com.master.info_ua.videoannottool.util.Util.parseJSONAssets;
+import static com.master.info_ua.videoannottool.util.Util.saveVideoAnnotation;
 
 public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction, DialogAudio.DialogRecordListener,DialogText.DialogTextListener {
 
@@ -112,6 +119,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private List<Video> videoList;
     private Video currentVideo;
+    private VideoAnnotation currentVideoAnnotation;
 
     String videoName = "test"; // a modifié pour aller chercher le nom des video
 
@@ -140,6 +148,11 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private boolean newAnnotIsAdded = false;
 
+    public static final boolean ELEVE = false;
+    public static final boolean COACH= true;
+    private boolean statut_profil = ELEVE;                    //flag pour savoir si utilisateur = eleve ou coach. L'app se lance en eleve
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -167,6 +180,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         }
 
 
+
         listViewVideos = findViewById(R.id.lv_videos);
 
         spinnerCategorie = findViewById(R.id.spinner_cat);
@@ -175,7 +189,9 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
         videoList = initVideoList();
         currentVideo = videoList.get(0);
+
         currentVAnnot = currentVideo.getVideoAnnotation();
+
 
         videosAdapter = new VideosAdapter(this, videoList);
 
@@ -191,10 +207,12 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         categorieList.addAll(setCatSpinnerList());
 
         spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
+
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategorie.setAdapter(spinnerAdapter);
 
         //Spinner sous-catégorie
+
         List<Categorie> spinnerList2 = new ArrayList<>();
         spinnerList2.add(new Categorie("Sous-categorie", null, "/"));
 
@@ -206,12 +224,15 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
         //Listener btn audio_annot_btn
         audioAnnotBtn = findViewById(R.id.audio_annot_btn);
+        audioAnnotBtn.setEnabled(false);        //bouton desactivés de base
         audioAnnotBtn.setOnClickListener(btnClickListener);
 
         textAnnotBtn = findViewById(R.id.text_annot_btn);
+       textAnnotBtn.setEnabled(false);        //bouton desactivés de base
         textAnnotBtn.setOnClickListener(btnClickListener);
 
         graphAnnotBtn = findViewById(R.id.graphic_annot_btn);
+        graphAnnotBtn.setEnabled(false);        //bouton desactivés de base
         graphAnnotBtn.setOnClickListener(btnClickListener);
 
 
@@ -244,10 +265,46 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         spinnerSubCategorie.setOnItemSelectedListener(subCatItemSelectedListener);
         //Affichage de la liste des annotation de la vidéo courante
         annotFragment.updateAnnotationList(currentVAnnot);
-
-        //Util.appDirExist(this);
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        Dialog dialog = new Dialog(this);
+        switch (item.getItemId()) {
+            case R.id.action_import:
+                DialogImport dialogImport = new DialogImport();
+                dialogImport.showDialogImport(MainActivity.this);
+                return true;
+            case R.id.action_share:
+                DialogShare dialogShare = new DialogShare();
+                dialogShare.showDialogShare(MainActivity.this);
+                return true;
+            case R.id.action_profile:
+                if(statut_profil==ELEVE) {
+                    DialogProfil dialogProfil = new DialogProfil();
+                    dialogProfil.showDialogProfil(MainActivity.this);
 
+                }else if (statut_profil==COACH){
+                    audioAnnotBtn.setEnabled(false);
+                    textAnnotBtn.setEnabled(false);
+                    graphAnnotBtn.setEnabled(false);
+
+                    statut_profil=ELEVE;
+                }
+
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -321,9 +378,10 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             videosAdapter.setSelectedListItem(position);
             videosAdapter.notifyDataSetChanged();
 
+
             if (newAnnotIsAdded){
                 if(currentVAnnot!= null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null){
-                    Util.saveVideoAnnotaion(MainActivity.this, currentVAnnot, currentSubCategorie.getPath(), videoName);
+                    Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, currentSubCategorie.getPath(), videoName);
                 }else {
                     Log.e("NULL_OBJECT", "One of initialization object is null");
                 }
@@ -337,6 +395,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             annotFragment.updateAnnotationList(currentVAnnot);
 
             videoName = currentVideo.getFileName();
+
 
             player.stop();
             initExoPlayer(); // recrée le lecteur
@@ -495,24 +554,35 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     //Initialise la liste de vidéos pous la session ( A BUT DE TESTS )
     public List<Video> initVideoList() {
 
+
         List<Video> videoList = new ArrayList<>(); //Liste de vidéo
 
-        VideoAnnotation videoAnnotations1 = parseJSON(this, "annot_video1.json");
-        VideoAnnotation videoAnnotations2 = parseJSON(this, "annot_video2.json");
-        VideoAnnotation videoAnnotations3 = parseJSON(this, "annot_video3.json");
-        VideoAnnotation videoAnnotations4 = parseJSON(this, "annot_video4.json");
+        VideoAnnotation videoAnnotations1 = parseJSONAssets(this, "annot_video1.json");
+        VideoAnnotation videoAnnotations2 = parseJSONAssets(this,"annot_video2.json");
+        VideoAnnotation videoAnnotations3 = parseJSONAssets(this,"annot_video3.json");
+        VideoAnnotation videoAnnotations4 = parseJSONAssets(this, "annot_video4.json");
+
+        saveVideoAnnotation(this,videoAnnotations1,DirPath.CATEGORIE1_SUB3.toString(),"video1");
+
+        VideoAnnotation videoAnnotations5 =parseJSONAssets(this, "annot_video1.json");;
+
+
 
         //Création d'instances de vidéos
-        Video video1 = new Video("video 1", null, videoAnnotations1);
-        Video video2 = new Video("video 2", null, videoAnnotations2);
-        Video video3 = new Video("video 3", null, videoAnnotations3);
-        Video video4 = new Video("video 4", null, videoAnnotations4);
+        Video video1 = new Video("video1", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations1);
+        Video video2 = new Video("video2", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations2);
+        Video video3 = new Video("video3", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations3);
+        Video video4 = new Video("video4", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations4);
+        Video video5 = new Video("video5", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations5);
+
 
         //Ajout dans la liste
         videoList.add(video1);
         videoList.add(video2);
         videoList.add(video3);
         videoList.add(video4);
+        videoList.add(video5);
+
 
         return videoList;
     }
@@ -522,7 +592,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
      *
      * @return
      */
-    protected List<Categorie> setCatSpinnerList() {
+    public List<Categorie> setCatSpinnerList() {
         List<Categorie> categorieList = new ArrayList<>();
 
         if (Util.appDirExist(this)) {
@@ -544,7 +614,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
      *
      * @return
      */
-    protected List<Categorie> setSubCatSpinnerList(String parentDir) {
+    public List<Categorie> setSubCatSpinnerList(String parentDir) {
         List<Categorie> categorieList = new ArrayList<>();
 
         categorieList.add(new Categorie("Sous-categorie", null, "../"));
@@ -733,5 +803,11 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         currentVAnnot.getAnnotationList().add(annotation);
         currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
     }
+
+
+    public void setStatutProfil(boolean nouveauStatut){
+        statut_profil=nouveauStatut;
+    }
+
 
 }

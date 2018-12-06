@@ -5,7 +5,9 @@
     <string name="add_button">Nouvelle vidéo</string>
     <string name="subcategory">Sous-catégorie :</string>
 
+
     <string name="TitleDialogRecord">Enregistrement Audio</string>
+
     <string name="TextBtnStartRecord">Enregister</string>
     <string name="TextBtnStopRecord">Stop</string>
     <string name="TextBtnEcouterRecord">Ecouter</string>
@@ -14,9 +16,24 @@
     <string name="BtnValiderDialogText">Valider</string>
     <string name="TitleDialogText">Entrez le texte à afficher</string>
 
-
     <string name="TextDialogDraw">Enregistrement Graphique</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="TextBtnImport">Importer la vidéo</string>
+    <string name="TextBtnCancel">Annuler</string>
+    <string name="TextBtnPassword">Mot de passe</string>
+    <string name="TextBtnOK">Passer en mode coach</string>
+    <string name="TextBtnImportVideo">Importer la vidéo</string>
+    <string name="ShareVideo">Partager une vidéo</string>
+    <string name="ImportVideo">Importer une vidéo</string>
+
+    <string name="TextBtnShareVideo">Partager la vidéo</string>
+    <string name="TextBtnSelectVideo">Choisir la vidéo</string>
+
+
+    <string name="profil">Profil</string>
+
+
+
+
 </resources>
