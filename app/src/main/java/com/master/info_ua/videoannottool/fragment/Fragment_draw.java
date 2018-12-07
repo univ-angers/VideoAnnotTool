@@ -56,6 +56,8 @@ public class Fragment_draw extends Fragment {
 
         b_red = view.findViewById(R.id.b_draw_red);
         b_red.setOnClickListener(btnClickListener);
+        // couleur par défaut
+        b_red.setEnabled(false);
 
         b_yellow = view.findViewById(R.id.b_draw_yellow);
         b_yellow.setOnClickListener(btnClickListener);
@@ -106,25 +108,46 @@ public class Fragment_draw extends Fragment {
                     break;
                 case R.id.b_draw_blue:
                     listener.setColor(Color.BLUE);
+                    setAllEnable();
+                    b_blue.setEnabled(false);
                     break;
                 case R.id.b_draw_red:
                     listener.setColor(Color.RED);
+                    setAllEnable();
+                    b_red.setEnabled(false);
                     break;
                 case R.id.b_draw_yellow:
                     listener.setColor(Color.YELLOW);
+                    setAllEnable();
+                    b_yellow.setEnabled(false);
                     break;
                 case R.id.b_draw_black:
                     listener.setColor(Color.BLACK);
+                    setAllEnable();
+                    b_black.setEnabled(false);
                     break;
                 case R.id.b_draw_green:
                     listener.setColor(Color.GREEN);
+                    setAllEnable();
+                    b_green.setEnabled(false);
                     break;
                 case R.id.b_draw_white:
                     listener.setColor(Color.WHITE);
+                    setAllEnable();
+                    b_white.setEnabled(false);
                     break;
             }
         }
     };
+
+    public void setAllEnable(){
+        b_red.setEnabled(true);
+        b_black.setEnabled(true);
+        b_blue.setEnabled(true);
+        b_yellow.setEnabled(true);
+        b_white.setEnabled(true);
+        b_green.setEnabled(true);
+    }
 
     public interface Listener_fonction
     {
