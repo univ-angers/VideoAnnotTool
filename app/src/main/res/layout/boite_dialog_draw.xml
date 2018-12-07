@@ -60,15 +60,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="50"
-            android:background="@color/btnValiderRecord"
-            android:text="@string/TextBtnValiderRecord" />
+            android:background="@color/btnValider"
+            android:text="@string/BtnValider" />
 
         <Button
             android:id="@+id/btnAnnulerDraw"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="50"
-            android:background="@color/btnAnnulerRecord"
+            android:background="@color/btnAnnuler"
             android:text="@string/TextBtnAnnulerRecord" />
     </LinearLayout>
 </LinearLayout>

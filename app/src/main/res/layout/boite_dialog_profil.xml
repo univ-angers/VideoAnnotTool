@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:layout_editor_absoluteY="73dp">
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:ems="10"
+        android:hint="@string/TextBtnPassword"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/btnPasserCoach"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/TextBtnOK" />
+
+    <Button
+        android:id="@+id/btnAnnulerPasserCoach"
+        android:layout_width="211dp"
+        android:layout_height="wrap_content"
+
+        android:layout_gravity="center"
+        android:text="@string/TextBtnCancel" />
+
+</android.widget.LinearLayout>

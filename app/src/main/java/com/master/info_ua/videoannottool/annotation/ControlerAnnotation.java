@@ -12,29 +12,38 @@ import java.util.List;
 
 
 public class ControlerAnnotation implements Runnable {
+    // Context utiliser pour crée les tache envoyé au Main Thread
     private Context _mainActivity;
+    // L'interface de notre player pour avoir accés aux methodes de ce dernier
     private Ecouteur m_ecouteur = null;
+    // file d'excécution contenant des objet indiquant le temps, la position et si il faut lancer ou arreter l'annotation
     private ArrayList<InfoAnno> listInfoAnno = new ArrayList<InfoAnno>();
+    // liste des annotation contituer a partir de celle de Video anotaion
     private List<Annotation> listAnno;
+    // index sur la file permettant de parcourir la file la ou nous en étions rendu
     private int last_pos = 0;
+    // liste des annotation active
     private ArrayList<Integer> annotActive = new ArrayList<>();
+    // si passée a true arret soft du thread, nescessaire en android
     private boolean cancelled = false;
+    // nous permet d'envoyer des tache a éxecuter a dans notre mainActivity
     private Handler mainHandler;
 
+    // setter de last_pos
     public void setLast_pos(int last_pos) {
         this.last_pos = last_pos;
     }
 
+    // constructeurs comme expliquer dans le rapport nous lui passont dans le main  deux fois la même valeur mais a termes cela devrait changer
     public ControlerAnnotation(Context context, Ecouteur m_e, VideoAnnotation videoAnnotation, Handler _mainHandler) {
         mainHandler = _mainHandler;
         _mainActivity = context;
         m_ecouteur = m_e;
         listAnno = videoAnnotation.getAnnotationList();
-        System.out.print(listAnno.get(0).getAnnotationStartTime());
-        //ttt de videoAnnotation
+        // traitement de videoAnnotation
         int i = 0;
         for (Annotation elt : listAnno) {
-            //System.out.println(elt.getAnnotationStartTime())+"****f*sef*se*f*sef*sef*se*fs*ef*sef**************************************************************************************************************************************************************************************************************************************************************************************************************");
+            // ici on ajoute deux InfoAnno pour une même annotation, une pour la lancer et une pour la stopper
             InfoAnno tmp = new InfoAnno(arronditSeconde(elt.getAnnotationStartTime()), i, true);
             listInfoAnno.add(tmp);
             long fin = arronditSeconde(elt.getAnnotationStartTime() + elt.getAnnotationDuration());
@@ -43,8 +52,6 @@ public class ControlerAnnotation implements Runnable {
             i++;
         }
         Collections.sort(listInfoAnno);
-        System.out.println(listInfoAnno.get(0).getTime()+"*****************************************************************************************************************************************************");
-
     }
 
     public void updateAnno(VideoAnnotation update) {
@@ -77,10 +84,12 @@ public class ControlerAnnotation implements Runnable {
         }
     }
 
+    // arrondi un long représentant des milliseconde a la seconde inférieur
     public long arronditSeconde(long time) {
         return (time / 1000) * 1000;
     }
 
+    // methode pour lancer les annotation en foncton de leur type
     public void launch(Annotation anno) {
         switch (anno.getAnnotationType()) {
             case DRAW:
@@ -104,6 +113,7 @@ public class ControlerAnnotation implements Runnable {
         }
     }
 
+    // indentique a launch mais pour stopper les annotation
     public void stop(Annotation anno) {
         switch (anno.getAnnotationType()) {
             case DRAW:
@@ -127,6 +137,8 @@ public class ControlerAnnotation implements Runnable {
         }
     }
 
+    // les différente methode d'ajout de tache au main handler en fonction du type de l'annotation
+    // reste a definir envoir simplement des toast pour le moment
     public void launchDraw() {
         mainHandler.post(new Runnable() {
             @Override
@@ -233,16 +245,14 @@ public class ControlerAnnotation implements Runnable {
         });
     }
 
+    // methode override de Runnable pour pouvoir lancer un thread a partir de notre classe
     @Override
     public void run() {
         cancelled = false;
         while (checkTime() && (!cancelled)) {
             synchronized (this) {
                 try {
-                    System.out.println("coucou j'ai exécuter un tour de boucle");
-
                     this.wait(1000);
-                    System.out.println("coucou j'ai exécuter un tour de boucle");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -250,6 +260,7 @@ public class ControlerAnnotation implements Runnable {
         }
     }
 
+    // methode pour stopper notre thread
     public void cancel() {
         cancelled = true;
     }
