@@ -41,21 +41,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/BLUE" />
+                android:background="@drawable/button_blue" />
 
             <Button
                 android:id="@+id/b_draw_yellow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/YELLOW" />
+                android:background="@drawable/button_yellow" />
 
             <Button
                 android:id="@+id/b_draw_green"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/GREEN" />
+                android:background="@drawable/button_green" />
         </LinearLayout>
 
         <LinearLayout
@@ -68,19 +68,19 @@
                 android:id="@+id/b_draw_red"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/RED" />
+                android:background="@drawable/button_red" />
 
             <Button
                 android:id="@+id/b_draw_black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/BLACK" />
+                android:background="@drawable/button_black" />
 
             <Button
                 android:id="@+id/b_draw_white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/WHITE" />
+                android:background="@drawable/button_white" />
         </LinearLayout>
 
     </LinearLayout>
