@@ -56,11 +56,13 @@ public class Fragment_annotation extends Fragment {
         listViewAnnotations.setClickable(true);
     }
 
-    public void updateAnnotationList(VideoAnnotation video) {
+    public void updateAnnotationList(VideoAnnotation videoAnnot) {
 
-        //Mise à jour de la liste
         annotationsAdapter.clear();
-        annotationsAdapter.addAll(video.getAnnotationList());
+        //Mise à jour de la liste
+        if (videoAnnot != null){
+            annotationsAdapter.addAll(videoAnnot.getAnnotationList());
+        }
         annotationsAdapter.notifyDataSetChanged();
 
     }

@@ -1,9 +1,12 @@
-package com.master.info_ua.videoannottool;
+package com.master.info_ua.videoannottool.menu;
 
 import android.app.Dialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+
+import com.master.info_ua.videoannottool.MainActivity;
+import com.master.info_ua.videoannottool.R;
 
 import static com.master.info_ua.videoannottool.MainActivity.COACH;
 

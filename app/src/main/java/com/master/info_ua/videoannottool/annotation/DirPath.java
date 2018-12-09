@@ -1,26 +1,26 @@
 package com.master.info_ua.videoannottool.annotation;
 
 public enum DirPath {
-    CATEGORIE1("Catégorie 1", "categorie1", false),
-    CATEGORIE2("Catégorie 2", "categorie2", false),
-    CATEGORIE3("Catégorie 3", "categorie3", false),
-    CATEGORIE4("Catégorie 4", "categorie4", false),
-    CATEGORIE1_SUB1("Sous-catégorie 1", "categorie1/sous-categorie1", true),
-    CATEGORIE1_SUB2("Sous-catégorie 2", "categorie1/sous-categorie2", true),
-    CATEGORIE1_SUB3("Sous-catégorie 3", "categorie1/sous-categorie3", true),
-    CATEGORIE1_SUB4("Sous-catégorie 4", "categorie1/sous-categorie4", true),
-    CATEGORIE2_SUB1("Sous-catégorie 1", "categorie2/sous-categorie1", true),
-    CATEGORIE2_SUB2("Sous-catégorie 2", "categorie2/sous-categorie2", true),
-    CATEGORIE2_SUB3("Sous-catégorie 3", "categorie2/sous-categorie3", true),
-    CATEGORIE2_SUB4("Sous-catégorie 4", "categorie2/sous-categorie4", true),
-    CATEGORIE3_SUB1("Sous-catégorie 1", "categorie3/sous-categorie1", true),
-    CATEGORIE3_SUB2("Sous-catégorie 2", "categorie3/sous-categorie2", true),
-    CATEGORIE3_SUB3("Sous-catégorie 3", "categorie3/sous-categorie3", true),
-    CATEGORIE3_SUB4("Sous-catégorie 4", "categorie3/sous-categorie4", true),
-    CATEGORIE4_SUB1("Sous-catégorie 1", "categorie4/sous-categorie1", true),
-    CATEGORIE4_SUB2("Sous-catégorie 2", "categorie4/sous-categorie2", true),
-    CATEGORIE4_SUB3("Sous-catégorie 3", "categorie4/sous-categorie3", true),
-    CATEGORIE4_SUB4("Sous-catégorie 4", "categorie4/sous-categorie4", true);
+    CATEGORIE1("SOLO", "solo", false),
+    CATEGORIE2("DUO", "duo", false),
+    CATEGORIE3("TRIO", "trio", false),
+    CATEGORIE4("QUATUOR", "quatuor", false),
+    CATEGORIE1_SUB1("Souplesse", "solo/souplesse", true),
+    CATEGORIE1_SUB2("Maintien", "solo/maintien", true),
+    CATEGORIE1_SUB3("Agilité", "solo/agilite", true),
+    CATEGORIE1_SUB4("Dynamique", "solo/dynamique", true),
+    CATEGORIE2_SUB1("Statiques positions variées", "duo/statiques-variees", true),
+    CATEGORIE2_SUB2("Statiques ATR", "duo/statiques-atr", true),
+    CATEGORIE2_SUB3("Dynamiques rattrapes", "duo/dynamique-rattrappes", true),
+    CATEGORIE2_SUB4("Dynamiques sorties", "duo/dynamique-sorties", true),
+    CATEGORIE3_SUB1("Statiques positions variées", "trio/statiques-variees", true),
+    CATEGORIE3_SUB2("Statiques ATR", "trio/statiques-atr", true),
+    CATEGORIE3_SUB3("Dynamiques rattrapes", "trio/dynamique-rattrappes", true),
+    CATEGORIE3_SUB4("Dynamiques sorties", "trio/dynamique-sorties", true),
+    CATEGORIE4_SUB1("Statiques positions variées", "quatuor/statiques-variees", true),
+    CATEGORIE4_SUB2("Statiques ATR", "quatuor/statiques-atr", true),
+    CATEGORIE4_SUB3("Dynamiques rattrapes", "quatuor/dynamique-rattrappes", true),
+    CATEGORIE4_SUB4("Dynamiques sorties", "quatuor/dynamique-sorties", true);
 
     private final String name;
     private final String path;

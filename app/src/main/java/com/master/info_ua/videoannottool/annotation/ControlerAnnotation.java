@@ -39,19 +39,22 @@ public class ControlerAnnotation implements Runnable {
         mainHandler = _mainHandler;
         _mainActivity = context;
         m_ecouteur = m_e;
-        listAnno = videoAnnotation.getAnnotationList();
-        // traitement de videoAnnotation
-        int i = 0;
-        for (Annotation elt : listAnno) {
-            // ici on ajoute deux InfoAnno pour une même annotation, une pour la lancer et une pour la stopper
-            InfoAnno tmp = new InfoAnno(arronditSeconde(elt.getAnnotationStartTime()), i, true);
-            listInfoAnno.add(tmp);
-            long fin = arronditSeconde(elt.getAnnotationStartTime() + elt.getAnnotationDuration());
-            tmp = new InfoAnno(fin, i, false);
-            listInfoAnno.add(tmp);
-            i++;
+        if (videoAnnotation != null) {
+            listAnno = videoAnnotation.getAnnotationList();
+            // traitement de videoAnnotation
+            int i = 0;
+            for (Annotation elt : listAnno) {
+                // ici on ajoute deux InfoAnno pour une même annotation, une pour la lancer et une pour la stopper
+                InfoAnno tmp = new InfoAnno(arronditSeconde(elt.getAnnotationStartTime()), i, true);
+                listInfoAnno.add(tmp);
+                long fin = arronditSeconde(elt.getAnnotationStartTime() + elt.getAnnotationDuration());
+                tmp = new InfoAnno(fin, i, false);
+                listInfoAnno.add(tmp);
+                i++;
+            }
+            Collections.sort(listInfoAnno);
         }
-        Collections.sort(listInfoAnno);
+
     }
 
     public void updateAnno(VideoAnnotation update) {
@@ -65,7 +68,7 @@ public class ControlerAnnotation implements Runnable {
         //verifier le temps et lancer launch avec le paramétre correspondant
         if (m_ecouteur.getPlayer().getDuration() >= m_ecouteur.getVideoTime()) {
             while (last_pos < listInfoAnno.size()) {
-                System.out.println("\n\n\n\n"+arronditSeconde(m_ecouteur.getVideoTime())+"\n\n" + listInfoAnno.get(last_pos).getTime()+"\n\n\n\n" );
+                System.out.println("\n\n\n\n" + arronditSeconde(m_ecouteur.getVideoTime()) + "\n\n" + listInfoAnno.get(last_pos).getTime() + "\n\n\n\n");
                 if (arronditSeconde(m_ecouteur.getVideoTime()) == listInfoAnno.get(last_pos).getTime()) {
                     if (listInfoAnno.get(last_pos).isDebut()) {
                         launch(listAnno.get(listInfoAnno.get(last_pos).getIndex()));

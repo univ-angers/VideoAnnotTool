@@ -168,18 +168,19 @@ public class DrawView extends View{
     }
 
 
-    public Annotation enregistrer_image(String path, String videoName) {
+    public String enregistrer_image(String path, String videoName) {
 
         final SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy-HHmmss");
         String drawFileName = videoName+"_"+dateFormat.format(new Date())+".png";
 
-        Annotation annotation = new Annotation("Graphic annot", new Date(), 5000, 5000, AnnotationType.DRAW);
-        annotation.setDrawFileName(drawFileName);
+        //Annotation annotation = new Annotation("Graphic annot", new Date(), 5000, 5000, AnnotationType.DRAW);
+        //annotation.setDrawFileName(drawFileName);
         SaveBitmap.saveBitmapImage(context, mBitmap, path, drawFileName); // ici mettre un nom unique pour chaque
         mPath.reset();
         invalidate();
 
-        return annotation;
+        //return annotation;
+        return drawFileName;
     }
 
 }

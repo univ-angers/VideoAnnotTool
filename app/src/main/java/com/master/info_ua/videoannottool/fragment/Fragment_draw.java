@@ -4,16 +4,25 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
+import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.annotation.AnnotationType;
 import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
+import com.master.info_ua.videoannottool.annotation_dialog.DialogDraw;
+import com.master.info_ua.videoannottool.util.Util;
+
+import java.io.File;
+import java.util.Date;
 
 
-public class Fragment_draw extends Fragment {
+public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialogListener {
 
     private Button b_clear;
     private Button b_cancel;
@@ -26,6 +35,8 @@ public class Fragment_draw extends Fragment {
     private Button b_white;
 
     private Listener_fonction listener;
+
+    private Annotation drawAnnotation;
 
     public Fragment_draw() {
         // Required empty public constructor
@@ -86,8 +97,15 @@ public class Fragment_draw extends Fragment {
                     + " must implemenet MyListFragment.OnItemSelectedListener");
         }
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
     //Listener des boutons
-    View.OnClickListener btnClickListener = new View.OnClickListener() {
+    protected View.OnClickListener btnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 
@@ -103,8 +121,11 @@ public class Fragment_draw extends Fragment {
                     break;
                 case R.id.b_draw_save:
                     listener.setOnTouchEnable(false);
-                    listener.lancement_dialogue();
-                    listener.fermer_fragment();
+                    String drawFileName = listener.saveDrawImage();
+                    setDrawAnnotation(drawFileName);
+                    onShowDrawAnnotDialog();
+                    //listener.lancement_dialogue();
+                    //listener.fermer_fragment();
                     break;
                 case R.id.b_draw_blue:
                     listener.setColor(Color.BLUE);
@@ -149,18 +170,37 @@ public class Fragment_draw extends Fragment {
         b_green.setEnabled(true);
     }
 
-    public interface Listener_fonction
-    {
+    @Override
+    public void onSaveDrawImage(String title, int duration) {
+        drawAnnotation.setAnnotationTitle(title);
+        drawAnnotation.setAnnotationDuration(duration);
+        drawAnnotation.setAnnotationDate(new Date());
+        listener.enregistrer_image(drawAnnotation);
+        //listener.fermer_fragment();
+    }
+
+    @Override
+    public void onResetCanvas() {
+
+    }
+
+    protected void onShowDrawAnnotDialog(){
+        DialogDraw mon_dialogue = new DialogDraw(this);
+        mon_dialogue.showDialogDraw();
+    }
+
+    protected void setDrawAnnotation(String drawFileName){
+        this.drawAnnotation = new Annotation(AnnotationType.DRAW);
+        this.drawAnnotation.setDrawFileName(drawFileName);
+    }
+
+    public interface Listener_fonction {
         void resetCanvas();
         void setOnTouchEnable(boolean bool);
-        void lancement_dialogue();
+        String saveDrawImage();
+        void enregistrer_image(Annotation annotation);
         void setColor(int color);
         void fermer_fragment();
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
-    }
 }

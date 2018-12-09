@@ -43,18 +43,19 @@ public class DialogAudio {
     private String audioName;
     private DialogRecordListener recordListener;
     private Annotation audioAnnot;
-    private int startTime;
+    private long startTime;
 
     /**
      * Constructeur de la classe
+     *
      * @param context
      * @param directory repertoire de la vidéo
      * @param startTime temps de début de l'annotation
      */
-    public DialogAudio(Context context, String directory, int startTime){
+    public DialogAudio(Context context, String directory, long startTime) {
 
         //Initialisation
-        this.startTime =startTime;
+        this.startTime = startTime;
         this.mainActivity = context;
         this.directory = directory;
         dialogBox = new Dialog(mainActivity);
@@ -63,28 +64,29 @@ public class DialogAudio {
         dialogBox.setCancelable(false);
         dialogBox.setTitle(R.string.TitleDialogRecord);
 
-        btnStart =  dialogBox.findViewById(R.id.btnStartRecord);
-        btnStop =  dialogBox.findViewById(R.id.btnStopRecord);
+        btnStart = dialogBox.findViewById(R.id.btnStartRecord);
+        btnStop = dialogBox.findViewById(R.id.btnStopRecord);
         btnListen = dialogBox.findViewById(R.id.btnListenRecord);
         btnValid = dialogBox.findViewById(R.id.btnValiderRecord);
         btnCancel = dialogBox.findViewById(R.id.btnAnnulerRecord);
 
 
-        if(context instanceof DialogRecordListener ){
+        if (context instanceof DialogRecordListener) {
             recordListener = (DialogRecordListener) context;
         }
     }
 
     /**
      * Affiche la boite de dialogue permettant l'enregistrement audio
+     *
      * @param audioAnnot annotation traitée
-     * @param videoName nom de la vidéo
+     * @param videoName  nom de la vidéo
      */
-    public void showDialogRecord(Annotation audioAnnot, String videoName){
+    public void showDialogRecord(Annotation audioAnnot, String videoName) {
 
         final SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy-HHmmss");
 
-        this.audioName=videoName+"_"+dateFormat.format(new Date())+".mp3";
+        this.audioName = videoName + "_" + dateFormat.format(new Date()) + ".mp3";
 
         btnStart.setOnClickListener(btnClickListener);
         btnStop.setOnClickListener(btnClickListener);
@@ -107,7 +109,7 @@ public class DialogAudio {
 
             int btnId = v.getId();
 
-            switch (btnId){
+            switch (btnId) {
                 case R.id.btnStartRecord:
                     btnStart.setEnabled(false);
                     btnStop.setEnabled(true);
@@ -129,7 +131,7 @@ public class DialogAudio {
                     btnStop.setEnabled(false);
                     btnListen.setEnabled(false);
                     btnValid.setEnabled(true);
-                    Audio audio =new Audio(mainActivity,mainActivity.getExternalFilesDir(directory)+File.separator+audioName);
+                    Audio audio = new Audio(mainActivity, mainActivity.getExternalFilesDir(directory) + File.separator + audioName);
                     audio.listen();
                     break;
 
@@ -138,14 +140,14 @@ public class DialogAudio {
                     Toast toastConfirmAnnot;
                     toastConfirmAnnot = Toast.makeText(mainActivity, "Annotation Enregistrée", Toast.LENGTH_LONG);
                     toastConfirmAnnot.show();
-                    Log.i("AUDIO_DIALOG-BOX","Validation "+audioName);
+                    Log.i("AUDIO_DIALOG-BOX", "Validation " + audioName);
                     dialogBox.cancel();
                     break;
 
                 case R.id.btnAnnulerRecord:
                     File file = new File(mainActivity.getFilesDir(), audioName);
                     file.delete();
-                    Log.i("AUDIO_DIALOG-BOX","Annulation");
+                    Log.i("AUDIO_DIALOG-BOX", "Annulation");
                     dialogBox.cancel();
                     break;
             }
@@ -155,7 +157,7 @@ public class DialogAudio {
     /**
      * Débute l'enregistrement audio
      */
-    public void startRecording(){
+    public void startRecording() {
 
         try {
             if (recorder == null)
@@ -166,7 +168,7 @@ public class DialogAudio {
             recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
 
 
-            recorder.setOutputFile(mainActivity.getExternalFilesDir(directory)+File.separator+audioName);
+            recorder.setOutputFile(mainActivity.getExternalFilesDir(directory) + File.separator + audioName);
 
             this.audioAnnot.setAudioFileName(audioName);
             this.audioAnnot.setAnnotationStartTime(startTime);
@@ -175,17 +177,13 @@ public class DialogAudio {
 
             recorder.prepare();
             recorder.start();
-            Log.i("AUDIO_DIALOG-BOX","Enregistrement commencé");
-            Toast toastStartRecord;
-            toastStartRecord = Toast.makeText( mainActivity,"Début d'enregistrement", Toast.LENGTH_LONG);
-            toastStartRecord.show();
+            Log.i("AUDIO_DIALOG-BOX", "Enregistrement commencé");
+            Toast.makeText(mainActivity, "Début d'enregistrement", Toast.LENGTH_LONG).show();
 
-
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            Log.e("AUDIO_DIALOG-BOX","ECHEC DE L'ENREGISTREMENT");
-            recorder=null;
+            Log.e("AUDIO_DIALOG-BOX", "ECHEC DE L'ENREGISTREMENT");
+            recorder = null;
         }
 
     }
@@ -193,29 +191,26 @@ public class DialogAudio {
     /**
      * Arrête l'enregistrement audio
      */
-    public void stopRecording(){
+    public void stopRecording() {
         try {
             recorder.stop();
             recorder.release();
             recorder = null;
 
-            MediaPlayer tmpPlayer=new MediaPlayer();
-            tmpPlayer.setDataSource(mainActivity.getExternalFilesDir(directory)+File.separator+audioName);
+            MediaPlayer tmpPlayer = new MediaPlayer();
+            tmpPlayer.setDataSource(mainActivity.getExternalFilesDir(directory) + File.separator + audioName);
 
             audioAnnot.setAnnotationDuration(tmpPlayer.getDuration());
-            Log.i("AUDIO_DIALOG-BOX","Enregistrement terminé");
-            Toast toastStopRecord;
-            toastStopRecord = Toast.makeText(mainActivity, "Fichier " + this.audioName + " enregistré", Toast.LENGTH_LONG);
-            toastStopRecord.show();
+            Log.e("AUDIO_DIALOG-BOX", "Enregistrement terminé ==> [durée de l'audio: " + tmpPlayer.getDuration());
+            Toast.makeText(mainActivity, "Fichier " + this.audioName + " enregistré", Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {
-            Log.e("AUDIO_DIALOG-BOX","ECHEC DE L'ARRET");
+            Log.e("AUDIO_DIALOG-BOX", "ECHEC DE L'ARRET");
         }
     }
 
 
-
-    public interface DialogRecordListener{
+    public interface DialogRecordListener {
         void addAudioAnnot(Annotation annotation);
     }
 

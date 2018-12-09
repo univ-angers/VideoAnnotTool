@@ -16,22 +16,28 @@ public class Annotation implements Serializable {
     private Integer zoomRate;
     private float slowMotionSpeed;
 
+    public Annotation(AnnotationType annotationType) {
+        this.annotationType = annotationType;
+        this.annotationDate = new Date();
+    }
+
     public Annotation(String annotationTitle, AnnotationType annotationType) {
         this.annotationTitle = annotationTitle;
         this.annotationType = annotationType;
+        this.annotationDate = new Date();
     }
 
-    public Annotation(String annotationTitle, Date annotationDate, Integer annotationStartTime, Integer annotationDuration, AnnotationType annotationType) {
+    public Annotation(String annotationTitle, Integer annotationStartTime, Integer annotationDuration, AnnotationType annotationType) {
         this.annotationTitle = annotationTitle;
-        this.annotationDate = annotationDate;
+        this.annotationDate = new Date();
         this.annotationStartTime = annotationStartTime;
         this.annotationDuration = annotationDuration;
         this.annotationType = annotationType;
     }
 
-    public Annotation(String annotationTitle, Date annotationDate, Integer annotationStartTime, Integer annotationDuration, AnnotationType annotationType, String audioFileName, String drawFileName, String textComment, Integer zoomRate, Integer slowMotionSpeed) {
+    public Annotation(String annotationTitle, Integer annotationStartTime, Integer annotationDuration, AnnotationType annotationType, String audioFileName, String drawFileName, String textComment, Integer zoomRate, Integer slowMotionSpeed) {
         this.annotationTitle = annotationTitle;
-        this.annotationDate = annotationDate;
+        this.annotationDate = new Date();
         this.annotationStartTime = annotationStartTime;
         this.annotationDuration = annotationDuration;
         this.annotationType = annotationType;

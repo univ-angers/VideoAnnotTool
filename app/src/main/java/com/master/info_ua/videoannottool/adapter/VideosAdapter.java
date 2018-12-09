@@ -24,7 +24,7 @@ public class VideosAdapter extends ArrayAdapter<Video> {
 
         // Get the data item for this position
 
-        Video video = (Video)  getItem(position);
+        Video video = getItem(position);
 
         // Check if an existing view is being reused, otherwise inflate the view
 
@@ -36,9 +36,9 @@ public class VideosAdapter extends ArrayAdapter<Video> {
 
         // Lookup view for data population
 
-        TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
+        TextView tvName = convertView.findViewById(R.id.tvName);
 
-        TextView tvHome = (TextView) convertView.findViewById(R.id.tvAuthor);
+        TextView tvHome = convertView.findViewById(R.id.tvAuthor);
 
         // Populate the data into the template view using the data object
 
@@ -53,9 +53,7 @@ public class VideosAdapter extends ArrayAdapter<Video> {
             convertView.setBackgroundResource(android.R.color.transparent);
         }
 
-
         return convertView;
-
     }
     public void setSelectedListItem(int position){
         selectedListItem=position;

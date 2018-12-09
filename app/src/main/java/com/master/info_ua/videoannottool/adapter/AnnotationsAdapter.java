@@ -23,7 +23,7 @@ public class AnnotationsAdapter extends ArrayAdapter<Annotation> {
 
         // Get the data item for this position
 
-        Annotation annotation = (Annotation)  getItem(position);
+        Annotation annotation = getItem(position);
 
         // Check if an existing view is being reused, otherwise inflate the view
 
@@ -35,13 +35,10 @@ public class AnnotationsAdapter extends ArrayAdapter<Annotation> {
 
         // Lookup view for data population
 
-        TextView tvTexte = (TextView) convertView.findViewById(R.id.tvTexte);
-
+        TextView tvTexte = convertView.findViewById(R.id.tvTexte);
 
         // Populate the data into the template view using the data object
-
         tvTexte.setText(annotation.getAnnotationTitle());
-
         // Return the completed view to render on screen
 
         return convertView;

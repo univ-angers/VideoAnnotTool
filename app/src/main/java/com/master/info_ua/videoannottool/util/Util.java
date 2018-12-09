@@ -6,12 +6,12 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,12 +19,21 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 
 public class Util {
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
+    /**
+     * Récupère un fichier dans le repertoire assets du projet et fait le parsing en objet Java
+     *
+     * @param context
+     * @param fichier
+     * @return
+     */
     public static VideoAnnotation parseJSONAssets(Context context, String fichier) {
 
         try {
@@ -41,33 +50,30 @@ public class Util {
         return null;
     }
 
-    public static VideoAnnotation parseJSON(Context context,String dirName, String fileName) {
+    /**
+     * Récupère un fichier dans le repertoire indiqué de l'application et fait le parsing en objet Java
+     *
+     * @param context
+     * @param dirName
+     * @param fileName
+     * @return
+     */
+    public static VideoAnnotation parseJSON(Context context, String dirName, String fileName) {
+
+        String filePath = context.getExternalFilesDir(dirName).getAbsolutePath()+ File.separator + fileName;
+        InputStream inputStream;
 
         try {
-            File file;
-            file = new File(context.getExternalFilesDir(dirName),fileName);
-
-
-            FileReader reader = new FileReader(file);
-
-            //InputStream inputStream = new FileInputStream(file);
-            Log.d("ERR_JSON", "Lecture JSON OK "+file);
-
-
-            //Reader reader = new InputStreamReader(inputStream);
-
-            //JsonReader reader = new JsonReader(new FileReader(filename));
-
-           // Reader reader = new InputStreamReader(fileReader);
+            FileInputStream fis = new FileInputStream (new File(filePath));
+            //inputStream = context.openFileInput(filePath);
+            Reader reader = new InputStreamReader(fis);
             Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
             VideoAnnotation videoAnnotation = gson.fromJson(reader, VideoAnnotation.class);
-
+            fis.close();
             return videoAnnotation;
-
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("ERR_JSON", "ERREUR Lecture JSON ");
-
         }
         return null;
     }
@@ -75,37 +81,36 @@ public class Util {
 
     /**
      * Sauvegarde l'objet videoAnnotation dans un fichier Json
+     *
      * @param context
      * @param videoAnnotation
      * @param dirPath
      * @param videoName
      */
-    public static void saveVideoAnnotation(Context context, VideoAnnotation videoAnnotation, String dirPath, String videoName){
-        if(isAppDirectory(dirPath)) {
-            Writer writer;
+    public static void saveVideoAnnotation(Context context, VideoAnnotation videoAnnotation, String dirPath, String videoName) {
 
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.setDateFormat("dd-MM-yyyy HH:mm:ss");
-            gsonBuilder.serializeNulls(); //Ne pas ignorer les attributs avec valeur null
-            gsonBuilder.setPrettyPrinting();
-            Gson gson = gsonBuilder.create();
-            try {
-                File file = new File(context.getExternalFilesDir(dirPath + "/" + videoName),videoName + ".json");
+        Writer writer;
 
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("dd-MM-yyyy HH:mm:ss");
+        gsonBuilder.serializeNulls(); //Ne pas ignorer les attributs avec valeur null
+        gsonBuilder.setPrettyPrinting();
+        Gson gson = gsonBuilder.create();
+        try {
+            File file = new File(context.getExternalFilesDir(dirPath), videoName + ".json");
 
-                writer = new FileWriter(file );
-                Log.d("VANNOT", "Annotation saved TEST"+ file);
+            writer = new FileWriter(file);
+            Log.d("VANNOT", "Annotation saved TEST" + file);
 
-                String jsonStr = gson.toJson(videoAnnotation);
-                writer.write(jsonStr);
-                writer.close();
+            String jsonStr = gson.toJson(videoAnnotation);
+            writer.write(jsonStr);
+            writer.close();
 
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e("ERR_VANNOT", "Unable to save annotation ");
-            }
-        }else
-            Log.d("ERR_REP","chemin du repertoire erroné");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ERR_VANNOT", "Unable to save annotation ");
+        }
+
     }
 
 
@@ -117,14 +122,13 @@ public class Util {
         return false;
     }
 
-
-    public static void createDir(Context context){
-        if (isExternalStorageWritable()){
-            for (DirPath dirPath : DirPath.values()){
+    public static void createDir(Context context) {
+        if (isExternalStorageWritable()) {
+            for (DirPath dirPath : DirPath.values()) {
                 File file = context.getExternalFilesDir(dirPath.toString());
-                if(file != null){
-                    Log.e("SUCCESS", "Directory created: ["+file.getAbsolutePath()+"]");
-                }else{
+                if (file != null) {
+                    Log.e("SUCCESS", "Directory created: [" + file.getAbsolutePath() + "]");
+                } else {
                     Log.e("FAIL", "Unable to create dir");
                 }
             }
@@ -132,16 +136,15 @@ public class Util {
     }
 
 
-
     //Vérifie si le repertoire est correcte et crée le fichier à l'endroit demandé et le renvoie sous forme de File
-    public static File getFile(Context context,String repertoire,String nomFichier){
-        boolean dans_enum=false;
+    public static File getFile(Context context, String repertoire, String nomFichier) {
+        boolean dans_enum = false;
         DirPath[] tab = DirPath.values();
-        for(int i=0;i<tab.length;i++)
-            if(tab[i].toString()==repertoire)
-                dans_enum=true;
-        if(dans_enum)
-            return context.getExternalFilesDir(repertoire+"/"+nomFichier);
+        for (int i = 0; i < tab.length; i++)
+            if (tab[i].toString() == repertoire)
+                dans_enum = true;
+        if (dans_enum)
+            return context.getExternalFilesDir(repertoire + "/" + nomFichier);
         else return null;
     }
 
@@ -151,10 +154,10 @@ public class Util {
      * @param path
      * @return
      */
-    public static boolean isAppDirectory(String path){
+    public static boolean isAppDirectory(String path) {
 
-        for (DirPath dirPath : DirPath.values()){
-            if (dirPath.toString().equals(path)){
+        for (DirPath dirPath : DirPath.values()) {
+            if (dirPath.toString().equals(path)) {
                 return true;
             }
         }
@@ -163,15 +166,16 @@ public class Util {
 
     /**
      * Permet de vérifier la validité d'un nom de dossier: existe comme catégorie avec sous-catégorie pour l'application
-     * @param dirName: nom du répertoire
+     *
+     * @param dirName:    nom du répertoire
      * @param subDirName: nom du sous-repertoire
      * @return
      */
-    public static boolean isAppDirectory(String dirName, String subDirName){
+    public static boolean isAppDirectory(String dirName, String subDirName) {
 
-        String directory = dirName+File.separator+subDirName;
-        for (DirPath dirPath : DirPath.values()){
-            if (dirPath.toString().equals(directory)){
+        String directory = dirName + File.separator + subDirName;
+        for (DirPath dirPath : DirPath.values()) {
+            if (dirPath.toString().equals(directory)) {
                 return true;
             }
         }
@@ -180,20 +184,27 @@ public class Util {
 
     /**
      * vérifie l'existence des sous-répertoires de l'application
+     *
      * @param context
      * @return
      */
-    public static boolean appDirExist(Context context){
+    public static boolean appDirExist(Context context) {
         File root = context.getExternalFilesDir(null);
         Log.e("ROOT", root.getAbsolutePath());
-        if(root.listFiles().length > 0){
-            for (File file: root.listFiles()){
+        if (root.listFiles().length > 0) {
+            for (File file : root.listFiles()) {
                 Log.e("CONT_FILE", file.getAbsolutePath());
             }
-        }else {
+        } else {
             Log.e("ROOT_CONT", "No sub dir");
         }
         return root.listFiles().length > 0;
+    }
+
+    public static VideoAnnotation createNewVideoAnnotation() {
+        VideoAnnotation videoAnnotation = new VideoAnnotation(DATE_FORMAT.format(new Date()), DATE_FORMAT.format(new Date()), new ArrayList<Annotation>());
+
+        return videoAnnotation;
     }
 
 }
