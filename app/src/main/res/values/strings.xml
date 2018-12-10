@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">VideoAnnotTool</string>
     <string name="category">Catégorie :</string>
-    <string name="video_annotations">Annotations de la vidéo</string>
+    <string name="video_annotations">Liste des annotations</string>
     <string name="add_button">Nouvelle vidéo</string>
     <string name="subcategory">Sous-catégorie :</string>
 

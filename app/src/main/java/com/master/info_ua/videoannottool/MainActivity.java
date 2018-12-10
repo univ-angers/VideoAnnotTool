@@ -6,10 +6,13 @@ import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -24,7 +27,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -47,7 +52,7 @@ import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
-import com.master.info_ua.videoannottool.annotation.AnnotationType;
+import com.master.info_ua.videoannottool.annotation.Audio;
 import com.master.info_ua.videoannottool.annotation.ControlerAnnotation;
 import com.master.info_ua.videoannottool.annotation.DirPath;
 import com.master.info_ua.videoannottool.annotation.Video;
@@ -68,20 +73,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.master.info_ua.videoannottool.annotation.AnnotationType.*;
 import static com.master.info_ua.videoannottool.util.Util.parseJSONAssets;
 import static com.master.info_ua.videoannottool.util.Util.saveVideoAnnotation;
 
-public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction, DialogAudio.DialogRecordListener, DialogText.DialogTextListener {
+public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction, DialogAudio.DialogRecordListener, DialogText.DialogTextListener, Fragment_annotation.AnnotFragmentListener {
 
+    private Menu mainMenu;
 
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
+    public static RelativeLayout btnLayout;
 
     private SimpleExoPlayer player;
     private SimpleExoPlayerView playerView;
     private MediaSource videoSource;
-    private DefaultExtractorsFactory DataSourceFactory;
 
     private final String STATE_RESUME_WINDOW = "resumeWindow";
     private final String STATE_RESUME_POSITION = "resumePosition";
@@ -99,13 +106,13 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private FrameLayout RepeatButton;
     private ImageView RepeatIcon;
 
-    private float ExoplayerSpeed = 1f;
+    private float exoplayerSpeed = 1f;
     private FrameLayout SpeedButton;
-    private ImageView SpeedIcon;
+    private ImageView speedIcon;
 
-    private boolean ExoplayerPlay = false;
-    private FrameLayout PlayButton;
-    private ImageView PlayIcon;
+    private boolean exoplayerPlay = false;
+    private FrameLayout playButton;
+    private ImageView playIcon;
 
     private ListView listViewVideos;
 
@@ -127,6 +134,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private FragmentManager fragmentManager;
 
     private DrawView drawView;
+    private ImageView drawBimapIv;
+    private TextView annotCommentTv;
 
     private ControlerAnnotation controlerAnnotation;
     private Handler mainHandler;
@@ -141,7 +150,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     public static final boolean ELEVE = false;
     public static final boolean COACH = true;
-    private boolean statut_profil = ELEVE;                    //flag pour savoir si utilisateur = eleve ou coach. L'app se lance en eleve
+    private boolean statut_profil = ELEVE;            //flag pour savoir si utilisateur = eleve ou coach. L'app se lance en eleve
 
 
     @Override
@@ -217,6 +226,9 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         graphAnnotBtn.setEnabled(false);        //bouton desactivés de base
         graphAnnotBtn.setOnClickListener(btnClickListener);
 
+        btnLayout = findViewById(R.id.btn_layout_id);
+        drawBimapIv = findViewById(R.id.draw_bitmap_iv);
+        annotCommentTv = findViewById(R.id.annot_comment_tv);
 
         fragmentManager = getFragmentManager();
         annotFragment = (Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
@@ -273,6 +285,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
+
+        mainMenu = menu;
         return true;
     }
 
@@ -284,19 +298,20 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                 dialogImport.showDialogImport(MainActivity.this);
                 return true;
             case R.id.action_share:
-                DialogShare dialogShare = new DialogShare();
-                dialogShare.showDialogShare(MainActivity.this);
+                //DialogShare dialogShare = new DialogShare();
+                //dialogShare.showDialogShare(MainActivity.this);
                 return true;
             case R.id.action_profile:
                 if (statut_profil == ELEVE) {
-                    DialogProfil dialogProfil = new DialogProfil();
-                    dialogProfil.showDialogProfil(MainActivity.this);
+                    //DialogProfil dialogProfil = new DialogProfil();
+                    //dialogProfil.showDialogProfil(MainActivity.this);
+                    item.setTitle("Passer en mode athlète");
+                    btnLayout.setVisibility(View.VISIBLE);
+                    statut_profil = COACH;
 
                 } else if (statut_profil == COACH) {
-                    audioAnnotBtn.setEnabled(false);
-                    textAnnotBtn.setEnabled(false);
-                    graphAnnotBtn.setEnabled(false);
-
+                    btnLayout.setVisibility(View.GONE);
+                    item.setTitle("Passer en mode coach");
                     statut_profil = ELEVE;
                 }
 
@@ -379,22 +394,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             videosAdapter.setSelectedListItem(position);
             videosAdapter.notifyDataSetChanged();
 
-            /*
-            if (newAnnotIsAdded){
-                if(currentVAnnot!= null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null){
-                    String directory = currentSubCategorie.getPath() + File.separator + videoName;
-                    Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
-                }else {
-                    Log.e("NULL_OBJECT", "One of initialization object is null");
-                }
-            }
-            */
-
-            videosAdapter.setSelectedListItem(position);
-            videosAdapter.notifyDataSetChanged();
-
             currentVideo = (Video) listViewVideos.getItemAtPosition(position);
-            //currentVAnnot = currentVideo.getVideoAnnotation();
             setCurrentVAnnot();
             if (currentVAnnot == null) {
                 currentVAnnot = Util.createNewVideoAnnotation();
@@ -420,7 +420,6 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
-        DataSourceFactory = new DefaultExtractorsFactory();
 
         //2. prepare video source from url
         String filePath;
@@ -497,21 +496,21 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private void initSlowButton() {
         PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
-        SpeedIcon = controlView.findViewById(R.id.exo_speed_icon);
+        speedIcon = controlView.findViewById(R.id.exo_speed_icon);
         SpeedButton = controlView.findViewById(R.id.exo_speed_button);
         SpeedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ExoplayerSpeed == 1f) {
+                if (exoplayerSpeed == 1f) {
                     // reduit la vitesse
                     setSpeed(0.5f);
-                    SpeedIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.speed_down));
-                    ExoplayerSpeed = 0.5f;
+                    speedIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.speed_down));
+                    exoplayerSpeed = 0.5f;
                 } else {
                     // augmente la vitesse
                     setSpeed(1f);
-                    SpeedIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.speed_up));
-                    ExoplayerSpeed = 1f;
+                    speedIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.speed_up));
+                    exoplayerSpeed = 1f;
                 }
             }
         });
@@ -519,23 +518,23 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private void initPlayButton() {
         PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
-        PlayIcon = controlView.findViewById(R.id.exo_play_icon);
-        PlayButton = controlView.findViewById(R.id.exo_play_button);
-        PlayButton.setOnClickListener(new View.OnClickListener() {
+        playIcon = controlView.findViewById(R.id.exo_play_icon);
+        playButton = controlView.findViewById(R.id.exo_play_button);
+        playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ExoplayerPlay == false) {
+                if (exoplayerPlay == false) {
                     // lance la video
-                    PlayIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
-                    ExoplayerPlay = true;
+                    playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
+                    exoplayerPlay = true;
                     controlerAnnotation.setLast_pos(0);
 
                     player.setPlayWhenReady(true);
                     new Thread(controlerAnnotation).start();
                 } else {
                     // augmente la vitesse
-                    PlayIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
-                    ExoplayerPlay = false;
+                    playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+                    exoplayerPlay = false;
                     player.setPlayWhenReady(false);
                     controlerAnnotation.cancel();
                 }
@@ -714,7 +713,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     player.setPlayWhenReady(false);
                     String directoryPath = currentSubCategorie.getPath() + File.separator + videoName;
                     DialogAudio dialog = new DialogAudio(MainActivity.this, directoryPath, player.getContentPosition());
-                    Annotation auDdioAnnotation = new Annotation(AnnotationType.AUDIO);
+                    Annotation auDdioAnnotation = new Annotation(AUDIO);
                     dialog.showDialogRecord(auDdioAnnotation, videoName);
                     break;
                 case R.id.graphic_annot_btn:
@@ -738,7 +737,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     break;
                 case R.id.text_annot_btn:
                     player.setPlayWhenReady(false);
-                    Annotation textAnnotation = new Annotation("Text Annot ", AnnotationType.TEXT);
+                    Annotation textAnnotation = new Annotation("Text Annot ", TEXT);
                     DialogText dialogtext = new DialogText(MainActivity.this, 1);
                     dialogtext.showDialogBox(textAnnotation, MainActivity.this);
 
@@ -785,7 +784,23 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                 videosAdapter.clear();
                 videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
                 videosAdapter.notifyDataSetChanged();
+
+                if(videosAdapter.getCount()> 0 ){
+                    //currentVideo = videosAdapter.getItem(0);
+                    currentVideo = (Video) listViewVideos.getItemAtPosition(0);
+                    setCurrentVAnnot();
+                    if (currentVAnnot == null) {
+                        currentVAnnot = Util.createNewVideoAnnotation();
+                    }
+
+                    annotFragment.updateAnnotationList(currentVAnnot);
+
+                    videoName = currentVideo.getFileName();
+                    player.stop();
+                    initExoPlayer();
+                }
             }
+
         }
 
         @Override
@@ -830,9 +845,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
 
     @Override
-    public void enregistrer_image(Annotation annotation) {
+    public void onSaveDrawAnnotation(Annotation annotation) {
         // création de l'annotation
-
         //annotation.setDrawFileName(drawFileName);
         annotation.setAnnotationStartTime(player.getCurrentPosition());
         Log.e("GRAPHIC_ANNOT", "Annotation file name " + annotation.getDrawFileName() + " ==> Annotation title " + annotation.getAnnotationTitle());
@@ -888,6 +902,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         if (currentVAnnot != null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null) {
             String directory = currentSubCategorie.getPath() + File.separator + videoName;
             Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
+            annotFragment.updateAnnotationList(currentVAnnot);
             Log.e("AUDIO_ANNOT_SAVE", " **** Audio annot saved successfully ****");
         } else {
             Log.e("AUDIO_ANNOT_SAVE", "One of initialization object is null");
@@ -905,6 +920,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         if (currentVAnnot != null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null) {
             String directory = currentSubCategorie.getPath() + File.separator + videoName;
             Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
+            annotFragment.updateAnnotationList(currentVAnnot);
             Log.e("TEXT_ANNOT_SAVE", " **** TEXT annot saved successfully ****");
         } else {
             Log.e("TEXT_ANNOT_SAVE", "One of initialization object is null");
@@ -942,5 +958,77 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             ft.commit();
         }
         drawView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onAnnotItemClick(final Annotation annotation) {
+
+        player.seekTo(annotation.getAnnotationStartTime());
+        player.setPlayWhenReady(false);
+        final String annotFileDirectory = currentSubCategorie.getPath()+"/"+currentVideo.getFileName();
+
+        Handler loopHandler = new Handler(Looper.getMainLooper());
+
+        switch (annotation.getAnnotationType()){
+            case AUDIO:
+                //Juste pour récupérer la durée de l'audio
+                //Pas nécessaire si "annotation.getAnnotationDuration()" est bien défini
+                Uri uri = Uri.parse(this.getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
+                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                mmr.setDataSource(this,uri);
+                String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                int duration = Integer.parseInt(durationStr);
+
+                Audio audio = new Audio(this, this.getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
+                audio.listen();
+
+                loopHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        player.setPlayWhenReady(true);
+                    }
+                }, duration);  // ==> annotation.getAnnotationDuration()
+
+                break;
+
+            case DRAW:
+
+                Bitmap bitmap = Util.getBitmapFromAppDir(this, annotFileDirectory, annotation.getDrawFileName());
+                drawBimapIv.setVisibility(View.VISIBLE);
+                drawBimapIv.setImageBitmap(bitmap);
+
+                loopHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawBimapIv.setVisibility(View.GONE);
+                        drawBimapIv.setImageBitmap(null);
+                        player.setPlayWhenReady(true);
+                    }
+                }, annotation.getAnnotationDuration());
+
+                break;
+
+            case TEXT:
+                annotCommentTv.setVisibility(View.VISIBLE);
+                annotCommentTv.setText(annotation.getTextComment());
+
+                loopHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        annotCommentTv.setVisibility(View.GONE);
+                        annotCommentTv.setText("");
+                        player.setPlayWhenReady(true);
+                    }
+                }, 5000); // ==> annotation.getAnnotationDuration()
+
+                break;
+
+                default:
+                    if (drawBimapIv.getVisibility() == View.VISIBLE){
+                        drawBimapIv.setImageBitmap(null);
+                        drawBimapIv.setVisibility(View.GONE);
+                    }
+        }
     }
 }

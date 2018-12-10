@@ -63,6 +63,25 @@
             android:layout_height="match_parent"
         />
 
+        <ImageView
+            android:id="@+id/draw_bitmap_iv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/annot_comment_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center"
+            android:background="#FFF"
+            android:textSize="32dp"
+            android:textColor="#18A"
+            android:visibility="gone"
+            android:text=" ##### ######\n tetttt ######"/>
+
     </FrameLayout>
 
     <LinearLayout
@@ -82,10 +101,12 @@
         </FrameLayout>
 
         <RelativeLayout
+            android:id="@+id/btn_layout_id"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
-            android:background="@color/colorLeftRight">
+            android:layout_weight="1"
+            android:background="@color/colorLeftRight"
+            android:visibility="gone">
 
             <ImageButton android:id="@+id/graphic_annot_btn"
                 android:layout_width="wrap_content"

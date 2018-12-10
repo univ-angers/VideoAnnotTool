@@ -73,7 +73,7 @@ public class DialogDraw {
                     break;
             }
             if(titre.getText().length() != 0  && duree.getText().length() != 0) { // vérifie si les champs sont vides
-                //main.enregistrer_image(titre.getText().toString(), valueOf(duree.getText().toString()));
+                //main.onSaveDrawAnnotation(titre.getText().toString(), valueOf(duree.getText().toString()));
                 // création de l'annotation, il faut encore utiliser le titre et la durée, voir a passer en paramètre de creer_annotation()
                 dialog.cancel();
             }

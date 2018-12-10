@@ -5,10 +5,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/etAnnotText"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,6 +33,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="60"
             android:text="s" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/etAnnotText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:maxLines="8"
+            android:scrollbars="vertical"/>
+
     </LinearLayout>
 
     <LinearLayout

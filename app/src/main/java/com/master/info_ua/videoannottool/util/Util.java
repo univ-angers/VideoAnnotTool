@@ -1,6 +1,8 @@
 package com.master.info_ua.videoannottool.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
@@ -201,10 +203,37 @@ public class Util {
         return root.listFiles().length > 0;
     }
 
+    /**
+     * Crée une nouvelle instance de VideoAnnotation
+     * @return
+     */
     public static VideoAnnotation createNewVideoAnnotation() {
         VideoAnnotation videoAnnotation = new VideoAnnotation(DATE_FORMAT.format(new Date()), DATE_FORMAT.format(new Date()), new ArrayList<Annotation>());
 
         return videoAnnotation;
+    }
+
+    /**
+     * Récupère un objet image (Bitmap) depuis le dossier propre au contexte de l'application
+     *
+     * @param filename
+     * @return
+     */
+    public static Bitmap getBitmapFromAppDir(Context context, String path, String filename) {
+
+        Bitmap bitmap = null;
+        try {
+            String dirPath = context.getExternalFilesDir(path).getAbsolutePath();
+            File filePath = new File(dirPath,filename);
+            if (filePath.exists()){
+                FileInputStream fileInputStream = new FileInputStream(filePath);
+                bitmap = BitmapFactory.decodeStream(fileInputStream);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return bitmap;
     }
 
 }

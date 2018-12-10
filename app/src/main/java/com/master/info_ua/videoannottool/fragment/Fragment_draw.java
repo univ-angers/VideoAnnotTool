@@ -1,24 +1,20 @@
 package com.master.info_ua.videoannottool.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.AnnotationType;
-import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
 import com.master.info_ua.videoannottool.annotation_dialog.DialogDraw;
-import com.master.info_ua.videoannottool.util.Util;
 
-import java.io.File;
 import java.util.Date;
 
 
@@ -86,7 +82,20 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
     }
 
     @Override
-    public void onAttach(Activity context) {
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        if (activity instanceof Listener_fonction){
+            listener = (Listener_fonction) activity;
+        }
+        else {
+            throw new ClassCastException(activity.toString()
+                    + " must implemenet MyListFragment.OnItemSelectedListener");
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
         super.onAttach(context);
 
         if (context instanceof Listener_fonction){
@@ -175,7 +184,7 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         drawAnnotation.setAnnotationTitle(title);
         drawAnnotation.setAnnotationDuration(duration);
         drawAnnotation.setAnnotationDate(new Date());
-        listener.enregistrer_image(drawAnnotation);
+        listener.onSaveDrawAnnotation(drawAnnotation);
         //listener.fermer_fragment();
     }
 
@@ -198,7 +207,7 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         void resetCanvas();
         void setOnTouchEnable(boolean bool);
         String saveDrawImage();
-        void enregistrer_image(Annotation annotation);
+        void onSaveDrawAnnotation(Annotation annotation);
         void setColor(int color);
         void fermer_fragment();
     }

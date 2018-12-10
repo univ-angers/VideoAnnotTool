@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
 import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
@@ -34,6 +35,7 @@ public class DialogProfil {
                 audioAnnotBtn.setEnabled(true);
                 textAnnotBtn.setEnabled(true);
                 graphAnnotBtn.setEnabled(true);
+                MainActivity.btnLayout.setVisibility(View.VISIBLE);
                 main.setStatutProfil(COACH);
                 dialog.cancel();
             }

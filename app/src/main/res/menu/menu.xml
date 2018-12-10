@@ -1,23 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <item android:id="@+id/action_profile"
+        android:title="Passer en mode coach" />
+
     <item android:id="@+id/action_import"
-
-        android:title="Importer une vidéo"
-
-        android:showAsAction="ifRoom"></item>
+        android:title="Importer une vidéo" />
 
     <item android:id="@+id/action_share"
-
-
         android:title="Partager une vidéo"
-
-        android:showAsAction="ifRoom"></item>
-
-    <item android:id="@+id/action_profile"
-
-
-        android:title="Profil"
-
-        android:showAsAction="ifRoom"></item>
+        android:enabled="false"/>
 
 </menu>
