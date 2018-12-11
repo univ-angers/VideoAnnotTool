@@ -86,10 +86,13 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private ImageButton graphAnnotBtn;
     public static RelativeLayout btnLayout;
 
+    // Attribut en lien avec exoplayer
+    // le player et son mediaSource
     private SimpleExoPlayer player;
     private SimpleExoPlayerView playerView;
     private MediaSource videoSource;
 
+    // attribut servant pour l'option de pleine écran du lecteur a stocker des iinformation
     private final String STATE_RESUME_WINDOW = "resumeWindow";
     private final String STATE_RESUME_POSITION = "resumePosition";
     private final String STATE_PLAYER_FULLSCREEN = "playerFullscreen";
@@ -97,19 +100,23 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private int ResumeWindow;
     private long ResumePosition;
 
+    // attribut pour les bouton associé au pleine écran
     private boolean ExoPlayerFullscreen = false;
     private FrameLayout FullScreenButton;
     private ImageView FullScreenIcon;
     private Dialog FullScreenDialog;
 
+    // attribut pour les bouton associé a la répétition
     private boolean ExoPlayerRepeat = false;
     private FrameLayout RepeatButton;
     private ImageView RepeatIcon;
 
+    // attribut pour les bouton gérant le ralentit de la vidéo
     private float exoplayerSpeed = 1f;
     private FrameLayout SpeedButton;
     private ImageView speedIcon;
 
+    // aqttribut pour gérer le bouton play
     private boolean exoplayerPlay = false;
     private FrameLayout playButton;
     private ImageView playIcon;
@@ -137,6 +144,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private ImageView drawBimapIv;
     private TextView annotCommentTv;
 
+    // controler pour excécuter les annotation au moment voulu
+    // handler servant a récuperer les messages des threads secondaire et as les effectuer dans le main thread
     private ControlerAnnotation controlerAnnotation;
     private Handler mainHandler;
 
@@ -155,6 +164,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Autorisation pour les droit de lecture et d'écritures des fichier
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
@@ -172,6 +182,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // récupération des donnée pour les transmettre via une instance lors du passage en mode pleine écran
         if (savedInstanceState != null) {
             ResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
             ResumePosition = savedInstanceState.getLong(STATE_RESUME_POSITION);
@@ -247,10 +259,11 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             Util.createDir(this);
         }
 
+        // récupération d'une instance de Handler correspondant a MainActivity
         mainHandler = new Handler(getApplicationContext().getMainLooper());
 
         //controlerAnnotation = new ControlerAnnotation(this,this,currentVideo.getVideoAnnotation(),mainHandler)
-
+        // initialisation du controler d'annotation
         if (currentVideo != null) {
             controlerAnnotation = new ControlerAnnotation(this, this, currentVideo.getVideoAnnotation(), mainHandler);
         } else {
@@ -322,6 +335,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     }
 
+    // methode pour sauver l'instance contennant la position de la vidéo, l'id de la video et son état
     @Override
     public void onSaveInstanceState(Bundle outState) {
 
@@ -333,6 +347,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     }
 
 
+    // initialise le bouton fullscreen
     private void initFullscreenDialog() {
 
         FullScreenDialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
@@ -348,6 +363,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     protected void onResume() {
         super.onResume();
 
+        // attribut du player
         if (playerView == null) {
 
             playerView = findViewById(R.id.player_view);
@@ -355,11 +371,13 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             initFullscreenButton();
         }
 
+        // Methodes d'initialisation des bouton
         initSlowButton();
         initExoPlayer();
         initRepeatButton();
         initPlayButton();
 
+        // methodes de lancement en mode plein écrans
         if (ExoPlayerFullscreen) {
             ((ViewGroup) playerView.getParent()).removeView(playerView);
             FullScreenDialog.addContentView(playerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -372,7 +390,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     protected void onPause() {
 
         super.onPause();
-
+        // gestion du player dans le on pause
         if (playerView != null && playerView.getPlayer() != null) {
             ResumeWindow = playerView.getPlayer().getCurrentWindowIndex();
             ResumePosition = Math.max(0, playerView.getPlayer().getContentPosition());
@@ -411,17 +429,17 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         }
     };
 
-
+    // methode pour créer et generer le lecteur
     public void initExoPlayer() {
 
         SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
 
-        //1. creating an ExoPlayer with default parameters from Getting Started guide(https://google.github.io/ExoPlayer/guide.html)
+        // création du lecteur
         DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
 
-        //2. prepare video source from url
+        // préparation de la source
         String filePath;
 
         if (currentSubCategorie != null && !currentSubCategorie.getPath().isEmpty()) {
@@ -444,7 +462,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                 new DefaultDataSourceFactory(this, "ua"),
                 new DefaultExtractorsFactory(), null, null);
 
-        //2. create the player
+        // initialisation du player avec les instance précedante
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector, new DefaultLoadControl());
         exoPlayerView.setControllerShowTimeoutMs(0);
         exoPlayerView.setPlayer(player);
@@ -458,13 +476,14 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         player.prepare(videoSource, false, false);
     }
 
+    // methode permettant de modifier la vitesse du player
     public void setSpeed(float speed) {
         PlaybackParameters speedParam = new PlaybackParameters(speed, speed);
         player.setPlaybackParameters(speedParam);
     }
 
+    // methode pour lancer le mode pleine écran
     private void openFullscreenDialog() {
-
         ((ViewGroup) playerView.getParent()).removeView(playerView);
         FullScreenDialog.addContentView(playerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_skrink));
@@ -472,6 +491,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         FullScreenDialog.show();
     }
 
+    // methode d'initialisation du bouton repéter
     private void initRepeatButton() {
         PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
         RepeatIcon = controlView.findViewById(R.id.exo_repeat_icon);
@@ -494,6 +514,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         });
     }
 
+    // methode d'initialisation du bouton ralentit
     private void initSlowButton() {
         PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
         speedIcon = controlView.findViewById(R.id.exo_speed_icon);
@@ -516,6 +537,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         });
     }
 
+    // methode d'initialisation du bouton play
     private void initPlayButton() {
         PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
         playIcon = controlView.findViewById(R.id.exo_play_icon);
@@ -542,6 +564,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         });
     }
 
+    // methode pour fermer le mode pleine écran
     private void closeFullscreenDialog() {
 
         ((ViewGroup) playerView.getParent()).removeView(playerView);
@@ -551,7 +574,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_expand));
     }
 
-
+    // initialisation du bouton pleine écran
     private void initFullscreenButton() {
 
         PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
