@@ -30,6 +30,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -249,13 +250,6 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
         mainHandler = new Handler(getApplicationContext().getMainLooper());
 
-        //controlerAnnotation = new ControlerAnnotation(this,this,currentVideo.getVideoAnnotation(),mainHandler)
-
-        if (currentVideo != null) {
-            controlerAnnotation = new ControlerAnnotation(this, this, currentVideo.getVideoAnnotation(), mainHandler);
-        } else {
-            controlerAnnotation = new ControlerAnnotation(this, this, null, mainHandler);
-        }
     }
 
     @Override
@@ -307,6 +301,9 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     //dialogProfil.showDialogProfil(MainActivity.this);
                     item.setTitle("Passer en mode athlète");
                     btnLayout.setVisibility(View.VISIBLE);
+                    audioAnnotBtn.setEnabled(true);
+                    textAnnotBtn.setEnabled(true);
+                    graphAnnotBtn.setEnabled(true);
                     statut_profil = COACH;
 
                 } else if (statut_profil == COACH) {
@@ -404,6 +401,12 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             annotFragment.updateAnnotationList(currentVAnnot);
 
             videoName = currentVideo.getFileName();
+
+            if (currentVideo != null) {
+                controlerAnnotation = new ControlerAnnotation(MainActivity.this, MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+            } else {
+                controlerAnnotation = new ControlerAnnotation(MainActivity.this, MainActivity.this, null, mainHandler);
+            }
 
 
             player.stop();
@@ -517,29 +520,31 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     }
 
     private void initPlayButton() {
-        PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
-        playIcon = controlView.findViewById(R.id.exo_play_icon);
-        playButton = controlView.findViewById(R.id.exo_play_button);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (exoplayerPlay == false) {
-                    // lance la video
-                    playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
-                    exoplayerPlay = true;
-                    controlerAnnotation.setLast_pos(0);
+            PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
+            playIcon = controlView.findViewById(R.id.exo_play_icon);
+            playButton = controlView.findViewById(R.id.exo_play_button);
+            playButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (currentVideo != null) {
+                        if (exoplayerPlay == false) {
+                            // lance la video
+                            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
+                            exoplayerPlay = true;
+                            controlerAnnotation.setLast_pos(0);
 
-                    player.setPlayWhenReady(true);
-                    new Thread(controlerAnnotation).start();
-                } else {
-                    // augmente la vitesse
-                    playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
-                    exoplayerPlay = false;
-                    player.setPlayWhenReady(false);
-                    controlerAnnotation.cancel();
+                            player.setPlayWhenReady(true);
+                            new Thread(controlerAnnotation).start();
+                        } else {
+                            // augmente la vitesse
+                            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+                            exoplayerPlay = false;
+                            player.setPlayWhenReady(false);
+                            controlerAnnotation.cancel();
+                        }
+                    }
                 }
-            }
-        });
+            });
     }
 
     private void closeFullscreenDialog() {
@@ -798,6 +803,12 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     videoName = currentVideo.getFileName();
                     player.stop();
                     initExoPlayer();
+
+                    if (currentVideo != null) {
+                        controlerAnnotation = new ControlerAnnotation(MainActivity.this, MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+                    } else {
+                        controlerAnnotation = new ControlerAnnotation(MainActivity.this, MainActivity.this, null, mainHandler);
+                    }
                 }
             }
 
@@ -1029,6 +1040,16 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                         drawBimapIv.setImageBitmap(null);
                         drawBimapIv.setVisibility(View.GONE);
                     }
+        }
+    }
+
+    @Override
+    public void onDeleteAnnotation(Annotation annotation) {
+        boolean isRemove = currentVAnnot.getAnnotationList().remove(annotation);
+        if (isRemove){
+            annotFragment.updateAnnotationList(currentVAnnot);
+        }else {
+            Toast.makeText(this, "Échec de suppression de l'annotation", Toast.LENGTH_SHORT).show();
         }
     }
 }

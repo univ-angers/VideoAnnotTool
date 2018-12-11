@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -114,8 +117,49 @@ public class Fragment_annotation extends Fragment {
         }
     };
 
+    protected AdapterView.OnItemLongClickListener itemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+            Annotation annotation = (Annotation) listViewAnnotations.getItemAtPosition(position);
+
+
+            return false;
+        }
+    };
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==R.id.lv_annotations) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.context_menu, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()) {
+            case R.id.edit_annot:
+                Toast.makeText(getActivity(), "Développement en cours ...", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.delete_annot:
+                Annotation annotation = annotationsAdapter.getItem(info.position);
+                fragmentListener.onDeleteAnnotation(annotation);
+                annotationsAdapter.notifyDataSetChanged();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
     public interface AnnotFragmentListener{
 
         void onAnnotItemClick(Annotation annotation);
+
+        void onDeleteAnnotation(Annotation annotation);
     }
 }
