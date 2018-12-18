@@ -16,6 +16,7 @@ import android.view.View;
 
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.AnnotationType;
+import com.master.info_ua.videoannottool.util.Util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -173,13 +174,10 @@ public class DrawView extends View{
         final SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy-HHmmss");
         String drawFileName = videoName+"_"+dateFormat.format(new Date())+".png";
 
-        //Annotation annotation = new Annotation("Graphic annot", new Date(), 5000, 5000, AnnotationType.DRAW);
-        //annotation.setDrawFileName(drawFileName);
-        SaveBitmap.saveBitmapImage(context, mBitmap, path, drawFileName); // ici mettre un nom unique pour chaque
+        Util.saveBitmapImage(context, mBitmap, path, drawFileName); // ici mettre un nom unique pour chaque
         mPath.reset();
         invalidate();
 
-        //return annotation;
         return drawFileName;
     }
 

@@ -29,16 +29,18 @@ public class ControlerAnnotation implements Runnable {
     // nous permet d'envoyer des tache a éxecuter a dans notre mainActivity
     private Handler mainHandler;
 
-    // setter de last_pos
-    public void setLast_pos(int last_pos) {
-        this.last_pos = last_pos;
-    }
+    private AnnotationLaunchListener launchListener;
 
     // constructeurs comme expliquer dans le rapport nous lui passont dans le main  deux fois la même valeur mais a termes cela devrait changer
     public ControlerAnnotation(Context context, Ecouteur m_e, VideoAnnotation videoAnnotation, Handler _mainHandler) {
         mainHandler = _mainHandler;
         _mainActivity = context;
         m_ecouteur = m_e;
+
+        if (context instanceof AnnotationLaunchListener){
+            this.launchListener = (AnnotationLaunchListener) context;
+        }
+
         if (videoAnnotation != null) {
             listAnno = videoAnnotation.getAnnotationList();
             // traitement de videoAnnotation
@@ -93,22 +95,22 @@ public class ControlerAnnotation implements Runnable {
     }
 
     // methode pour lancer les annotation en foncton de leur type
-    public void launch(Annotation anno) {
-        switch (anno.getAnnotationType()) {
+    public void launch(Annotation annotation) {
+        switch (annotation.getAnnotationType()) {
             case DRAW:
-                launchDraw();
+                launchDraw(annotation);
                 break;
             case TEXT:
-                launchText();
+                launchText(annotation);
                 break;
             case ZOOM:
-                launchZoom();
+                launchZoom(annotation);
                 break;
             case AUDIO:
-                launchAudio();
+                launchAudio(annotation);
                 break;
             case SLOWMOTION:
-                launchSlowmo(anno.getSlowMotionSpeed());
+                launchSlowmo(annotation.getSlowMotionSpeed());
                 break;
             default:
                 System.out.println("Error de lancement");
@@ -142,42 +144,56 @@ public class ControlerAnnotation implements Runnable {
 
     // les différente methode d'ajout de tache au main handler en fonction du type de l'annotation
     // reste a definir envoir simplement des toast pour le moment
-    public void launchDraw() {
+    public void launchDraw(final Annotation annotation) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(_mainActivity, "je lance l'annotaion dessin", Toast.LENGTH_LONG).show();
+                if (launchListener!=null){
+                    launchListener.onAnnotationLauched(annotation);
+                }else {
+                    Toast.makeText(_mainActivity, "je lance l'annotaion dessin", Toast.LENGTH_LONG).show();
+                }
             }
         });
         //encore du travail
     }
 
-    public void launchText() {
+    public void launchText(final Annotation annotation) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(_mainActivity, "je lance l'annotaion text", Toast.LENGTH_LONG).show();
+                if (launchListener!=null){
+                    launchListener.onAnnotationLauched(annotation);
+                }else {
+                    Toast.makeText(_mainActivity, "je lance l'annotaion text", Toast.LENGTH_LONG).show();
+                }
             }
         });
         //encore du travail
     }
 
-    public void launchZoom() {
+    public void launchZoom(final Annotation annotation) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(_mainActivity, "je lance l'annotaion zoom", Toast.LENGTH_LONG).show();
+                if (launchListener!=null){
+                    launchListener.onAnnotationLauched(annotation);
+                }else {
+                    Toast.makeText(_mainActivity, "je lance l'annotaion zoom", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
 
-    public void launchAudio() {
+    public void launchAudio(final Annotation annotation) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-
-
-                Toast.makeText(_mainActivity, "je lance l'annotaion audio", Toast.LENGTH_LONG).show();
+                if (launchListener!=null){
+                    launchListener.onAnnotationLauched(annotation);
+                }else {
+                    Toast.makeText(_mainActivity, "je lance l'annotaion audio", Toast.LENGTH_LONG).show();
+                }
             }
         });
         //encore du travail
@@ -263,8 +279,20 @@ public class ControlerAnnotation implements Runnable {
         }
     }
 
+    // setter de last_pos
+    public void setLast_pos(int last_pos) {
+        this.last_pos = last_pos;
+    }
+
     // methode pour stopper notre thread
     public void cancel() {
         cancelled = true;
+    }
+
+    /**
+     * interface de communication avec l'activité principale
+     */
+    public interface AnnotationLaunchListener {
+        void onAnnotationLauched(Annotation annotation);
     }
 }

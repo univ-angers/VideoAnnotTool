@@ -14,6 +14,7 @@ import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,11 +64,9 @@ public class Util {
     public static VideoAnnotation parseJSON(Context context, String dirName, String fileName) {
 
         String filePath = context.getExternalFilesDir(dirName).getAbsolutePath()+ File.separator + fileName;
-        InputStream inputStream;
 
         try {
             FileInputStream fis = new FileInputStream (new File(filePath));
-            //inputStream = context.openFileInput(filePath);
             Reader reader = new InputStreamReader(fis);
             Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
             VideoAnnotation videoAnnotation = gson.fromJson(reader, VideoAnnotation.class);
@@ -124,6 +123,10 @@ public class Util {
         return false;
     }
 
+    /**
+     * Crée l'ensemble des repertoire spécifiés dans l'Enum "DirPath"
+     * @param context
+     */
     public static void createDir(Context context) {
         if (isExternalStorageWritable()) {
             for (DirPath dirPath : DirPath.values()) {
@@ -234,6 +237,34 @@ public class Util {
         }
 
         return bitmap;
+    }
+
+    /**
+     * Sauvegarde une image Bitmap dans le répertoire indiqué
+     *
+     * @param context
+     * @param imageToSave
+     * @param path chemin du répertoire de sauvegarde
+     * @param fileName nom du fichier
+     */
+    public static void saveBitmapImage(Context context, Bitmap imageToSave,String path, String fileName) {
+        final File externalFile;
+        if (isExternalStorageWritable()) {
+            externalFile = new File(context.getExternalFilesDir(path), fileName);
+            if (externalFile.exists()) {
+                externalFile.delete();
+            }
+            try {
+                FileOutputStream out = new FileOutputStream(externalFile);
+                imageToSave.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+                Log.e("TAG", "Bitmap writed to "+externalFile.getAbsolutePath());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 }

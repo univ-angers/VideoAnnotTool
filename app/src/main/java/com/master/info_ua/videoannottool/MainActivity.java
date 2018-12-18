@@ -78,19 +78,20 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.*;
 import static com.master.info_ua.videoannottool.util.Util.parseJSONAssets;
 import static com.master.info_ua.videoannottool.util.Util.saveVideoAnnotation;
 
-public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction, DialogAudio.DialogRecordListener, DialogText.DialogTextListener, Fragment_annotation.AnnotFragmentListener {
-
-    private Menu mainMenu;
+public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction, DialogAudio.DialogRecordListener, DialogText.DialogTextListener, Fragment_annotation.AnnotFragmentListener, ControlerAnnotation.AnnotationLaunchListener {
 
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
     public static RelativeLayout btnLayout;
 
+    // Attribut en lien avec exoplayer
+    // le player et son mediaSource
     private SimpleExoPlayer player;
     private SimpleExoPlayerView playerView;
     private MediaSource videoSource;
 
+    // attribut servant pour l'option de pleine écran du lecteur a stocker des iinformation
     private final String STATE_RESUME_WINDOW = "resumeWindow";
     private final String STATE_RESUME_POSITION = "resumePosition";
     private final String STATE_PLAYER_FULLSCREEN = "playerFullscreen";
@@ -98,19 +99,23 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private int ResumeWindow;
     private long ResumePosition;
 
+    // attribut pour les bouton associé au pleine écran
     private boolean ExoPlayerFullscreen = false;
     private FrameLayout FullScreenButton;
     private ImageView FullScreenIcon;
     private Dialog FullScreenDialog;
 
+    // attribut pour les bouton associé a la répétition
     private boolean ExoPlayerRepeat = false;
     private FrameLayout RepeatButton;
     private ImageView RepeatIcon;
 
+    // attribut pour les bouton gérant le ralentit de la vidéo
     private float exoplayerSpeed = 1f;
     private FrameLayout SpeedButton;
     private ImageView speedIcon;
 
+    // attribut pour gérer le bouton play
     private boolean exoplayerPlay = false;
     private FrameLayout playButton;
     private ImageView playIcon;
@@ -138,6 +143,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private ImageView drawBimapIv;
     private TextView annotCommentTv;
 
+    // controler pour excécuter les annotation au moment voulu
+    // handler servant a récuperer les messages des threads secondaire et as les effectuer dans le main thread
     private ControlerAnnotation controlerAnnotation;
     private Handler mainHandler;
 
@@ -151,7 +158,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     public static final boolean ELEVE = false;
     public static final boolean COACH = true;
-    private boolean statut_profil = ELEVE;            //flag pour savoir si utilisateur = eleve ou coach. L'app se lance en eleve
+    private boolean statut_profil = ELEVE;  //flag pour savoir si utilisateur = eleve ou coach. L'app se lance en eleve
 
 
     @Override
@@ -173,6 +180,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // récupération des donnée pour les transmettre via une instance lors du passage en mode pleine écran
         if (savedInstanceState != null) {
             ResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
             ResumePosition = savedInstanceState.getLong(STATE_RESUME_POSITION);
@@ -280,7 +289,6 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
 
-        mainMenu = menu;
         return true;
     }
 
@@ -971,6 +979,10 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         drawView.setVisibility(View.GONE);
     }
 
+    /**
+     * Implémentation du Listener de la class "FramentAnnotation"
+     * @param annotation
+     */
     @Override
     public void onAnnotItemClick(final Annotation annotation) {
 
@@ -1043,11 +1055,94 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         }
     }
 
+    /**
+     * Implémentation du listener de la classe "ControlerAnnotation"
+     * @param annotation
+     */
+    @Override
+    public void onAnnotationLauched(Annotation annotation) {
+
+        player.seekTo(annotation.getAnnotationStartTime());
+        player.setPlayWhenReady(false);
+        final String annotFileDirectory = currentSubCategorie.getPath()+"/"+currentVideo.getFileName();
+
+        Handler loopHandler = new Handler(Looper.getMainLooper());
+
+        switch (annotation.getAnnotationType()){
+            case AUDIO:
+                //Juste pour récupérer la durée de l'audio
+                //Pas nécessaire si "annotation.getAnnotationDuration()" est bien défini
+                Uri uri = Uri.parse(this.getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
+                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                mmr.setDataSource(this,uri);
+                String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                int duration = Integer.parseInt(durationStr);
+
+                Audio audio = new Audio(this, this.getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
+                audio.listen();
+
+                loopHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        player.setPlayWhenReady(true);
+                    }
+                }, duration);  // ==> annotation.getAnnotationDuration()
+
+                break;
+
+            case DRAW:
+
+                Bitmap bitmap = Util.getBitmapFromAppDir(this, annotFileDirectory, annotation.getDrawFileName());
+                drawBimapIv.setVisibility(View.VISIBLE);
+                drawBimapIv.setImageBitmap(bitmap);
+
+                loopHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawBimapIv.setVisibility(View.GONE);
+                        drawBimapIv.setImageBitmap(null);
+                        player.setPlayWhenReady(true);
+                    }
+                }, annotation.getAnnotationDuration());
+
+                break;
+
+            case TEXT:
+                annotCommentTv.setVisibility(View.VISIBLE);
+                annotCommentTv.setText(annotation.getTextComment());
+
+                loopHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        annotCommentTv.setVisibility(View.GONE);
+                        annotCommentTv.setText("");
+                        player.setPlayWhenReady(true);
+                    }
+                }, 5000); // ==> annotation.getAnnotationDuration()
+
+                break;
+
+            default:
+                if (drawBimapIv.getVisibility() == View.VISIBLE){
+                    drawBimapIv.setImageBitmap(null);
+                    drawBimapIv.setVisibility(View.GONE);
+                }
+        }
+
+    }
+
     @Override
     public void onDeleteAnnotation(Annotation annotation) {
         boolean isRemove = currentVAnnot.getAnnotationList().remove(annotation);
         if (isRemove){
             annotFragment.updateAnnotationList(currentVAnnot);
+            String directory = currentSubCategorie.getPath() + File.separator + videoName;
+            Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
+            annotFragment.updateAnnotationList(currentVAnnot);
+            Toast.makeText(this, "Suppression de l'annotation effectué", Toast.LENGTH_SHORT).show();
+            Log.e("ANNOT_SAVE", " **** Annot file saved successfully ****");
+
         }else {
             Toast.makeText(this, "Échec de suppression de l'annotation", Toast.LENGTH_SHORT).show();
         }

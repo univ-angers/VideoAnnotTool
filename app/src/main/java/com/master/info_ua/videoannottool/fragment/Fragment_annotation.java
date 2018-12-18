@@ -75,6 +75,7 @@ public class Fragment_annotation extends Fragment {
 
         listViewAnnotations = view.findViewById(R.id.lv_annotations);
         listViewAnnotations.setOnItemClickListener(annotationItemClickListener);
+        registerForContextMenu(listViewAnnotations);
 
         return view;
     }
@@ -114,17 +115,6 @@ public class Fragment_annotation extends Fragment {
 
             Annotation annotation = (Annotation) listViewAnnotations.getItemAtPosition(position);
             fragmentListener.onAnnotItemClick(annotation);
-        }
-    };
-
-    protected AdapterView.OnItemLongClickListener itemLongClickListener = new AdapterView.OnItemLongClickListener() {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-            Annotation annotation = (Annotation) listViewAnnotations.getItemAtPosition(position);
-
-
-            return false;
         }
     };
 
