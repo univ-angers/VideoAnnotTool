@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -64,8 +64,6 @@ import com.master.info_ua.videoannottool.annotation_dialog.DialogText;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
 import com.master.info_ua.videoannottool.menu.DialogImport;
-import com.master.info_ua.videoannottool.menu.DialogProfil;
-import com.master.info_ua.videoannottool.menu.DialogShare;
 import com.master.info_ua.videoannottool.util.Categorie;
 import com.master.info_ua.videoannottool.util.Util;
 
@@ -74,11 +72,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.master.info_ua.videoannottool.annotation.AnnotationType.*;
+import static com.master.info_ua.videoannottool.annotation.AnnotationType.AUDIO;
+import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 import static com.master.info_ua.videoannottool.util.Util.parseJSONAssets;
 import static com.master.info_ua.videoannottool.util.Util.saveVideoAnnotation;
 
-public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction, DialogAudio.DialogRecordListener, DialogText.DialogTextListener, Fragment_annotation.AnnotFragmentListener, ControlerAnnotation.AnnotationLaunchListener {
+public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction, DialogAudio.DialogRecordListener, DialogText.DialogTextListener, Fragment_annotation.AnnotFragmentListener {
 
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
@@ -257,8 +256,6 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             Util.createDir(this);
         }
 
-        mainHandler = new Handler(getApplicationContext().getMainLooper());
-
     }
 
     @Override
@@ -281,6 +278,19 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             //Affichage de la liste des annotation de la vidéo courante
             annotFragment.updateAnnotationList(currentVAnnot);
         }
+
+        mainHandler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+
+                Bundle bundle = msg.getData();
+                Annotation annotation = (Annotation) bundle.getSerializable("annotation");
+                //Lancement de l'annotation
+                onAnnotationLauched(annotation);
+
+                return true;
+            }
+        });
     }
 
 
@@ -990,7 +1000,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         player.setPlayWhenReady(false);
         final String annotFileDirectory = currentSubCategorie.getPath()+"/"+currentVideo.getFileName();
 
-        Handler loopHandler = new Handler(Looper.getMainLooper());
+        //Handler loopHandler = new Handler(Looper.getMainLooper());
 
         switch (annotation.getAnnotationType()){
             case AUDIO:
@@ -1005,7 +1015,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                 Audio audio = new Audio(this, this.getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
                 audio.listen();
 
-                loopHandler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         player.setPlayWhenReady(true);
@@ -1020,7 +1030,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                 drawBimapIv.setVisibility(View.VISIBLE);
                 drawBimapIv.setImageBitmap(bitmap);
 
-                loopHandler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         drawBimapIv.setVisibility(View.GONE);
@@ -1035,7 +1045,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                 annotCommentTv.setVisibility(View.VISIBLE);
                 annotCommentTv.setText(annotation.getTextComment());
 
-                loopHandler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
@@ -1043,7 +1053,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                         annotCommentTv.setText("");
                         player.setPlayWhenReady(true);
                     }
-                }, 5000); // ==> annotation.getAnnotationDuration()
+                }, annotation.getAnnotationDuration());
 
                 break;
 
@@ -1056,32 +1066,29 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     }
 
     /**
-     * Implémentation du listener de la classe "ControlerAnnotation"
+     *Méthode prenant en charge le lancement des annotations
      * @param annotation
      */
-    @Override
-    public void onAnnotationLauched(Annotation annotation) {
+    protected void onAnnotationLauched(Annotation annotation) {
 
         player.seekTo(annotation.getAnnotationStartTime());
         player.setPlayWhenReady(false);
         final String annotFileDirectory = currentSubCategorie.getPath()+"/"+currentVideo.getFileName();
 
-        Handler loopHandler = new Handler(Looper.getMainLooper());
-
         switch (annotation.getAnnotationType()){
             case AUDIO:
                 //Juste pour récupérer la durée de l'audio
                 //Pas nécessaire si "annotation.getAnnotationDuration()" est bien défini
-                Uri uri = Uri.parse(this.getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
+                Uri uri = Uri.parse(getApplicationContext().getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
                 MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                mmr.setDataSource(this,uri);
+                mmr.setDataSource(getApplicationContext(),uri);
                 String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
                 int duration = Integer.parseInt(durationStr);
 
-                Audio audio = new Audio(this, this.getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
+                Audio audio = new Audio(getApplicationContext(), getApplicationContext().getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
                 audio.listen();
 
-                loopHandler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         player.setPlayWhenReady(true);
@@ -1092,11 +1099,11 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
             case DRAW:
 
-                Bitmap bitmap = Util.getBitmapFromAppDir(this, annotFileDirectory, annotation.getDrawFileName());
+                Bitmap bitmap = Util.getBitmapFromAppDir(getApplicationContext(), annotFileDirectory, annotation.getDrawFileName());
                 drawBimapIv.setVisibility(View.VISIBLE);
                 drawBimapIv.setImageBitmap(bitmap);
 
-                loopHandler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         drawBimapIv.setVisibility(View.GONE);
@@ -1111,7 +1118,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                 annotCommentTv.setVisibility(View.VISIBLE);
                 annotCommentTv.setText(annotation.getTextComment());
 
-                loopHandler.postDelayed(new Runnable() {
+                mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
@@ -1119,7 +1126,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                         annotCommentTv.setText("");
                         player.setPlayWhenReady(true);
                     }
-                }, 5000); // ==> annotation.getAnnotationDuration()
+                }, annotation.getAnnotationDuration());
 
                 break;
 

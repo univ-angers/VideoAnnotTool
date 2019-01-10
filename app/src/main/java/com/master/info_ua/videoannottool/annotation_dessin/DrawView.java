@@ -1,7 +1,6 @@
 package com.master.info_ua.videoannottool.annotation_dessin;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,15 +12,12 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
-
-import com.master.info_ua.videoannottool.annotation.Annotation;
-import com.master.info_ua.videoannottool.annotation.AnnotationType;
 import com.master.info_ua.videoannottool.util.Util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DrawView extends View{
+public class DrawView extends View {
 
     private int currentWidth;
     private int currentHeignt;
@@ -136,7 +132,7 @@ public class DrawView extends View{
         float x = event.getX();
         float y = event.getY();
 
-        if(onTouchEnable) {
+        if (onTouchEnable) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     touch_start(x, y);
@@ -160,11 +156,11 @@ public class DrawView extends View{
         mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     }
 
-    public void setOnTouchEnable(boolean value){
+    public void setOnTouchEnable(boolean value) {
         onTouchEnable = value;
     }
 
-    public void setColor(int color){
+    public void setColor(int color) {
         mPaint.setColor(color);
     }
 
@@ -172,7 +168,7 @@ public class DrawView extends View{
     public String enregistrer_image(String path, String videoName) {
 
         final SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy-HHmmss");
-        String drawFileName = videoName+"_"+dateFormat.format(new Date())+".png";
+        String drawFileName = videoName + "_" + dateFormat.format(new Date()) + ".png";
 
         Util.saveBitmapImage(context, mBitmap, path, drawFileName); // ici mettre un nom unique pour chaque
         mPath.reset();

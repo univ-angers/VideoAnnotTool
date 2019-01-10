@@ -13,7 +13,7 @@ public class DialogDraw {
 
     private Fragment_draw context;
 
-    private Button btnValid ;
+    private Button btnValid;
     private Button btnCancel;
     private EditText titre;
     private EditText duree;
@@ -23,7 +23,7 @@ public class DialogDraw {
 
     private DrawAnnotDialogListener dialogListener;
 
-    public DialogDraw(Fragment_draw context){
+    public DialogDraw(Fragment_draw context) {
 
         this.context = context;
         this.dialog = new Dialog(this.context.getActivity());
@@ -32,12 +32,12 @@ public class DialogDraw {
         dialog.setCancelable(false);
         dialog.setTitle(R.string.TextDialogDraw);
 
-        btnValid   = dialog.findViewById(R.id.btnValiderDraw);
-        btnCancel  = dialog.findViewById(R.id.btnAnnulerDraw);
+        btnValid = dialog.findViewById(R.id.btnValiderDraw);
+        btnCancel = dialog.findViewById(R.id.btnAnnulerDraw);
         titre = dialog.findViewById(R.id.ed_draw_titre);
-        duree    = dialog.findViewById(R.id.ed_draw_temps);
+        duree = dialog.findViewById(R.id.ed_draw_temps);
 
-        if(context instanceof DrawAnnotDialogListener){
+        if (context instanceof DrawAnnotDialogListener) {
             dialogListener = context;
         }
 
@@ -52,14 +52,14 @@ public class DialogDraw {
         btnCancel.setOnClickListener(clickListener);
     }
 
-    protected View.OnClickListener clickListener = new View.OnClickListener(){
-        public void onClick(View v){
+    protected View.OnClickListener clickListener = new View.OnClickListener() {
+        public void onClick(View v) {
             int btnId = v.getId();
-            switch (btnId){
+            switch (btnId) {
                 case R.id.btnValiderDraw:
                     String title = titre.getText().toString();
                     String duration = duree.getText().toString();
-                    if (title!=null && !title.isEmpty() && duration!=null && !duration.isEmpty()){
+                    if (title != null && !title.isEmpty() && duration != null && !duration.isEmpty()) {
                         //drawAnnot.setAnnotationTitle(title);
                         //drawAnnot.setAnnotationDuration(Integer.parseInt(duration));
 
@@ -72,19 +72,19 @@ public class DialogDraw {
                     dialog.cancel();
                     break;
             }
-            if(titre.getText().length() != 0  && duree.getText().length() != 0) { // vérifie si les champs sont vides
+            if (titre.getText().length() != 0 && duree.getText().length() != 0) { // vérifie si les champs sont vides
                 //main.onSaveDrawAnnotation(titre.getText().toString(), valueOf(duree.getText().toString()));
                 // création de l'annotation, il faut encore utiliser le titre et la durée, voir a passer en paramètre de creer_annotation()
                 dialog.cancel();
-            }
-            else {
-                Toast.makeText(context.getActivity(),"Il manque des informations", Toast.LENGTH_SHORT).show(); // ce toast est pas visible
+            } else {
+                Toast.makeText(context.getActivity(), "Il manque des informations", Toast.LENGTH_SHORT).show(); // ce toast est pas visible
             }
         }
     };
 
-    public interface DrawAnnotDialogListener{
+    public interface DrawAnnotDialogListener {
         void onSaveDrawImage(String title, int duration);
+
         void onResetCanvas();
     }
 }

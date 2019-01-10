@@ -1,6 +1,6 @@
 package com.master.info_ua.videoannottool.annotation;
 
-public class Video{
+public class Video {
 
     private String fileName;
     private String path;

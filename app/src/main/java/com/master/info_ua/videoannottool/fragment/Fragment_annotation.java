@@ -45,10 +45,9 @@ public class Fragment_annotation extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof AnnotFragmentListener){
+        if (context instanceof AnnotFragmentListener) {
             fragmentListener = (AnnotFragmentListener) context;
-        }
-        else {
+        } else {
             throw new ClassCastException(context.toString()
                     + " must implemenet Fragment_annotation.AnnotFragmentListener");
         }
@@ -58,10 +57,9 @@ public class Fragment_annotation extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if (activity instanceof AnnotFragmentListener){
+        if (activity instanceof AnnotFragmentListener) {
             fragmentListener = (AnnotFragmentListener) activity;
-        }
-        else {
+        } else {
             throw new ClassCastException(activity.toString()
                     + " must implemenet Fragment_annotation.AnnotFragmentListener");
         }
@@ -99,7 +97,7 @@ public class Fragment_annotation extends Fragment {
 
         annotationsAdapter.clear();
         //Mise à jour de la liste
-        if (videoAnnot != null){
+        if (videoAnnot != null) {
             annotationsAdapter.addAll(videoAnnot.getAnnotationList());
         }
         annotationsAdapter.notifyDataSetChanged();
@@ -122,7 +120,7 @@ public class Fragment_annotation extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId()==R.id.lv_annotations) {
+        if (v.getId() == R.id.lv_annotations) {
             MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
         }
@@ -132,7 +130,7 @@ public class Fragment_annotation extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.edit_annot:
                 Toast.makeText(getActivity(), "Développement en cours ...", Toast.LENGTH_SHORT).show();
                 return true;
@@ -146,7 +144,7 @@ public class Fragment_annotation extends Fragment {
         }
     }
 
-    public interface AnnotFragmentListener{
+    public interface AnnotFragmentListener {
 
         void onAnnotItemClick(Annotation annotation);
 

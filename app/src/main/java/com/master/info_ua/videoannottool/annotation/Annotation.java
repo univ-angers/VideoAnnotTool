@@ -11,7 +11,7 @@ public class Annotation implements Serializable {
     private long annotationDuration;
     private AnnotationType annotationType;
     private String audioFileName;
-    private String  drawFileName;
+    private String drawFileName;
     private String textComment;
     private Integer zoomRate;
     private float slowMotionSpeed;
@@ -49,8 +49,8 @@ public class Annotation implements Serializable {
     }
 
     /*
-    * GETTERS && SETTERS
-    */
+     * GETTERS && SETTERS
+     */
     public String getAnnotationTitle() {
         return annotationTitle;
     }
