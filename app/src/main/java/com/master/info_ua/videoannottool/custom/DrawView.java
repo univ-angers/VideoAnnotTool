@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool.annotation_dessin;
+package com.master.info_ua.videoannottool.custom;
 
 import android.content.Context;
 import android.graphics.Bitmap;

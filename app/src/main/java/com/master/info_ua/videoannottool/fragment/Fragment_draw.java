@@ -13,7 +13,7 @@ import android.widget.Button;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.AnnotationType;
-import com.master.info_ua.videoannottool.annotation_dialog.DialogDraw;
+import com.master.info_ua.videoannottool.dialog.DialogDraw;
 
 import java.util.Date;
 

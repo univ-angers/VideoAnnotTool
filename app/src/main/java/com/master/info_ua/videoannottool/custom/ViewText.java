@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool.annotation;
+package com.master.info_ua.videoannottool.custom;
 
 import android.util.Log;
 import android.view.Gravity;

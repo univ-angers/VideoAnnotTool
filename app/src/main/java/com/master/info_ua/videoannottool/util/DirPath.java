@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool.annotation;
+package com.master.info_ua.videoannottool.util;
 
 public enum DirPath {
     CATEGORIE1("SOLO", "solo", false),

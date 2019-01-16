@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool.annotation_dialog;
+package com.master.info_ua.videoannottool.dialog;
 
 
 import android.app.Dialog;
@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
-import com.master.info_ua.videoannottool.annotation.Audio;
+import com.master.info_ua.videoannottool.custom.Audio;
 
 import java.io.File;
 import java.io.IOException;

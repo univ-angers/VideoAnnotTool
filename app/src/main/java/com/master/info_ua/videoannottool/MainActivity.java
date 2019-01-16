@@ -56,14 +56,15 @@ import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
-import com.master.info_ua.videoannottool.annotation.Audio;
-import com.master.info_ua.videoannottool.annotation.ControlerAnnotation;
-import com.master.info_ua.videoannottool.annotation.DirPath;
-import com.master.info_ua.videoannottool.annotation.Video;
+import com.master.info_ua.videoannottool.custom.Audio;
+import com.master.info_ua.videoannottool.annotation.ControllerAnnotation;
+import com.master.info_ua.videoannottool.util.AnnotationComparator;
+import com.master.info_ua.videoannottool.util.DirPath;
+import com.master.info_ua.videoannottool.custom.Video;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
-import com.master.info_ua.videoannottool.annotation_dessin.DrawView;
-import com.master.info_ua.videoannottool.annotation_dialog.DialogAudio;
-import com.master.info_ua.videoannottool.annotation_dialog.DialogText;
+import com.master.info_ua.videoannottool.custom.DrawView;
+import com.master.info_ua.videoannottool.dialog.DialogAudio;
+import com.master.info_ua.videoannottool.dialog.DialogText;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
 import com.master.info_ua.videoannottool.menu.DialogImport;
@@ -72,6 +73,7 @@ import com.master.info_ua.videoannottool.util.Util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -109,7 +111,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private Dialog FullScreenDialog;
 
     // attribut pour les bouton associé a la répétition
-    private boolean ExoPlayerRepeat = false;
+    private boolean exoPlayerRepeat = false;
     private FrameLayout RepeatButton;
     private ImageView RepeatIcon;
 
@@ -148,7 +150,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     // controler pour excécuter les annotation au moment voulu
     // handler servant a récuperer les messages des threads secondaire et as les effectuer dans le main thread
-    private ControlerAnnotation controlerAnnotation;
+    private ControllerAnnotation controlerAnnotation;
     private Handler mainHandler;
 
 
@@ -424,9 +426,9 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             videoName = currentVideo.getFileName();
 
             if (currentVideo != null) {
-                controlerAnnotation = new ControlerAnnotation(MainActivity.this, MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+                controlerAnnotation = new ControllerAnnotation(MainActivity.this, MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
             } else {
-                controlerAnnotation = new ControlerAnnotation(MainActivity.this, MainActivity.this, null, mainHandler);
+                controlerAnnotation = new ControllerAnnotation(MainActivity.this, MainActivity.this, null, mainHandler);
             }
 
 
@@ -483,7 +485,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         exoPlayerView.setPlayer(player);
         setSpeed(1f);
         player.setPlayWhenReady(false);
-        if (!ExoPlayerRepeat) {
+        if (!exoPlayerRepeat) {
             player.setRepeatMode(Player.REPEAT_MODE_OFF);
         } else {
             player.setRepeatMode(Player.REPEAT_MODE_ONE);
@@ -512,16 +514,16 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         RepeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!ExoPlayerRepeat) {
+                if (!exoPlayerRepeat) {
                     // active le mode repeat
                     player.setRepeatMode(Player.REPEAT_MODE_ONE);
                     RepeatIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.repeat_button_on));
-                    ExoPlayerRepeat = true;
+                    exoPlayerRepeat = true;
                 } else {
                     // desactive le mode repeat
                     player.setRepeatMode(Player.REPEAT_MODE_OFF);
                     RepeatIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.repeat_button_off));
-                    ExoPlayerRepeat = false;
+                    exoPlayerRepeat = false;
                 }
             }
         });
@@ -604,42 +606,6 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     closeFullscreenDialog();
             }
         });
-    }
-
-    //Initialise la liste de vidéos pous la session ( A BUT DE TESTS )
-    protected List<Video> initVideoList() {
-
-
-        List<Video> videoList = new ArrayList<>(); //Liste de vidéo
-
-        VideoAnnotation videoAnnotations1 = parseJSONAssets(this, "annot_video1.json");
-        VideoAnnotation videoAnnotations2 = parseJSONAssets(this, "annot_video2.json");
-        VideoAnnotation videoAnnotations3 = parseJSONAssets(this, "annot_video3.json");
-        VideoAnnotation videoAnnotations4 = parseJSONAssets(this, "annot_video4.json");
-
-        saveVideoAnnotation(this, videoAnnotations1, DirPath.CATEGORIE1_SUB3.toString(), "video1");
-
-        VideoAnnotation videoAnnotations5 = parseJSONAssets(this, "annot_video1.json");
-        ;
-
-
-        //Création d'instances de vidéos
-        Video video1 = new Video("video1", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations1);
-        Video video2 = new Video("video2", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations2);
-        Video video3 = new Video("video3", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations3);
-        Video video4 = new Video("video4", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations4);
-        Video video5 = new Video("video5", DirPath.CATEGORIE1_SUB3.toString(), videoAnnotations5);
-
-
-        //Ajout dans la liste
-        videoList.add(video1);
-        videoList.add(video2);
-        videoList.add(video3);
-        videoList.add(video4);
-        videoList.add(video5);
-
-
-        return videoList;
     }
 
     /**
@@ -838,9 +804,9 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                     initExoPlayer();
 
                     if (currentVideo != null) {
-                        controlerAnnotation = new ControlerAnnotation(MainActivity.this, MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+                        controlerAnnotation = new ControllerAnnotation(MainActivity.this, MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
                     } else {
-                        controlerAnnotation = new ControlerAnnotation(MainActivity.this, MainActivity.this, null, mainHandler);
+                        controlerAnnotation = new ControllerAnnotation(MainActivity.this, MainActivity.this, null, mainHandler);
                     }
                 }
             }
@@ -855,7 +821,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     // methode dans Main activity qui renvoie le moment de la position pour les anotation sous forme de long
     @Override
-    public long getVideoTime() {
+    public long getVideoCurrentPosition() {
         return player.getCurrentPosition();
     }
 
@@ -899,6 +865,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
 
         if (currentVAnnot != null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null) {
+            Collections.sort(currentVAnnot.getAnnotationList(), new AnnotationComparator());
             String directory = currentSubCategorie.getPath() + File.separator + videoName;
             Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
             Log.e("GRAPHIC_ANNOT_SAVE", " **** Graphic annot saved successfully ****");
@@ -944,6 +911,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
 
         if (currentVAnnot != null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null) {
+            Collections.sort(currentVAnnot.getAnnotationList(), new AnnotationComparator());
             String directory = currentSubCategorie.getPath() + File.separator + videoName;
             Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
             annotFragment.updateAnnotationList(currentVAnnot);
@@ -962,6 +930,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
 
         if (currentVAnnot != null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null) {
+            Collections.sort(currentVAnnot.getAnnotationList(), new AnnotationComparator());
             String directory = currentSubCategorie.getPath() + File.separator + videoName;
             Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
             annotFragment.updateAnnotationList(currentVAnnot);

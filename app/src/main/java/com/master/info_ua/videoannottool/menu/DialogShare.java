@@ -9,7 +9,7 @@ import android.widget.Spinner;
 import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
-import com.master.info_ua.videoannottool.annotation.DirPath;
+import com.master.info_ua.videoannottool.util.DirPath;
 import com.master.info_ua.videoannottool.util.Categorie;
 
 import java.util.ArrayList;

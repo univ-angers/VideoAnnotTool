@@ -18,8 +18,12 @@ import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
+import com.master.info_ua.videoannottool.util.AnnotationComparator;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 
 public class Fragment_annotation extends Fragment {
@@ -98,7 +102,9 @@ public class Fragment_annotation extends Fragment {
         annotationsAdapter.clear();
         //Mise à jour de la liste
         if (videoAnnot != null) {
-            annotationsAdapter.addAll(videoAnnot.getAnnotationList());
+            List<Annotation> annotationList = videoAnnot.getAnnotationList();
+            Collections.sort(annotationList, new AnnotationComparator());
+            annotationsAdapter.addAll(annotationList);
         }
         annotationsAdapter.notifyDataSetChanged();
 

@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool.annotation;
+package com.master.info_ua.videoannottool.util;
 
 public class InfoAnno implements Comparable {
     // date de lancement de la méthode arrondit a la seconde inférieur
