@@ -11,5 +11,5 @@ public interface Ecouteur {
     void setSpeed(float speed);
 
     // donne le temps courant de la video
-    long getVideoTime();
+    long getVideoCurrentPosition();
 }

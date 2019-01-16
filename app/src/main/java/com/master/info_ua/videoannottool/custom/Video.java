@@ -1,4 +1,6 @@
-package com.master.info_ua.videoannottool.annotation;
+package com.master.info_ua.videoannottool.custom;
+
+import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 
 public class Video {
 

@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.master.info_ua.videoannottool.R;
-import com.master.info_ua.videoannottool.annotation.Video;
+import com.master.info_ua.videoannottool.custom.Video;
 
 import java.util.List;
 

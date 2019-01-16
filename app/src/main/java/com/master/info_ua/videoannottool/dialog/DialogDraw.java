@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool.annotation_dialog;
+package com.master.info_ua.videoannottool.dialog;
 
 import android.app.Dialog;
 import android.view.View;
@@ -63,15 +63,17 @@ public class DialogDraw {
                         //drawAnnot.setAnnotationTitle(title);
                         //drawAnnot.setAnnotationDuration(Integer.parseInt(duration));
 
-                        dialogListener.onSaveDrawImage(title, Integer.parseInt(duration));
+                        dialogListener.onSaveDrawImage(title, Integer.parseInt(duration)*1000);
                     }
                     break;
+
                 case R.id.btnAnnulerDraw:
                     //context.resetCanvas();
                     dialogListener.onResetCanvas();
                     dialog.cancel();
                     break;
             }
+
             if (titre.getText().length() != 0 && duree.getText().length() != 0) { // vérifie si les champs sont vides
                 //main.onSaveDrawAnnotation(titre.getText().toString(), valueOf(duree.getText().toString()));
                 // création de l'annotation, il faut encore utiliser le titre et la durée, voir a passer en paramètre de creer_annotation()
