@@ -46,9 +46,12 @@ import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
@@ -87,7 +90,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     // Attribut en lien avec exoplayer
     // le player et son mediaSource
     private SimpleExoPlayer player;
-    private SimpleExoPlayerView playerView;
+    private ZoomableExoPlayerView exoPlayerView;
+    //private SimpleExoPlayerView playerView;
     private MediaSource videoSource;
 
     // attribut servant pour l'option de pleine écran du lecteur a stocker des iinformation
@@ -362,10 +366,9 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (playerView == null) {
-
-            playerView = findViewById(R.id.player_view);
+        
+        if (exoPlayerView == null){
+            exoPlayerView = findViewById(R.id.exo_player_view);
             initFullscreenDialog();
             initFullscreenButton();
         }
@@ -376,8 +379,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         initPlayButton();
 
         if (ExoPlayerFullscreen) {
-            ((ViewGroup) playerView.getParent()).removeView(playerView);
-            FullScreenDialog.addContentView(playerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
+            FullScreenDialog.addContentView(exoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_skrink));
             FullScreenDialog.show();
         }
@@ -388,11 +391,11 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
         super.onPause();
 
-        if (playerView != null && playerView.getPlayer() != null) {
-            ResumeWindow = playerView.getPlayer().getCurrentWindowIndex();
-            ResumePosition = Math.max(0, playerView.getPlayer().getContentPosition());
+        if (exoPlayerView != null && exoPlayerView.getPlayer() != null) {
+            ResumeWindow = exoPlayerView.getPlayer().getCurrentWindowIndex();
+            ResumePosition = Math.max(0, exoPlayerView.getPlayer().getContentPosition());
 
-            playerView.getPlayer().release();
+            exoPlayerView.getPlayer().release();
         }
 
         if (FullScreenDialog != null)
@@ -435,12 +438,22 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     public void initExoPlayer() {
 
-        SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
+        //SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
+        ZoomableExoPlayerView exoPlayerView = findViewById(R.id.exo_player_view);
 
-        //1. creating an ExoPlayer with default parameters from Getting Started guide(https://google.github.io/ExoPlayer/guide.html)
+        // 1 creating an ExoPlayer
         DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+        DefaultHttpDataSourceFactory httpDataSourceFactory = new DefaultHttpDataSourceFactory(
+                com.google.android.exoplayer2.util.Util.getUserAgent(this, getResources().getString(R.string.app_name)),
+                null /* listener */,
+                DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS,
+                DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,
+                true /* allowCrossProtocolRedirects */
+        );
+        DataSource.Factory mediaDataSourceFactory = new DefaultDataSourceFactory(this, null,
+                httpDataSourceFactory);
 
         //2. prepare video source from url
         String filePath;
@@ -460,10 +473,9 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         } catch (FileDataSource.FileDataSourceException e) {
             e.printStackTrace();
         }
-        videoSource = new ExtractorMediaSource(
-                uri,
-                new DefaultDataSourceFactory(this, "ua"),
-                new DefaultExtractorsFactory(), null, null);
+        //2. prepare video source from url
+        videoSource = new ExtractorMediaSource(uri, mediaDataSourceFactory,
+                new DefaultExtractorsFactory(), new Handler(), null);
 
         //2. create the player
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector, new DefaultLoadControl());
@@ -486,15 +498,15 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private void openFullscreenDialog() {
 
-        ((ViewGroup) playerView.getParent()).removeView(playerView);
-        FullScreenDialog.addContentView(playerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
+        FullScreenDialog.addContentView(exoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_skrink));
         ExoPlayerFullscreen = true;
         FullScreenDialog.show();
     }
 
     private void initRepeatButton() {
-        PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
+        PlaybackControlView controlView = exoPlayerView.findViewById(R.id.exo_controller);
         RepeatIcon = controlView.findViewById(R.id.exo_repeat_icon);
         RepeatButton = controlView.findViewById(R.id.exo_repeat_button);
         RepeatButton.setOnClickListener(new View.OnClickListener() {
@@ -516,7 +528,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     }
 
     private void initSlowButton() {
-        PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
+        PlaybackControlView controlView = exoPlayerView.findViewById(R.id.exo_controller);
         speedIcon = controlView.findViewById(R.id.exo_speed_icon);
         SpeedButton = controlView.findViewById(R.id.exo_speed_button);
         SpeedButton.setOnClickListener(new View.OnClickListener() {
@@ -538,7 +550,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     }
 
     private void initPlayButton() {
-            PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
+            PlaybackControlView controlView = exoPlayerView.findViewById(R.id.exo_controller);
             playIcon = controlView.findViewById(R.id.exo_play_icon);
             playButton = controlView.findViewById(R.id.exo_play_button);
             playButton.setOnClickListener(new View.OnClickListener() {
@@ -549,6 +561,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                             // lance la video
                             playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
                             exoplayerPlay = true;
+                            exoPlayerView.setUseController(false);
+
                             controlerAnnotation.setLast_pos(0);
 
                             player.setPlayWhenReady(true);
@@ -557,6 +571,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                             // augmente la vitesse
                             playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
                             exoplayerPlay = false;
+                            exoPlayerView.setUseController(false);
                             player.setPlayWhenReady(false);
                             controlerAnnotation.cancel();
                         }
@@ -567,8 +582,8 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private void closeFullscreenDialog() {
 
-        ((ViewGroup) playerView.getParent()).removeView(playerView);
-        ((FrameLayout) findViewById(R.id.main_media_frame)).addView(playerView);
+        ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
+        ((FrameLayout) findViewById(R.id.main_media_frame)).addView(exoPlayerView);
         ExoPlayerFullscreen = false;
         FullScreenDialog.dismiss();
         FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_expand));
@@ -577,7 +592,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
 
     private void initFullscreenButton() {
 
-        PlaybackControlView controlView = playerView.findViewById(R.id.exo_controller);
+        PlaybackControlView controlView = exoPlayerView.findViewById(R.id.exo_controller);
         FullScreenIcon = controlView.findViewById(R.id.exo_fullscreen_icon);
         FullScreenButton = controlView.findViewById(R.id.exo_fullscreen_button);
         FullScreenButton.setOnClickListener(new View.OnClickListener() {

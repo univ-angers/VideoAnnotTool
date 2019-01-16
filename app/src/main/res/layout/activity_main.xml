@@ -49,13 +49,14 @@
         android:layout_weight="7"
         android:background="@color/colorCenter">
 
-        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-            android:id="@+id/player_view"
+        <com.master.info_ua.videoannottool.ZoomableExoPlayerView
+            android:id="@+id/exo_player_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="true"
             android:gravity="center"
-            app:resize_mode="fill" />
+            app:surface_type="texture_view"
+            app:resize_mode="fill"/>
 
         <com.master.info_ua.videoannottool.annotation_dessin.DrawView
             android:id="@+id/draw_view"
