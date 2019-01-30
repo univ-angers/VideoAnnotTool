@@ -41,9 +41,10 @@ public class DialogAudio {
     private Context mainActivity;
     private String directory;
     private String audioName;
-    private DialogRecordListener recordListener;
     private Annotation audioAnnot;
     private long startTime;
+
+    private DialogCallback recordCallback;
 
     /**
      * Constructeur de la classe
@@ -71,8 +72,8 @@ public class DialogAudio {
         btnCancel = dialogBox.findViewById(R.id.btnAnnulerRecord);
 
 
-        if (context instanceof DialogRecordListener) {
-            recordListener = (DialogRecordListener) context;
+        if (context instanceof DialogCallback) {
+            recordCallback = (DialogCallback) context;
         }
     }
 
@@ -136,7 +137,7 @@ public class DialogAudio {
                     break;
 
                 case R.id.btnValiderRecord:
-                    recordListener.addAudioAnnot(audioAnnot);
+                    recordCallback.addAudioAnnot(audioAnnot);
                     Toast toastConfirmAnnot;
                     toastConfirmAnnot = Toast.makeText(mainActivity, "Annotation Enregistrée", Toast.LENGTH_LONG);
                     toastConfirmAnnot.show();
@@ -207,11 +208,6 @@ public class DialogAudio {
         } catch (Exception e) {
             Log.e("AUDIO_DIALOG-BOX", "ECHEC DE L'ARRET");
         }
-    }
-
-
-    public interface DialogRecordListener {
-        void addAudioAnnot(Annotation annotation);
     }
 
 }

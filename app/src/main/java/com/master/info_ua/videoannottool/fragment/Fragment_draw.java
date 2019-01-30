@@ -30,7 +30,7 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
     private Button b_green;
     private Button b_white;
 
-    private Listener_fonction listener;
+    private DrawFragmentCallback fragmentCallback;
 
     private Annotation drawAnnotation;
 
@@ -85,8 +85,8 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if (activity instanceof Listener_fonction){
-            listener = (Listener_fonction) activity;
+        if (activity instanceof DrawFragmentCallback){
+            fragmentCallback = (DrawFragmentCallback) activity;
         }
         else {
             throw new ClassCastException(activity.toString()
@@ -98,8 +98,8 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof Listener_fonction){
-            listener = (Listener_fonction) context;
+        if (context instanceof DrawFragmentCallback){
+            fragmentCallback = (DrawFragmentCallback) context;
         }
         else {
             throw new ClassCastException(context.toString()
@@ -110,7 +110,7 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
     @Override
     public void onDetach() {
         super.onDetach();
-        listener = null;
+        fragmentCallback = null;
     }
 
     //Listener des boutons
@@ -122,47 +122,46 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
 
             switch (btnId){
                 case R.id.b_draw_reset:
-                    listener.resetCanvas();
+                    fragmentCallback.resetCanvas();
                     break;
                 case R.id.b_draw_cancel:
-                    listener.setOnTouchEnable(false);
-                    listener.fermer_fragment();
+                    fragmentCallback.setOnTouchEnable(false);
+                    fragmentCallback.closeAnnotationFrame();
                     break;
                 case R.id.b_draw_save:
-                    listener.setOnTouchEnable(false);
-                    String drawFileName = listener.saveDrawImage();
+                    fragmentCallback.setOnTouchEnable(false);
+                    String drawFileName = fragmentCallback.saveDrawImage();
                     setDrawAnnotation(drawFileName);
                     onShowDrawAnnotDialog();
-                    //listener.lancement_dialogue();
-                    //listener.fermer_fragment();
+
                     break;
                 case R.id.b_draw_blue:
-                    listener.setColor(Color.BLUE);
+                    fragmentCallback.setColor(Color.BLUE);
                     setAllEnable();
                     b_blue.setEnabled(false);
                     break;
                 case R.id.b_draw_red:
-                    listener.setColor(Color.RED);
+                    fragmentCallback.setColor(Color.RED);
                     setAllEnable();
                     b_red.setEnabled(false);
                     break;
                 case R.id.b_draw_yellow:
-                    listener.setColor(Color.YELLOW);
+                    fragmentCallback.setColor(Color.YELLOW);
                     setAllEnable();
                     b_yellow.setEnabled(false);
                     break;
                 case R.id.b_draw_black:
-                    listener.setColor(Color.BLACK);
+                    fragmentCallback.setColor(Color.BLACK);
                     setAllEnable();
                     b_black.setEnabled(false);
                     break;
                 case R.id.b_draw_green:
-                    listener.setColor(Color.GREEN);
+                    fragmentCallback.setColor(Color.GREEN);
                     setAllEnable();
                     b_green.setEnabled(false);
                     break;
                 case R.id.b_draw_white:
-                    listener.setColor(Color.WHITE);
+                    fragmentCallback.setColor(Color.WHITE);
                     setAllEnable();
                     b_white.setEnabled(false);
                     break;
@@ -184,8 +183,8 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         drawAnnotation.setAnnotationTitle(title);
         drawAnnotation.setAnnotationDuration(duration);
         drawAnnotation.setAnnotationDate(new Date());
-        listener.onSaveDrawAnnotation(drawAnnotation);
-        //listener.fermer_fragment();
+        fragmentCallback.onSaveDrawAnnotation(drawAnnotation);
+        //fragmentCallback.closeAnnotationFrame();
     }
 
     @Override
@@ -203,13 +202,13 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         this.drawAnnotation.setDrawFileName(drawFileName);
     }
 
-    public interface Listener_fonction {
+    public interface DrawFragmentCallback {
         void resetCanvas();
         void setOnTouchEnable(boolean bool);
         String saveDrawImage();
         void onSaveDrawAnnotation(Annotation annotation);
         void setColor(int color);
-        void fermer_fragment();
+        void closeAnnotationFrame();
     }
 
 }

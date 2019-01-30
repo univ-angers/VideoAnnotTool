@@ -89,6 +89,13 @@ public class ZoomableExoPlayerView extends FrameLayout {
     private boolean controllerHideOnTouch;
     private int textureViewRotation;
 
+    private boolean shutterColorSet;
+    private int shutterColor;
+    private int playerLayoutId;
+    private int surfaceType;
+    private int resizeMode;
+    private int defaultArtworkId;
+
     public ZoomableExoPlayerView(Context context) {
         this(context, null);
     }
@@ -121,44 +128,38 @@ public class ZoomableExoPlayerView extends FrameLayout {
             return;
         }
 
-        boolean shutterColorSet = false;
-        int shutterColor = 0;
-        int playerLayoutId = R.layout.exo_player_view;
-        boolean useArtwork = true;
-        int defaultArtworkId = 0;
-        boolean useController = true;
-        int surfaceType = SURFACE_TYPE_SURFACE_VIEW;
-        int resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT;
-        int controllerShowTimeoutMs = PlayerControlView.DEFAULT_SHOW_TIMEOUT_MS;
-        boolean controllerHideOnTouch = true;
-        boolean controllerAutoShow = true;
-        boolean controllerHideDuringAds = true;
-        boolean showBuffering = false;
+        shutterColorSet = false;
+        shutterColor = 0;
+        playerLayoutId = R.layout.exo_player_view;
+        useArtwork = true;
+        defaultArtworkId = 0;
+        useController = true;
+        surfaceType = SURFACE_TYPE_SURFACE_VIEW;
+        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT;
+        controllerShowTimeoutMs = PlayerControlView.DEFAULT_SHOW_TIMEOUT_MS;
+        controllerHideOnTouch = true;
+        controllerAutoShow = true;
+        controllerHideDuringAds = true;
+        showBuffering = false;
         if (attrs != null) {
-            TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PlayerView, 0, 0);
+            TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PlayerView, 0, 0);
             try {
-                shutterColorSet = a.hasValue(R.styleable.PlayerView_shutter_background_color);
-                shutterColor = a.getColor(R.styleable.PlayerView_shutter_background_color, shutterColor);
-                playerLayoutId = a.getResourceId(R.styleable.PlayerView_player_layout_id, playerLayoutId);
-                useArtwork = a.getBoolean(R.styleable.PlayerView_use_artwork, useArtwork);
-                defaultArtworkId =
-                        a.getResourceId(R.styleable.PlayerView_default_artwork, defaultArtworkId);
-                useController = a.getBoolean(R.styleable.PlayerView_use_controller, useController);
-                surfaceType = a.getInt(R.styleable.PlayerView_surface_type, surfaceType);
-                resizeMode = a.getInt(R.styleable.PlayerView_resize_mode, resizeMode);
-                controllerShowTimeoutMs =
-                        a.getInt(R.styleable.PlayerView_show_timeout, controllerShowTimeoutMs);
-                controllerHideOnTouch =
-                        a.getBoolean(R.styleable.PlayerView_hide_on_touch, controllerHideOnTouch);
-                controllerAutoShow = a.getBoolean(R.styleable.PlayerView_auto_show, controllerAutoShow);
-                showBuffering = a.getBoolean(R.styleable.PlayerView_show_buffering, showBuffering);
-                keepContentOnPlayerReset =
-                        a.getBoolean(
-                                R.styleable.PlayerView_keep_content_on_player_reset, keepContentOnPlayerReset);
-                controllerHideDuringAds =
-                        a.getBoolean(R.styleable.PlayerView_hide_during_ads, controllerHideDuringAds);
+                shutterColorSet = attributes.hasValue(R.styleable.PlayerView_shutter_background_color);
+                shutterColor = attributes.getColor(R.styleable.PlayerView_shutter_background_color, shutterColor);
+                playerLayoutId = attributes.getResourceId(R.styleable.PlayerView_player_layout_id, playerLayoutId);
+                useArtwork = attributes.getBoolean(R.styleable.PlayerView_use_artwork, useArtwork);
+                defaultArtworkId = attributes.getResourceId(R.styleable.PlayerView_default_artwork, defaultArtworkId);
+                useController = attributes.getBoolean(R.styleable.PlayerView_use_controller, useController);
+                surfaceType = attributes.getInt(R.styleable.PlayerView_surface_type, surfaceType);
+                resizeMode = attributes.getInt(R.styleable.PlayerView_resize_mode, resizeMode);
+                controllerShowTimeoutMs = attributes.getInt(R.styleable.PlayerView_show_timeout, controllerShowTimeoutMs);
+                controllerHideOnTouch = attributes.getBoolean(R.styleable.PlayerView_hide_on_touch, controllerHideOnTouch);
+                controllerAutoShow = attributes.getBoolean(R.styleable.PlayerView_auto_show, controllerAutoShow);
+                showBuffering = attributes.getBoolean(R.styleable.PlayerView_show_buffering, showBuffering);
+                keepContentOnPlayerReset = attributes.getBoolean(R.styleable.PlayerView_keep_content_on_player_reset, keepContentOnPlayerReset);
+                controllerHideDuringAds = attributes.getBoolean(R.styleable.PlayerView_hide_during_ads, controllerHideDuringAds);
             } finally {
-                a.recycle();
+                attributes.recycle();
             }
         }
 
@@ -215,7 +216,6 @@ public class ZoomableExoPlayerView extends FrameLayout {
         if (bufferingView != null) {
             bufferingView.setVisibility(View.GONE);
         }
-        this.showBuffering = showBuffering;
 
         // Error message view.
         errorMessageView = findViewById(R.id.exo_error_message);
@@ -241,9 +241,6 @@ public class ZoomableExoPlayerView extends FrameLayout {
             this.controller = null;
         }
         this.controllerShowTimeoutMs = controller != null ? controllerShowTimeoutMs : 0;
-        this.controllerHideOnTouch = controllerHideOnTouch;
-        this.controllerAutoShow = controllerAutoShow;
-        this.controllerHideDuringAds = controllerHideDuringAds;
         this.useController = useController && controller != null;
         hideController();
     }
@@ -430,7 +427,7 @@ public class ZoomableExoPlayerView extends FrameLayout {
             return;
         }
         this.useController = useController;
-        if (useController) {
+        if (this.useController) {
             controller.setPlayer(player);
         } else if (controller != null) {
             controller.hide();

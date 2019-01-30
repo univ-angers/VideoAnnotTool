@@ -1,16 +1,17 @@
-package com.master.info_ua.videoannottool.menu;
+package com.master.info_ua.videoannottool.dialog;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.util.DirPath;
 import com.master.info_ua.videoannottool.util.Categorie;
+import com.master.info_ua.videoannottool.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,8 @@ import java.util.List;
 public class DialogShare {
 
 
-    public void showDialogShare(final MainActivity main) {
-        final Dialog dialog = new Dialog(main);
+    public void showDialogShare(Context context) {
+        final Dialog dialog = new Dialog(context);
 
         dialog.setContentView(R.layout.boite_dialog_share);
         dialog.setTitle(R.string.ShareVideo);
@@ -30,9 +31,9 @@ public class DialogShare {
 
         List<Categorie> categorieList = new ArrayList<>();
         categorieList.add(new Categorie("Categorie", null, "/"));
-        categorieList.addAll(main.setCatSpinnerList());
+        categorieList.addAll(Util.setCatSpinnerList(context));
 
-        ArrayAdapter<Categorie> spinnerAdapter = new SpinnerAdapter(main, android.R.layout.simple_spinner_item, categorieList);
+        ArrayAdapter<Categorie> spinnerAdapter = new SpinnerAdapter(context, android.R.layout.simple_spinner_item, categorieList);
 
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategorie.setAdapter(spinnerAdapter);
@@ -42,9 +43,9 @@ public class DialogShare {
 
         List<Categorie> spinnerList2 = new ArrayList<>();
         spinnerList2.add(new Categorie("Sous-categorie", null, "/"));
-        spinnerList2.addAll(main.setSubCatSpinnerList(DirPath.CATEGORIE1.getPath()));
+        spinnerList2.addAll(Util.setSubCatSpinnerList(DirPath.CATEGORIE1.getPath()));
 
-        ArrayAdapter<Categorie> spinnerAdapter2 = new SpinnerAdapter(main, android.R.layout.simple_spinner_item, spinnerList2);
+        ArrayAdapter<Categorie> spinnerAdapter2 = new SpinnerAdapter(context, android.R.layout.simple_spinner_item, spinnerList2);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubCategorie.setAdapter(spinnerAdapter2);
 

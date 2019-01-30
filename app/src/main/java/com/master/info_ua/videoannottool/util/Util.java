@@ -23,6 +23,7 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class Util {
@@ -62,10 +63,10 @@ public class Util {
      */
     public static VideoAnnotation parseJSON(Context context, String dirName, String fileName) {
 
-        String filePath = context.getExternalFilesDir(dirName).getAbsolutePath()+ File.separator + fileName;
+        String filePath = context.getExternalFilesDir(dirName).getAbsolutePath() + File.separator + fileName;
 
         try {
-            FileInputStream fis = new FileInputStream (new File(filePath));
+            FileInputStream fis = new FileInputStream(new File(filePath));
             Reader reader = new InputStreamReader(fis);
             Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
             VideoAnnotation videoAnnotation = gson.fromJson(reader, VideoAnnotation.class);
@@ -124,6 +125,7 @@ public class Util {
 
     /**
      * Crée l'ensemble des repertoire spécifiés dans l'Enum "DirPath"
+     *
      * @param context
      */
     public static void createDir(Context context) {
@@ -140,16 +142,50 @@ public class Util {
     }
 
 
-    //Vérifie si le repertoire est correcte et crée le fichier à l'endroit demandé et le renvoie sous forme de File
-    public static File getFile(Context context, String repertoire, String nomFichier) {
-        boolean dans_enum = false;
-        DirPath[] tab = DirPath.values();
-        for (int i = 0; i < tab.length; i++)
-            if (tab[i].toString() == repertoire)
-                dans_enum = true;
-        if (dans_enum)
-            return context.getExternalFilesDir(repertoire + "/" + nomFichier);
-        else return null;
+    /**
+     * Initialise la liste d'item du spinner categorie
+     *
+     * @return
+     */
+    public static List<Categorie> setCatSpinnerList(Context context) {
+        List<Categorie> categorieList = new ArrayList<>();
+
+        if (Util.appDirExist(context)) {
+            for (DirPath dirPath : DirPath.values()) {
+                if (!dirPath.isSubDir()) {
+                    categorieList.add(new Categorie(dirPath.getName(), null, dirPath.toString()));
+                }
+            }
+        } else {
+            Util.createDir(context);
+            categorieList = setCatSpinnerList(context);
+        }
+
+        return categorieList;
+    }
+
+
+    /**
+     * Initialise la liste d'item du spinner sub-categorie
+     *
+     * @return
+     */
+    public static List<Categorie> setSubCatSpinnerList(String parentDir) {
+        List<Categorie> categorieList = new ArrayList<>();
+
+        categorieList.add(new Categorie("Sous-categorie", null, "../"));
+        if (Util.isAppDirectory(parentDir)) {
+            Log.e("IS_APP_DIR", parentDir + " IS APP_DIR");
+            for (DirPath dirPath : DirPath.values()) {
+                if (dirPath.isSubDir() && dirPath.getPath().substring(0, dirPath.getPath().indexOf("/")).equals(parentDir)) {
+                    //Log.e("SUB_CAT", dirPath.toString());
+                    categorieList.add(new Categorie(dirPath.getName(), parentDir, dirPath.toString()));
+                }
+            }
+        } else {
+            Log.e("IS_APP_DIR", parentDir + " is not a app dir");
+        }
+        return categorieList;
     }
 
     /**
@@ -207,6 +243,7 @@ public class Util {
 
     /**
      * Crée une nouvelle instance de VideoAnnotation
+     *
      * @return
      */
     public static VideoAnnotation createNewVideoAnnotation() {
@@ -226,8 +263,8 @@ public class Util {
         Bitmap bitmap = null;
         try {
             String dirPath = context.getExternalFilesDir(path).getAbsolutePath();
-            File filePath = new File(dirPath,filename);
-            if (filePath.exists()){
+            File filePath = new File(dirPath, filename);
+            if (filePath.exists()) {
                 FileInputStream fileInputStream = new FileInputStream(filePath);
                 bitmap = BitmapFactory.decodeStream(fileInputStream);
             }
@@ -243,10 +280,10 @@ public class Util {
      *
      * @param context
      * @param imageToSave
-     * @param path chemin du répertoire de sauvegarde
-     * @param fileName nom du fichier
+     * @param path        chemin du répertoire de sauvegarde
+     * @param fileName    nom du fichier
      */
-    public static void saveBitmapImage(Context context, Bitmap imageToSave,String path, String fileName) {
+    public static void saveBitmapImage(Context context, Bitmap imageToSave, String path, String fileName) {
         final File externalFile;
         if (isExternalStorageWritable()) {
             externalFile = new File(context.getExternalFilesDir(path), fileName);
@@ -258,11 +295,22 @@ public class Util {
                 imageToSave.compress(Bitmap.CompressFormat.PNG, 100, out);
                 out.flush();
                 out.close();
-                Log.e("TAG", "Bitmap writed to "+externalFile.getAbsolutePath());
+                Log.e("TAG", "Bitmap writed to " + externalFile.getAbsolutePath());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+    }
+
+    /**
+     * Permet la sauvegarde d'un fichier viéo importé dans le repertoire désigné par la catégorie et sous catégorie indiquées
+     *
+     * @param cat
+     * @param subCat
+     * @param videoFile
+     */
+    public static void saveVideoFile(String cat, String subCat, File videoFile) {
 
     }
 
