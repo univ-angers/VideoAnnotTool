@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool.menu;
+package com.master.info_ua.videoannottool.dialog;
 
 import android.app.Dialog;
 import android.view.View;

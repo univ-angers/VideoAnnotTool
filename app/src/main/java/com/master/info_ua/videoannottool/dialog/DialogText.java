@@ -19,19 +19,19 @@ import com.master.info_ua.videoannottool.annotation.Annotation;
  */
 public class DialogText {
     private int starttime;
-    private DialogTextListener textListener;
+    private DialogCallback textAnnotDialogCallback;
 
     /**
      * Constructeur de la classe
      *
-     * @param main
+     * @param context
      * @param startTime
      */
-    public DialogText(Context main, int startTime) {
+    public DialogText(Context context, int startTime) {
         this.starttime = startTime;
 
-        if (main instanceof DialogTextListener) {
-            textListener = (DialogTextListener) main;
+        if (context instanceof DialogCallback) {
+            textAnnotDialogCallback = (DialogCallback) context;
         }
     }
 
@@ -62,7 +62,7 @@ public class DialogText {
 
                 annotation.setAnnotationDuration(Integer.parseInt(etDuration.getText().toString()) * 1000);
                 annotation.setTextComment(texte);
-                textListener.addTextAnnot(annotation);
+                textAnnotDialogCallback.addTextAnnot(annotation);
                 Log.i("TEXT_DIALOG-BOX", "Validation :" + texte);
                 Toast toastConfirmAnnot;
                 toastConfirmAnnot = Toast.makeText(main, "Annotation Enregistrée", Toast.LENGTH_LONG);
@@ -83,12 +83,6 @@ public class DialogText {
 
         dialogBox.show();
     }
-
-
-    public interface DialogTextListener {
-        void addTextAnnot(Annotation annotation);
-    }
-
 
 }
 

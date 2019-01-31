@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
@@ -45,7 +46,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlaybackControlView;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
@@ -58,6 +58,7 @@ import com.master.info_ua.videoannottool.adapter.VideosAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.custom.Audio;
 import com.master.info_ua.videoannottool.annotation.ControllerAnnotation;
+import com.master.info_ua.videoannottool.dialog.DialogCallback;
 import com.master.info_ua.videoannottool.util.AnnotationComparator;
 import com.master.info_ua.videoannottool.util.DirPath;
 import com.master.info_ua.videoannottool.custom.Video;
@@ -67,7 +68,7 @@ import com.master.info_ua.videoannottool.dialog.DialogAudio;
 import com.master.info_ua.videoannottool.dialog.DialogText;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
-import com.master.info_ua.videoannottool.menu.DialogImport;
+import com.master.info_ua.videoannottool.dialog.DialogImport;
 import com.master.info_ua.videoannottool.util.Categorie;
 import com.master.info_ua.videoannottool.util.Util;
 
@@ -79,10 +80,15 @@ import java.util.List;
 
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.AUDIO;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
-import static com.master.info_ua.videoannottool.util.Util.parseJSONAssets;
-import static com.master.info_ua.videoannottool.util.Util.saveVideoAnnotation;
 
-public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Listener_fonction, DialogAudio.DialogRecordListener, DialogText.DialogTextListener, Fragment_annotation.AnnotFragmentListener {
+public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener {
+
+    private static final int READ_REQUEST_CODE = 42;
+
+    // attribut servant pour l'option de pleine écran du lecteur a stocker des iinformation
+    private final String STATE_RESUME_WINDOW = "resumeWindow";
+    private final String STATE_RESUME_POSITION = "resumePosition";
+    private final String STATE_PLAYER_FULLSCREEN = "playerFullscreen";
 
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
@@ -95,11 +101,6 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     private ZoomableExoPlayerView exoPlayerView;
     //private SimpleExoPlayerView playerView;
     private MediaSource videoSource;
-
-    // attribut servant pour l'option de pleine écran du lecteur a stocker des iinformation
-    private final String STATE_RESUME_WINDOW = "resumeWindow";
-    private final String STATE_RESUME_POSITION = "resumePosition";
-    private final String STATE_PLAYER_FULLSCREEN = "playerFullscreen";
 
     private int ResumeWindow;
     private long ResumePosition;
@@ -210,7 +211,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         //Spinner catégorie
         List<Categorie> categorieList = new ArrayList<>();
         categorieList.add(new Categorie("Categorie", null, "/"));
-        categorieList.addAll(setCatSpinnerList());
+        categorieList.addAll(Util.setCatSpinnerList(this));
 
         spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
 
@@ -563,7 +564,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                             // lance la video
                             playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
                             exoplayerPlay = true;
-                            exoPlayerView.setUseController(false);
+                            //exoPlayerView.setUseController(false);
 
                             controlerAnnotation.setLast_pos(0);
 
@@ -573,7 +574,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
                             // augmente la vitesse
                             playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
                             exoplayerPlay = false;
-                            exoPlayerView.setUseController(false);
+                            //exoPlayerView.setUseController(false);
                             player.setPlayWhenReady(false);
                             controlerAnnotation.cancel();
                         }
@@ -656,55 +657,6 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     }
 
     /**
-     * initialise la liste d'item du spinner categorie
-     *
-     * @return
-     */
-    public List<Categorie> setCatSpinnerList() {
-        List<Categorie> categorieList = new ArrayList<>();
-
-        if (Util.appDirExist(this)) {
-            for (DirPath dirPath : DirPath.values()) {
-                if (!dirPath.isSubDir()) {
-                    categorieList.add(new Categorie(dirPath.getName(), null, dirPath.toString()));
-                }
-            }
-        }
-        /*else {
-            Util.createDir(this);
-            categorieList = setCatSpinnerList();
-        }
-        */
-        return categorieList;
-    }
-
-
-    /**
-     * initialise la liste d'item du spinner sub-categorie
-     *
-     * @return
-     */
-    public List<Categorie> setSubCatSpinnerList(String parentDir) {
-        List<Categorie> categorieList = new ArrayList<>();
-
-        categorieList.add(new Categorie("Sous-categorie", null, "../"));
-        if (Util.isAppDirectory(parentDir)) {
-            Log.e("IS_APP_DIR", parentDir + " IS APP_DIR");
-            for (DirPath dirPath : DirPath.values()) {
-                if (dirPath.isSubDir() && dirPath.getPath().substring(0, dirPath.getPath().indexOf("/")).equals(parentDir)) {
-                    //Log.e("SUB_CAT", dirPath.toString());
-                    categorieList.add(new Categorie(dirPath.getName(), parentDir, dirPath.toString()));
-                } else {
-                    Log.e("IS_APP_DIR", dirPath.toString() + " is not a app dir");
-                }
-            }
-        } else {
-            Log.e("IS_APP_DIR", parentDir + " is not a app dir");
-        }
-        return categorieList;
-    }
-
-    /**
      * listener de clic sur les button d'annotation
      */
     protected View.OnClickListener btnClickListener = new View.OnClickListener() {
@@ -762,7 +714,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
             currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
 
             spinnerAdapter2.clear();
-            spinnerAdapter2.addAll(setSubCatSpinnerList(currentCategorie.getPath()));
+            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
             spinnerAdapter2.notifyDataSetChanged();
             spinnerSubCategorie.setSelection(1);
             Log.e("SELECT_CAT", currentCategorie.getPath());
@@ -883,7 +835,7 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
     }
 
     @Override
-    public void fermer_fragment() {
+    public void closeAnnotationFrame() {
 
         drawView.resetCanvas();
         FragmentTransaction ft = fragmentManager.beginTransaction();
@@ -1137,5 +1089,42 @@ public class MainActivity extends Activity implements Ecouteur, Fragment_draw.Li
         }else {
             Toast.makeText(this, "Échec de suppression de l'annotation", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Crée un Intent pour déclencher le selecteur de fichers
+     */
+    public void performFileSearch() {
+
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,"Sélectionner une vidéo "),READ_REQUEST_CODE);
+
+        //Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+
+        //startActivityForResult(intent, READ_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+
+            if (data != null && data.getData() != null) {
+                //filePath = data.getData();
+                try {
+                    Util.saveVideoFile(null, null, null);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onClickVideoFileImport() {
+        performFileSearch();
     }
 }
