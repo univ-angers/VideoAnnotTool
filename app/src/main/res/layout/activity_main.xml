@@ -23,12 +23,13 @@
                 <Spinner
                     android:id="@+id/spinner_cat"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="60dp"
+                    />
 
                 <Spinner
                     android:id="@+id/spinner_sub_cat"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="60dp" />
 
             </LinearLayout>
 
