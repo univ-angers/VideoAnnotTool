@@ -59,6 +59,7 @@ import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.custom.Audio;
 import com.master.info_ua.videoannottool.annotation.ControllerAnnotation;
 import com.master.info_ua.videoannottool.dialog.DialogCallback;
+import com.master.info_ua.videoannottool.player_view.ZoomableExoPlayerView;
 import com.master.info_ua.videoannottool.util.AnnotationComparator;
 import com.master.info_ua.videoannottool.util.DirPath;
 import com.master.info_ua.videoannottool.custom.Video;
@@ -70,6 +71,7 @@ import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
 import com.master.info_ua.videoannottool.dialog.DialogImport;
 import com.master.info_ua.videoannottool.util.Categorie;
+import com.master.info_ua.videoannottool.util.Ecouteur;
 import com.master.info_ua.videoannottool.util.Util;
 
 import java.io.File;
@@ -165,6 +167,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public static final boolean ELEVE = false;
     public static final boolean COACH = true;
     private boolean statut_profil = ELEVE;  //flag pour savoir si utilisateur = eleve ou coach. L'app se lance en eleve
+
+    // attribut pour le nom de la vidéo
+    private TextView videoImportName;
+    private File fileVideoImport;
 
 
     @Override
@@ -263,6 +269,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             Util.createDir(this);
         }
 
+        fileVideoImport = new File("");
     }
 
     @Override
@@ -1095,15 +1102,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      * Crée un Intent pour déclencher le selecteur de fichers
      */
     public void performFileSearch() {
-
         Intent intent = new Intent();
         intent.setType("video/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent,"Sélectionner une vidéo "),READ_REQUEST_CODE);
-
-        //Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-
-        //startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
     @Override
@@ -1112,13 +1114,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
 
             if (data != null && data.getData() != null) {
-                //filePath = data.getData();
-                try {
-                    Util.saveVideoFile(null, null, null);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Uri filePath = data.getData();
+                String s = Util.getRealPathFromURI(this,filePath);
+                fileVideoImport = new File(Util.getRealPathFromURI(this,filePath));
+                videoImportName.setText(fileVideoImport.getName());
             }
         }
     }
@@ -1126,5 +1125,19 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     @Override
     public void onClickVideoFileImport() {
         performFileSearch();
+    }
+
+    @Override
+    public void updateImportVideoTextView(TextView videoImportTextView) {
+        videoImportName = videoImportTextView;
+    }
+
+    @Override
+    public void saveImportVideo(Categorie selectedSousCategorie) {
+        Util.saveImportVideoFile(this,selectedSousCategorie,fileVideoImport);
+        videosAdapter.clear();
+        videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
+        videosAdapter.notifyDataSetChanged();
+        //Toast.makeText(this,selectedSousCategorie.getPath(),Toast.LENGTH_SHORT).show();
     }
 }

@@ -11,23 +11,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <Button
-            android:id="@+id/btnChoisirVideoImport"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/TextBtnSelectVideo" />
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btnChoisirVideoImport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/TextBtnSelectVideo" />
+
+            <TextView
+                android:id="@+id/videoImportTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="25dp"/>
+        </LinearLayout>
 
         <Spinner
             android:id="@+id/spinner_import_cat"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_weight="1" />
 
         <Spinner
             android:id="@+id/spinner_import_sub_cat"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_weight="1" />
 
     </LinearLayout>
@@ -38,18 +50,18 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnImport"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="50"
-            android:text="@string/TextBtnImport" />
-
-        <Button
             android:id="@+id/btnCancelImport"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:text="@string/TextBtnCancel" />
+
+        <Button
+            android:id="@+id/btnImport"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:text="@string/TextBtnImport" />
 
     </LinearLayout>
 

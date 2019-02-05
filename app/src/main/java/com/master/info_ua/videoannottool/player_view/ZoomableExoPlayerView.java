@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool;
+package com.master.info_ua.videoannottool.player_view;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -49,7 +49,7 @@ import com.google.android.exoplayer2.video.VideoListener;
 
 import java.util.List;
 
-import com.master.info_ua.videoannottool.ZoomableTextureView;
+import com.master.info_ua.videoannottool.R;
 
 /**
  * This is a line-for-line copy of PlayerView from ExoPlayer repository, the only thing you have to change is the underlying view. Default TextureView -> ZoomableTextureView

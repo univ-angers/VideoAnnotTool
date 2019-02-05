@@ -103,7 +103,7 @@ public class Fragment_annotation extends Fragment {
         //Mise à jour de la liste
         if (videoAnnot != null) {
             List<Annotation> annotationList = videoAnnot.getAnnotationList();
-            Collections.sort(annotationList, new AnnotationComparator());
+            //Collections.sort(annotationList, new AnnotationComparator());
             annotationsAdapter.addAll(annotationList);
         }
         annotationsAdapter.notifyDataSetChanged();

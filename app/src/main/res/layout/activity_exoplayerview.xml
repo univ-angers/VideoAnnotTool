@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.master.info_ua.videoannottool.ZoomableExoPlayerView
+    <com.master.info_ua.videoannottool.player_view.ZoomableExoPlayerView
         android:id="@+id/exo_player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

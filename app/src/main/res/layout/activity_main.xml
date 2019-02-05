@@ -23,24 +23,25 @@
                 <Spinner
                     android:id="@+id/spinner_cat"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    />
+                    android:layout_height="60dp"/>
 
                 <Spinner
                     android:id="@+id/spinner_sub_cat"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp" />
+                    android:layout_height="60dp"/>
 
             </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
+                    <ListView
+                        android:id="@+id/lv_videos"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp" />
 
-            <ListView
-                android:id="@+id/lv_videos"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp">
-
-            </ListView>
+                </LinearLayout>
         </LinearLayout>
 
     <FrameLayout
@@ -50,7 +51,7 @@
         android:layout_weight="7"
         android:background="@color/colorCenter">
 
-        <com.master.info_ua.videoannottool.ZoomableExoPlayerView
+        <com.master.info_ua.videoannottool.player_view.ZoomableExoPlayerView
             android:id="@+id/exo_player_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -107,7 +108,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/colorLeftRight"
+            android:gravity="center"
+            android:background="@color/colorBottomBar"
             android:visibility="gone">
 
             <ImageButton android:id="@+id/graphic_annot_btn"

@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool;
+package com.master.info_ua.videoannottool.player_view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,6 +11,8 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.TextureView;
 import android.view.View;
+
+import com.master.info_ua.videoannottool.R;
 
 public class ZoomableTextureView extends TextureView {
     private static final String SUPERSTATE_KEY = "superState";

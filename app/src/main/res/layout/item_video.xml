@@ -1,22 +1,25 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/tvName"
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tvAuthor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-        android:visibility="visible" />
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width ="match_parent"
+            android:layout_height ="wrap_content"
+            android:layout_margin ="5dp"
+            app:cardBackgroundColor ="@android:color/white"
+            app:cardCornerRadius ="2dp"
+            app:cardElevation ="10dp">
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+        </android.support.v7.widget.CardView>
+
+ </LinearLayout>

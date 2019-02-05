@@ -1,4 +1,4 @@
-package com.master.info_ua.videoannottool;
+package com.master.info_ua.videoannottool.util;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
 

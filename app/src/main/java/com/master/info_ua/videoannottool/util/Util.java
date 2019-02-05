@@ -1,15 +1,24 @@
 package com.master.info_ua.videoannottool.util;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -304,14 +313,48 @@ public class Util {
     }
 
     /**
-     * Permet la sauvegarde d'un fichier viéo importé dans le repertoire désigné par la catégorie et sous catégorie indiquées
      *
-     * @param cat
-     * @param subCat
-     * @param videoFile
+     * @param context
+     * @param contentUri
+     * @return
      */
-    public static void saveVideoFile(String cat, String subCat, File videoFile) {
+    public static String getRealPathFromURI(Context context, Uri contentUri) {
 
+            Cursor cursor = null;
+            try {
+                String[] proj = { MediaStore.Video.Media.DATA };
+                cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                cursor.moveToFirst();
+                return cursor.getString(column_index);
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
     }
 
+    /**
+     * Permet la sauvegarde d'un fichier viéo importé dans le repertoire désigné par la catégorie et sous catégorie indiquées
+     *
+     * @param context
+     * @param subCatDir
+     * @param videoFile
+     */
+
+    public static void saveImportVideoFile(Context context, Categorie subCatDir, File videoFile) {
+
+        try {
+            // Destination
+            File subDirContent = context.getExternalFilesDir(subCatDir.getPath());
+
+            // Source
+            File videoFileDirectory = new File(subDirContent,FilenameUtils.removeExtension(videoFile.getName()));
+            videoFileDirectory.mkdir();
+
+            FileUtils.copyFileToDirectory(videoFile, videoFileDirectory);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

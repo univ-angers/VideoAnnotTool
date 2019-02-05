@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.master.info_ua.videoannottool.R;
@@ -37,12 +38,14 @@ public class VideosAdapter extends ArrayAdapter<Video> {
         // Lookup view for data population
 
         TextView tvName = convertView.findViewById(R.id.tvName);
+        //ImageView moviePicture = convertView.findViewById(R.id.moviePicture);
 
-        TextView tvHome = convertView.findViewById(R.id.tvAuthor);
+        //TextView tvHome = convertView.findViewById(R.id.tvAuthor);
 
         // Populate the data into the template view using the data object
 
         tvName.setText(video.getFileName());
+        /*moviePicture.setImageResource(R.drawable.movie);*/
 
         // Return the completed view to render on screen
 

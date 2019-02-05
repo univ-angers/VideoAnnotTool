@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.master.info_ua.videoannottool.Ecouteur;
+import com.master.info_ua.videoannottool.util.Ecouteur;
 import com.master.info_ua.videoannottool.util.InfoAnno;
 
 import java.util.ArrayList;
@@ -35,6 +35,7 @@ public class ControllerAnnotation implements Runnable {
         mainHandler = _mainHandler;
         _mainActivity = context;
         m_ecouteur = m_e;
+        annotationList = new ArrayList<>();
 
         if (videoAnnotation != null) {
             annotationList = videoAnnotation.getAnnotationList();
@@ -47,7 +48,6 @@ public class ControllerAnnotation implements Runnable {
             }
             Collections.sort(listInfoAnno);
         }
-
     }
 
 
