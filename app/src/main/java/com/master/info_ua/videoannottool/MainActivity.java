@@ -59,6 +59,7 @@ import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.custom.Audio;
 import com.master.info_ua.videoannottool.annotation.ControllerAnnotation;
 import com.master.info_ua.videoannottool.dialog.DialogCallback;
+import com.master.info_ua.videoannottool.dialog.DialogProfil;
 import com.master.info_ua.videoannottool.player_view.ZoomableExoPlayerView;
 import com.master.info_ua.videoannottool.util.AnnotationComparator;
 import com.master.info_ua.videoannottool.util.DirPath;
@@ -280,12 +281,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         spinnerCategorie.setSelection(1);
         spinnerSubCategorie.setOnItemSelectedListener(subCatItemSelectedListener);
 
-        //videoList = initVideoList();
-        //videoList = setVideoList(currentSubCategorie.getPath());
         videoList = setVideoList(DirPath.CATEGORIE1_SUB1.toString());
         if (videoList.size() > 0) {
             currentVideo = videoList.get(0);
-            //currentVAnnot = currentVideo.getVideoAnnotation();
             setCurrentVAnnot();
             videoName = currentVideo.getFileName();
 
@@ -323,20 +321,15 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 DialogImport dialogImport = new DialogImport();
                 dialogImport.showDialogImport(MainActivity.this);
                 return true;
-            case R.id.action_share:
-                //DialogShare dialogShare = new DialogShare();
-                //dialogShare.showDialogShare(MainActivity.this);
-                return true;
             case R.id.action_profile:
                 if (statut_profil == ELEVE) {
-                    //DialogProfil dialogProfil = new DialogProfil();
-                    //dialogProfil.showDialogProfil(MainActivity.this);
-                    item.setTitle("Passer en mode athlète");
-                    btnLayout.setVisibility(View.VISIBLE);
+                    DialogProfil dialogProfil = new DialogProfil();
+                    dialogProfil.showDialogProfil(MainActivity.this,item);
+                    /*btnLayout.setVisibility(View.VISIBLE);
                     audioAnnotBtn.setEnabled(true);
                     textAnnotBtn.setEnabled(true);
-                    graphAnnotBtn.setEnabled(true);
-                    statut_profil = COACH;
+                    graphAnnotBtn.setEnabled(true);*/
+                    //statut_profil = COACH;
 
                 } else if (statut_profil == COACH) {
                     btnLayout.setVisibility(View.GONE);
@@ -816,7 +809,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     @Override
     public void onSaveDrawAnnotation(Annotation annotation) {
         // création de l'annotation
-        //annotation.setDrawFileName(drawFileName);
         annotation.setAnnotationStartTime(player.getCurrentPosition());
         Log.e("GRAPHIC_ANNOT", "Annotation file name " + annotation.getDrawFileName() + " ==> Annotation title " + annotation.getAnnotationTitle());
 
@@ -938,12 +930,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      */
     @Override
     public void onAnnotItemClick(final Annotation annotation) {
-
         player.seekTo(annotation.getAnnotationStartTime());
         player.setPlayWhenReady(false);
-        final String annotFileDirectory = currentSubCategorie.getPath()+"/"+currentVideo.getFileName();
 
-        //Handler loopHandler = new Handler(Looper.getMainLooper());
+        playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
+
+        final String annotFileDirectory = currentSubCategorie.getPath()+"/"+currentVideo.getFileName();
 
         switch (annotation.getAnnotationType()){
             case AUDIO:
@@ -968,18 +960,17 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 break;
 
             case DRAW:
-
                 Bitmap bitmap = Util.getBitmapFromAppDir(this, annotFileDirectory, annotation.getDrawFileName());
                 drawBimapIv.setVisibility(View.VISIBLE);
                 drawBimapIv.setImageBitmap(bitmap);
 
                 mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        drawBimapIv.setVisibility(View.GONE);
-                        drawBimapIv.setImageBitmap(null);
-                        player.setPlayWhenReady(true);
-                    }
+                        @Override
+                        public void run() {
+                         drawBimapIv.setVisibility(View.GONE);
+                         drawBimapIv.setImageBitmap(null);
+                         player.setPlayWhenReady(true);
+                        }
                 }, annotation.getAnnotationDuration());
 
                 break;
@@ -991,7 +982,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
                         annotCommentTv.setVisibility(View.GONE);
                         annotCommentTv.setText("");
                         player.setPlayWhenReady(true);
@@ -1014,70 +1004,68 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      */
     protected void onAnnotationLauched(Annotation annotation) {
 
-        player.seekTo(annotation.getAnnotationStartTime());
-        player.setPlayWhenReady(false);
-        final String annotFileDirectory = currentSubCategorie.getPath()+"/"+currentVideo.getFileName();
+        if(!ExoPlayerFullscreen) {
+            player.seekTo(annotation.getAnnotationStartTime());
+            player.setPlayWhenReady(false);
+            final String annotFileDirectory = currentSubCategorie.getPath() + "/" + currentVideo.getFileName();
 
-        switch (annotation.getAnnotationType()){
-            case AUDIO:
-                //Juste pour récupérer la durée de l'audio
-                //Pas nécessaire si "annotation.getAnnotationDuration()" est bien défini
-                Uri uri = Uri.parse(getApplicationContext().getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
-                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                mmr.setDataSource(getApplicationContext(),uri);
-                String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                int duration = Integer.parseInt(durationStr);
+            switch (annotation.getAnnotationType()) {
+                case AUDIO:
+                    Uri uri = Uri.parse(getApplicationContext().getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
+                    MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                    mmr.setDataSource(getApplicationContext(), uri);
+                    String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                    int duration = Integer.parseInt(durationStr);
 
-                Audio audio = new Audio(getApplicationContext(), getApplicationContext().getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
-                audio.listen();
+                    Audio audio = new Audio(getApplicationContext(), getApplicationContext().getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
+                    audio.listen();
 
-                mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        player.setPlayWhenReady(true);
-                    }
-                }, duration);  // ==> annotation.getAnnotationDuration()
+                    mainHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            player.setPlayWhenReady(true);
+                        }
+                    }, duration);  // ==> annotation.getAnnotationDuration()
 
-                break;
+                    break;
 
-            case DRAW:
+                case DRAW:
+                    Bitmap bitmap = Util.getBitmapFromAppDir(getApplicationContext(), annotFileDirectory, annotation.getDrawFileName());
+                    drawBimapIv.setVisibility(View.VISIBLE);
+                    drawBimapIv.setImageBitmap(bitmap);
 
-                Bitmap bitmap = Util.getBitmapFromAppDir(getApplicationContext(), annotFileDirectory, annotation.getDrawFileName());
-                drawBimapIv.setVisibility(View.VISIBLE);
-                drawBimapIv.setImageBitmap(bitmap);
+                    mainHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            drawBimapIv.setVisibility(View.GONE);
+                            drawBimapIv.setImageBitmap(null);
+                            player.setPlayWhenReady(true);
+                        }
+                    }, annotation.getAnnotationDuration());
 
-                mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        drawBimapIv.setVisibility(View.GONE);
+                    break;
+
+                case TEXT:
+                    annotCommentTv.setVisibility(View.VISIBLE);
+                    annotCommentTv.setText(annotation.getTextComment());
+
+                    mainHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            annotCommentTv.setVisibility(View.GONE);
+                            annotCommentTv.setText("");
+                            player.setPlayWhenReady(true);
+                        }
+                    }, annotation.getAnnotationDuration());
+
+                    break;
+
+                default:
+                    if (drawBimapIv.getVisibility() == View.VISIBLE) {
                         drawBimapIv.setImageBitmap(null);
-                        player.setPlayWhenReady(true);
+                        drawBimapIv.setVisibility(View.GONE);
                     }
-                }, annotation.getAnnotationDuration());
-
-                break;
-
-            case TEXT:
-                annotCommentTv.setVisibility(View.VISIBLE);
-                annotCommentTv.setText(annotation.getTextComment());
-
-                mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        annotCommentTv.setVisibility(View.GONE);
-                        annotCommentTv.setText("");
-                        player.setPlayWhenReady(true);
-                    }
-                }, annotation.getAnnotationDuration());
-
-                break;
-
-            default:
-                if (drawBimapIv.getVisibility() == View.VISIBLE){
-                    drawBimapIv.setImageBitmap(null);
-                    drawBimapIv.setVisibility(View.GONE);
-                }
+            }
         }
 
     }
@@ -1138,6 +1126,5 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         videosAdapter.clear();
         videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
         videosAdapter.notifyDataSetChanged();
-        //Toast.makeText(this,selectedSousCategorie.getPath(),Toast.LENGTH_SHORT).show();
     }
 }

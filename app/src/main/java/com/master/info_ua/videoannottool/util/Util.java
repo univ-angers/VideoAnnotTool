@@ -312,6 +312,15 @@ public class Util {
 
     }
 
+    public static String getRealPathFromURI_BelowAPI11(Context context, Uri contentUri) {
+        String[] proj = {MediaStore.Video.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+        int column_index
+                = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
     /**
      *
      * @param context
@@ -320,7 +329,7 @@ public class Util {
      */
     public static String getRealPathFromURI(Context context, Uri contentUri) {
 
-            Cursor cursor = null;
+            /* cursor = null;
             try {
                 String[] proj = { MediaStore.Video.Media.DATA };
                 cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
@@ -331,7 +340,34 @@ public class Util {
                 if (cursor != null) {
                     cursor.close();
                 }
+            }*/
+        String filePath = "";
+        if (contentUri.getHost().contains("com.android.providers.media")) {
+            // Image pick from recent
+            String wholeID = DocumentsContract.getDocumentId(contentUri);
+
+            // Split at colon, use second item in the array
+            String id = wholeID.split(":")[1];
+
+            String[] column = {MediaStore.Video.Media.DATA};
+
+            // where id is equal to
+            String sel = MediaStore.Video.Media._ID + "=?";
+
+            Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                    column, sel, new String[]{id}, null);
+
+            int columnIndex = cursor.getColumnIndex(column[0]);
+
+            if (cursor.moveToFirst()) {
+                filePath = cursor.getString(columnIndex);
             }
+            cursor.close();
+            return filePath;
+        } else {
+            // image pick from gallery
+            return  getRealPathFromURI_BelowAPI11(context,contentUri);
+        }
     }
 
     /**

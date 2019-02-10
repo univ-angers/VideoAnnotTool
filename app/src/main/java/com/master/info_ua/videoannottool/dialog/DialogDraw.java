@@ -68,14 +68,12 @@ public class DialogDraw {
                     break;
 
                 case R.id.btnAnnulerDraw:
-                    //context.resetCanvas();
                     dialogListener.onResetCanvas();
                     dialog.cancel();
                     break;
             }
 
             if (titre.getText().length() != 0 && duree.getText().length() != 0) { // vérifie si les champs sont vides
-                //main.onSaveDrawAnnotation(titre.getText().toString(), valueOf(duree.getText().toString()));
                 // création de l'annotation, il faut encore utiliser le titre et la durée, voir a passer en paramètre de creer_annotation()
                 dialog.cancel();
             } else {

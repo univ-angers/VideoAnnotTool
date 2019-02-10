@@ -17,6 +17,7 @@
     <string name="TitleDialogText">Entrez le texte à afficher</string>
 
     <string name="TextDialogDraw">Enregistrement Graphique</string>
+    <string name="invalidPassword">Mot de passe invalide</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="TextBtnImport">Sauvegarder la vidéo</string>
