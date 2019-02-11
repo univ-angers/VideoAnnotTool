@@ -44,7 +44,7 @@ public class DialogProfil {
                     textAnnotBtn.setEnabled(true);
                     graphAnnotBtn.setEnabled(true);
                     main.setStatutProfil(COACH);
-                    item.setTitle("Passer en mode athlète");
+                    item.setTitle("Mode consultation");
                     dialog.cancel();
                 }else{
                     invalidPassword.setVisibility(View.VISIBLE);
