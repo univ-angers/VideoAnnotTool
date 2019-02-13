@@ -325,15 +325,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 if (statut_profil == ELEVE) {
                     DialogProfil dialogProfil = new DialogProfil();
                     dialogProfil.showDialogProfil(MainActivity.this,item);
-                    /*btnLayout.setVisibility(View.VISIBLE);
-                    audioAnnotBtn.setEnabled(true);
-                    textAnnotBtn.setEnabled(true);
-                    graphAnnotBtn.setEnabled(true);*/
-                    //statut_profil = COACH;
+
 
                 } else if (statut_profil == COACH) {
                     btnLayout.setVisibility(View.GONE);
-                    item.setTitle("Passer en mode coach");
+                    item.setTitle("Mode consultation");
                     statut_profil = ELEVE;
                 }
 
@@ -369,7 +365,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     @Override
     protected void onResume() {
         super.onResume();
-        
+
         if (exoPlayerView == null){
             exoPlayerView = findViewById(R.id.exo_player_view);
             initFullscreenDialog();
@@ -414,6 +410,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
             videosAdapter.setSelectedListItem(position);
             videosAdapter.notifyDataSetChanged();
+            if(controlerAnnotation != null){
+                controlerAnnotation.cancel();
+            }
+
 
             currentVideo = (Video) listViewVideos.getItemAtPosition(position);
             setCurrentVAnnot();
@@ -432,8 +432,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 controlerAnnotation = new ControllerAnnotation(MainActivity.this, MainActivity.this, null, mainHandler);
             }
 
+            if(player != null){
+                player.stop();
+            }
 
-            player.stop();
+            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+            exoplayerPlay = false;
+            initPlayButton();
+
             initExoPlayer(); // recrée le lecteur
         }
     };
@@ -442,7 +448,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public void initExoPlayer() {
 
         //SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
-        ZoomableExoPlayerView exoPlayerView = findViewById(R.id.exo_player_view);
+        ZoomableExoPlayerView playerView = findViewById(R.id.exo_player_view);
 
         // 1 creating an ExoPlayer
         DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
@@ -482,8 +488,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         //2. create the player
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector, new DefaultLoadControl());
-        exoPlayerView.setControllerShowTimeoutMs(0);
-        exoPlayerView.setPlayer(player);
+        playerView.setControllerShowTimeoutMs(0);
+        playerView.setPlayer(player);
         setSpeed(1f);
         player.setPlayWhenReady(false);
         if (!exoPlayerRepeat) {
@@ -589,6 +595,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         ((FrameLayout) findViewById(R.id.main_media_frame)).addView(exoPlayerView);
         ExoPlayerFullscreen = false;
         FullScreenDialog.dismiss();
+        if ((player.getDuration() - player.getCurrentPosition())<=15){
+            initExoPlayer();
+        }
         FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_expand));
     }
 
@@ -752,7 +761,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     annotFragment.updateAnnotationList(currentVAnnot);
 
                     videoName = currentVideo.getFileName();
-                    player.stop();
+
+                    if (player != null){
+                        player.stop();
+                    }
+
+
                     initExoPlayer();
 
                     if (currentVideo != null) {
@@ -760,6 +774,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     } else {
                         controlerAnnotation = new ControllerAnnotation(MainActivity.this, MainActivity.this, null, mainHandler);
                     }
+                }else {
+                    playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+                    exoplayerPlay = false;
+                    initPlayButton();
+                    initExoPlayer();
                 }
             }
 
@@ -821,6 +840,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
             Log.e("GRAPHIC_ANNOT_SAVE", " **** Graphic annot saved successfully ****");
             annotFragment.updateAnnotationList(currentVAnnot);
+
+            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+            exoplayerPlay = false;
+            initPlayButton();
+            initExoPlayer();
+
         } else {
             Log.e("GRAPHIC_ANNOT_SAVE", "One of initialization object is null");
         }
@@ -867,6 +892,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
             annotFragment.updateAnnotationList(currentVAnnot);
             Log.e("AUDIO_ANNOT_SAVE", " **** Audio annot saved successfully ****");
+
+            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+            exoplayerPlay = false;
+            initPlayButton();
+            initExoPlayer();
         } else {
             Log.e("AUDIO_ANNOT_SAVE", "One of initialization object is null");
         }
@@ -886,6 +916,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
             annotFragment.updateAnnotationList(currentVAnnot);
             Log.e("TEXT_ANNOT_SAVE", " **** TEXT annot saved successfully ****");
+
+            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+            exoplayerPlay = false;
+            initPlayButton();
+            initExoPlayer();
         } else {
             Log.e("TEXT_ANNOT_SAVE", "One of initialization object is null");
         }
@@ -1017,7 +1052,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
                     int duration = Integer.parseInt(durationStr);
 
-                    Audio audio = new Audio(getApplicationContext(), getApplicationContext().getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
+                    final Audio audio = new Audio(getApplicationContext(), getApplicationContext().getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
                     audio.listen();
 
                     mainHandler.postDelayed(new Runnable() {
@@ -1080,6 +1115,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             annotFragment.updateAnnotationList(currentVAnnot);
             Toast.makeText(this, "Suppression de l'annotation effectué", Toast.LENGTH_SHORT).show();
             Log.e("ANNOT_SAVE", " **** Annot file saved successfully ****");
+
+            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+            exoplayerPlay = false;
+            initPlayButton();
+            initExoPlayer();
 
         }else {
             Toast.makeText(this, "Échec de suppression de l'annotation", Toast.LENGTH_SHORT).show();

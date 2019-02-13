@@ -23,7 +23,7 @@
     <string name="TextBtnImport">Sauvegarder la vidéo</string>
     <string name="TextBtnCancel">Annuler</string>
     <string name="TextBtnPassword">Mot de passe</string>
-    <string name="TextBtnOK">Passer en mode coach</string>
+    <string name="TextBtnOK">Passer en mode annotation</string>
     <string name="TextBtnImportVideo">Importer la vidéo</string>
     <string name="ShareVideo">Partager une vidéo</string>
     <string name="ImportVideo">Importer une vidéo</string>

@@ -13,8 +13,6 @@ public class Annotation implements Serializable {
     private String audioFileName;
     private String drawFileName;
     private String textComment;
-    private Integer zoomRate;
-    private float slowMotionSpeed;
 
     public Annotation(AnnotationType annotationType) {
         this.annotationType = annotationType;
@@ -35,7 +33,7 @@ public class Annotation implements Serializable {
         this.annotationType = annotationType;
     }
 
-    public Annotation(String annotationTitle, Integer annotationStartTime, Integer annotationDuration, AnnotationType annotationType, String audioFileName, String drawFileName, String textComment, Integer zoomRate, Integer slowMotionSpeed) {
+    public Annotation(String annotationTitle, Integer annotationStartTime, Integer annotationDuration, AnnotationType annotationType, String audioFileName, String drawFileName, String textComment) {
         this.annotationTitle = annotationTitle;
         this.annotationDate = new Date();
         this.annotationStartTime = annotationStartTime;
@@ -44,8 +42,6 @@ public class Annotation implements Serializable {
         this.audioFileName = audioFileName;
         this.drawFileName = drawFileName;
         this.textComment = textComment;
-        this.zoomRate = zoomRate;
-        this.slowMotionSpeed = slowMotionSpeed;
     }
 
     /*
@@ -113,21 +109,5 @@ public class Annotation implements Serializable {
 
     public void setTextComment(String textComment) {
         this.textComment = textComment;
-    }
-
-    public Integer getZoomRate() {
-        return zoomRate;
-    }
-
-    public void setZoomRate(Integer zoomRate) {
-        this.zoomRate = zoomRate;
-    }
-
-    public float getSlowMotionSpeed() {
-        return slowMotionSpeed;
-    }
-
-    public void setSlowMotionSpeed(float slowMotionSpeed) {
-        this.slowMotionSpeed = slowMotionSpeed;
     }
 }

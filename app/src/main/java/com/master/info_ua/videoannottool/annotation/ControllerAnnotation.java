@@ -27,6 +27,7 @@ public class ControllerAnnotation implements Runnable {
     private int last_pos = 0;
     // si passée a true arret soft du thread, nescessaire en android
     private boolean cancelled = false;
+    private boolean isAnnotListEmpty = false;
     // nous permet d'envoyer des tache a éxecuter a dans notre mainActivity
     private Handler mainHandler;
 
@@ -39,14 +40,23 @@ public class ControllerAnnotation implements Runnable {
 
         if (videoAnnotation != null) {
             annotationList = videoAnnotation.getAnnotationList();
-            // traitement de videoAnnotation
-            int i = 0;
-            for (Annotation annotation : annotationList) {
-                InfoAnno tmp = new InfoAnno(arronditSeconde(annotation.getAnnotationStartTime()), i, true);
-                listInfoAnno.add(tmp);
-                i++;
+            if(annotationList.size() < 1){
+                isAnnotListEmpty = true;
+                cancelled = true;
+
+                // traitement de videoAnnotation
+                int i = 0;
+                for (Annotation annotation : annotationList) {
+                    InfoAnno tmp = new InfoAnno(arronditSeconde(annotation.getAnnotationStartTime()), i, true);
+                    listInfoAnno.add(tmp);
+                    i++;
+                }
+                Collections.sort(listInfoAnno);
             }
-            Collections.sort(listInfoAnno);
+
+        }else {
+            isAnnotListEmpty = true;
+            cancelled = true;
         }
     }
 
@@ -79,7 +89,7 @@ public class ControllerAnnotation implements Runnable {
 
         }
 
-        if (listInfoAnno.size() == 0){
+        if ( !isAnnotListEmpty && (listInfoAnno.size() == 0)){
             resetInfoAnnoList();
             cancelled = false;
             Log.e("RESET_THREAD", "RESET CONTROLLER THREAD" );
