@@ -36,7 +36,7 @@ public class DialogProfil {
 
             @Override
             public void onClick(View view) {
-                if(!editTextModeCoach.getText().toString().isEmpty() && editTextModeCoach.getText().toString().equals("12")) {
+                if(!editTextModeCoach.getText().toString().isEmpty() && editTextModeCoach.getText().toString().equals("123")) {
                     MainActivity.btnLayout.setVisibility(View.VISIBLE);
                     audioAnnotBtn.setEnabled(true);
                     textAnnotBtn.setEnabled(true);

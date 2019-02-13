@@ -8,6 +8,8 @@ import android.media.MediaRecorder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -32,6 +34,8 @@ public class DialogAudio {
     private Button btnListen;
     private Button btnValid;
     private Button btnCancel;
+    private EditText ed_audio_titre;
+    private TextView error_title_audio;
 
 
     private Dialog dialogBox;
@@ -65,6 +69,8 @@ public class DialogAudio {
         dialogBox.setCancelable(false);
         dialogBox.setTitle(R.string.TitleDialogRecord);
 
+        ed_audio_titre = dialogBox.findViewById(R.id.ed_audio_titre);
+        error_title_audio = dialogBox.findViewById(R.id.error_title_audio);
         btnStart = dialogBox.findViewById(R.id.btnStartRecord);
         btnStop = dialogBox.findViewById(R.id.btnStopRecord);
         btnListen = dialogBox.findViewById(R.id.btnListenRecord);
@@ -137,12 +143,17 @@ public class DialogAudio {
                     break;
 
                 case R.id.btnValiderRecord:
-                    recordCallback.addAudioAnnot(audioAnnot);
-                    Toast toastConfirmAnnot;
-                    toastConfirmAnnot = Toast.makeText(mainActivity, "Annotation Enregistrée", Toast.LENGTH_LONG);
-                    toastConfirmAnnot.show();
-                    Log.i("AUDIO_DIALOG-BOX", "Validation " + audioName);
-                    dialogBox.cancel();
+                    if(!ed_audio_titre.getText().toString().isEmpty()){
+                        audioAnnot.setAnnotationTitle(ed_audio_titre.getText().toString());
+                        recordCallback.addAudioAnnot(audioAnnot);
+                        Toast toastConfirmAnnot;
+                        toastConfirmAnnot = Toast.makeText(mainActivity, "Annotation Enregistrée", Toast.LENGTH_LONG);
+                        toastConfirmAnnot.show();
+                        Log.i("AUDIO_DIALOG-BOX", "Validation " + audioName);
+                        dialogBox.cancel();
+                    }else{
+                        error_title_audio.setVisibility(View.VISIBLE);
+                    }
                     break;
 
                 case R.id.btnAnnulerRecord:
@@ -174,7 +185,7 @@ public class DialogAudio {
             this.audioAnnot.setAudioFileName(audioName);
             this.audioAnnot.setAnnotationStartTime(startTime);
 
-            this.audioAnnot.setAnnotationTitle("Test audio annot");
+            //this.audioAnnot.setAnnotationTitle("Test audio annot");
 
             recorder.prepare();
             recorder.start();
