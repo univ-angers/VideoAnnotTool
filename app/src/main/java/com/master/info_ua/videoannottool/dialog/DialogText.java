@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.master.info_ua.videoannottool.R;
@@ -48,25 +49,33 @@ public class DialogText {
         dialogBox.setTitle(R.string.TitleDialogText);
         Button btnValider = dialogBox.findViewById(R.id.btnValiderTextAnnot);
         Button btnAnnuler = dialogBox.findViewById(R.id.btnAnnulerTextAnnot);
+        final EditText ed_texte_titre = dialogBox.findViewById(R.id.ed_texte_titre);
+        final TextView title_texte_error = dialogBox.findViewById(R.id.error_title_texte);
         final EditText etAnnot = dialogBox.findViewById(R.id.etAnnotText);
         final EditText etDuration = dialogBox.findViewById(R.id.etDurationAnnot);
+
         btnValider.setOnClickListener(new View.OnClickListener() {
             private String texte = "";
 
             @Override
-
             public void onClick(View view) {
-                this.texte = etAnnot.getText().toString();
-                System.out.println(texte);
-                dialogBox.cancel();
+                if(!ed_texte_titre.getText().toString().isEmpty()){
 
-                annotation.setAnnotationDuration(Integer.parseInt(etDuration.getText().toString()) * 1000);
-                annotation.setTextComment(texte);
-                textAnnotDialogCallback.addTextAnnot(annotation);
-                Log.i("TEXT_DIALOG-BOX", "Validation :" + texte);
-                Toast toastConfirmAnnot;
-                toastConfirmAnnot = Toast.makeText(main, "Annotation Enregistrée", Toast.LENGTH_LONG);
-                toastConfirmAnnot.show();
+                    this.texte = etAnnot.getText().toString();
+                    dialogBox.cancel();
+
+                    annotation.setAnnotationDuration(Integer.parseInt(etDuration.getText().toString()) * 1000);
+                    annotation.setTextComment(texte);
+                    annotation.setAnnotationTitle(ed_texte_titre.getText().toString());
+                    textAnnotDialogCallback.addTextAnnot(annotation);
+                    Log.i("TEXT_DIALOG-BOX", "Validation :" + texte);
+                    Toast toastConfirmAnnot;
+                    toastConfirmAnnot = Toast.makeText(main, "Annotation Enregistrée", Toast.LENGTH_LONG);
+                    toastConfirmAnnot.show();
+                }else{
+                    title_texte_error.setVisibility(View.VISIBLE);
+                }
+
             }
         });
         btnAnnuler.setOnClickListener(new View.OnClickListener() {
