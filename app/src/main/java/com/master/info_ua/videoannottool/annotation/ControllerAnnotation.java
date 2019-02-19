@@ -31,11 +31,14 @@ public class ControllerAnnotation implements Runnable {
     // nous permet d'envoyer des tache a éxecuter a dans notre mainActivity
     private Handler mainHandler;
 
+    private VideoAnnotation videoAnnotation;
+
     // constructeurs comme expliquer dans le rapport nous lui passont dans le main  deux fois la même valeur mais a termes cela devrait changer
-    public ControllerAnnotation(Context context, Ecouteur m_e, VideoAnnotation videoAnnotation, Handler _mainHandler) {
+    public ControllerAnnotation(Context context, Ecouteur m_e, VideoAnnotation vAnnotation, Handler _mainHandler) {
         mainHandler = _mainHandler;
         _mainActivity = context;
         m_ecouteur = m_e;
+        this.videoAnnotation = vAnnotation;
         annotationList = new ArrayList<>();
 
         if (videoAnnotation != null) {
@@ -135,6 +138,14 @@ public class ControllerAnnotation implements Runnable {
         this.last_pos = last_pos;
     }
 
+    public ArrayList<InfoAnno> getListInfoAnno() {
+        return listInfoAnno;
+    }
+
+    public void setListInfoAnno(ArrayList<InfoAnno> listInfoAnno) {
+        this.listInfoAnno = listInfoAnno;
+    }
+
     // methode pour stopper notre thread
     public void cancel() {
         cancelled = true;
@@ -143,6 +154,9 @@ public class ControllerAnnotation implements Runnable {
 
     public void resetInfoAnnoList(){
 
+        annotationList = null;
+
+        annotationList = videoAnnotation.getAnnotationList();
         int i = 0;
         for (Annotation annotation : annotationList) {
             InfoAnno tmp = new InfoAnno(arronditSeconde(annotation.getAnnotationStartTime()), i, true);
@@ -150,5 +164,13 @@ public class ControllerAnnotation implements Runnable {
             i++;
         }
         Collections.sort(listInfoAnno);
+    }
+
+    public VideoAnnotation getVideoAnnotation() {
+        return videoAnnotation;
+    }
+
+    public void setVideoAnnotation(VideoAnnotation videoAnnotation) {
+        this.videoAnnotation = videoAnnotation;
     }
 }

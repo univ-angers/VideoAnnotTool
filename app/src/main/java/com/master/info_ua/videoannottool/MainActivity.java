@@ -841,10 +841,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             Log.e("GRAPHIC_ANNOT_SAVE", " **** Graphic annot saved successfully ****");
             annotFragment.updateAnnotationList(currentVAnnot);
 
-            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
-            exoplayerPlay = false;
-            initPlayButton();
-            initExoPlayer();
+            reloadAfterAnnotUpdate();
 
         } else {
             Log.e("GRAPHIC_ANNOT_SAVE", "One of initialization object is null");
@@ -880,7 +877,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     @Override
     public void addAudioAnnot(Annotation annotation) {
-        Log.i("AUDIO_ANNOT", "Annotation file name " + annotation.getAudioFileName() + " Annotation title: " + annotation.getAnnotationTitle() + "[" + annotation.getAnnotationStartTime() + "]" + " Duration :" + annotation.getAnnotationDuration());
 
         annotation.setAnnotationStartTime(player.getCurrentPosition());
         currentVAnnot.getAnnotationList().add(annotation);
@@ -893,10 +889,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             annotFragment.updateAnnotationList(currentVAnnot);
             Log.e("AUDIO_ANNOT_SAVE", " **** Audio annot saved successfully ****");
 
-            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
-            exoplayerPlay = false;
-            initPlayButton();
-            initExoPlayer();
+            reloadAfterAnnotUpdate();
+
         } else {
             Log.e("AUDIO_ANNOT_SAVE", "One of initialization object is null");
         }
@@ -917,10 +911,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             annotFragment.updateAnnotationList(currentVAnnot);
             Log.e("TEXT_ANNOT_SAVE", " **** TEXT annot saved successfully ****");
 
-            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
-            exoplayerPlay = false;
-            initPlayButton();
-            initExoPlayer();
+            reloadAfterAnnotUpdate();
+
         } else {
             Log.e("TEXT_ANNOT_SAVE", "One of initialization object is null");
         }
@@ -1116,10 +1108,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             Toast.makeText(this, "Suppression de l'annotation effectué", Toast.LENGTH_SHORT).show();
             Log.e("ANNOT_SAVE", " **** Annot file saved successfully ****");
 
-            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
-            exoplayerPlay = false;
-            initPlayButton();
-            initExoPlayer();
+            reloadAfterAnnotUpdate();
 
         }else {
             Toast.makeText(this, "Échec de suppression de l'annotation", Toast.LENGTH_SHORT).show();
@@ -1166,5 +1155,45 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         videosAdapter.clear();
         videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
         videosAdapter.notifyDataSetChanged();
+    }
+
+    protected void reloadAfterAnnotUpdate(){
+
+        controlerAnnotation.cancel();
+        controlerAnnotation.setVideoAnnotation(currentVAnnot);
+        controlerAnnotation = null;
+        videosAdapter.clear();
+        videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
+        videosAdapter.notifyDataSetChanged();
+
+        if(videosAdapter.getCount()> 0 ){
+            //currentVideo = videosAdapter.getItem(0);
+            currentVideo = (Video) listViewVideos.getItemAtPosition(0);
+            setCurrentVAnnot();
+            if (currentVAnnot == null) {
+                currentVAnnot = Util.createNewVideoAnnotation();
+            }
+
+            annotFragment.updateAnnotationList(currentVAnnot);
+
+            videoName = currentVideo.getFileName();
+
+            if (player != null){
+                player.stop();
+            }
+
+            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+            exoplayerPlay = false;
+            initPlayButton();
+            initExoPlayer();
+
+            controlerAnnotation  = new ControllerAnnotation(MainActivity.this, MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+            //controlerAnnotation.resetInfoAnnoList();
+        }else {
+            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+            exoplayerPlay = false;
+            initPlayButton();
+            initExoPlayer();
+        }
     }
 }
