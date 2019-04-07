@@ -145,7 +145,7 @@ public class DialogAudio {
                 case R.id.btnValiderRecord:
                     if(!ed_audio_titre.getText().toString().isEmpty()){
                         audioAnnot.setAnnotationTitle(ed_audio_titre.getText().toString());
-                        recordCallback.addAudioAnnot(audioAnnot);
+                        recordCallback.onSaveAnnotation(audioAnnot);
                         Toast toastConfirmAnnot;
                         toastConfirmAnnot = Toast.makeText(mainActivity, "Annotation Enregistrée", Toast.LENGTH_LONG);
                         toastConfirmAnnot.show();

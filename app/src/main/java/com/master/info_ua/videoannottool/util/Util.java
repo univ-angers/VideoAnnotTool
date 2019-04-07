@@ -110,7 +110,6 @@ public class Util {
             File file = new File(context.getExternalFilesDir(dirPath), videoName + ".json");
 
             writer = new FileWriter(file);
-            Log.d("VANNOT", "Annotation saved TEST" + file);
 
             String jsonStr = gson.toJson(videoAnnotation);
             writer.write(jsonStr);
@@ -142,7 +141,6 @@ public class Util {
             for (DirPath dirPath : DirPath.values()) {
                 File file = context.getExternalFilesDir(dirPath.toString());
                 if (file != null) {
-                    Log.e("SUCCESS", "Directory created: [" + file.getAbsolutePath() + "]");
                 } else {
                     Log.e("FAIL", "Unable to create dir");
                 }
@@ -184,15 +182,12 @@ public class Util {
 
         categorieList.add(new Categorie("Sous-categorie", null, "../"));
         if (Util.isAppDirectory(parentDir)) {
-            Log.e("IS_APP_DIR", parentDir + " IS APP_DIR");
             for (DirPath dirPath : DirPath.values()) {
                 if (dirPath.isSubDir() && dirPath.getPath().substring(0, dirPath.getPath().indexOf("/")).equals(parentDir)) {
                     //Log.e("SUB_CAT", dirPath.toString());
                     categorieList.add(new Categorie(dirPath.getName(), parentDir, dirPath.toString()));
                 }
             }
-        } else {
-            Log.e("IS_APP_DIR", parentDir + " is not a app dir");
         }
         return categorieList;
     }
@@ -244,8 +239,6 @@ public class Util {
             for (File file : root.listFiles()) {
                 Log.e("CONT_FILE", file.getAbsolutePath());
             }
-        } else {
-            Log.e("ROOT_CONT", "No sub dir");
         }
         return root.listFiles().length > 0;
     }
@@ -323,29 +316,17 @@ public class Util {
 
     /**
      *
+     * Renvoie le chemin du fichier 'uploader'
+     *
      * @param context
      * @param contentUri
      * @return
      */
     public static String getRealPathFromURI(Context context, Uri contentUri) {
-
-            /* cursor = null;
-            try {
-                String[] proj = { MediaStore.Video.Media.DATA };
-                cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-                cursor.moveToFirst();
-                return cursor.getString(column_index);
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
-            }*/
         String filePath = "";
         if (contentUri.getHost().contains("com.android.providers.media")) {
-            // Image pick from recent
-            String wholeID = DocumentsContract.getDocumentId(contentUri);
 
+            String wholeID = DocumentsContract.getDocumentId(contentUri);
             // Split at colon, use second item in the array
             String id = wholeID.split(":")[1];
 
@@ -365,13 +346,12 @@ public class Util {
             cursor.close();
             return filePath;
         } else {
-            // image pick from gallery
             return  getRealPathFromURI_BelowAPI11(context,contentUri);
         }
     }
 
     /**
-     * Permet la sauvegarde d'un fichier viéo importé dans le repertoire désigné par la catégorie et sous catégorie indiquées
+     * Permet la sauvegarde d'un fichier vidéo importé dans le repertoire désigné par la catégorie et sous catégorie indiquées
      *
      * @param context
      * @param subCatDir

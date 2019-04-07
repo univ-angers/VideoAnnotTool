@@ -56,6 +56,7 @@ import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.annotation.AnnotationType;
 import com.master.info_ua.videoannottool.custom.Audio;
 import com.master.info_ua.videoannottool.annotation.ControllerAnnotation;
 import com.master.info_ua.videoannottool.dialog.DialogCallback;
@@ -96,7 +97,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
-    public static RelativeLayout btnLayout;
+    private RelativeLayout btnLayout;
 
     // Attribut en lien avec exoplayer
     // le player et son mediaSource
@@ -136,7 +137,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     private VideosAdapter videosAdapter;
 
-    private List<Video> videoList;
     private Video currentVideo;
 
     String videoName; // a modifié pour aller chercher le nom des video
@@ -281,7 +281,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         spinnerCategorie.setSelection(1);
         spinnerSubCategorie.setOnItemSelectedListener(subCatItemSelectedListener);
 
-        videoList = setVideoList(DirPath.CATEGORIE1_SUB1.toString());
+        List<Video> videoList = setVideoList(DirPath.CATEGORIE1_SUB1.toString());
         if (videoList.size() > 0) {
             currentVideo = videoList.get(0);
             setCurrentVAnnot();
@@ -427,9 +427,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             videoName = currentVideo.getFileName();
 
             if (currentVideo != null) {
-                controlerAnnotation = new ControllerAnnotation(MainActivity.this, MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+                controlerAnnotation = new ControllerAnnotation( MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
             } else {
-                controlerAnnotation = new ControllerAnnotation(MainActivity.this, MainActivity.this, null, mainHandler);
+                controlerAnnotation = new ControllerAnnotation(MainActivity.this, null, mainHandler);
             }
 
             if(player != null){
@@ -673,6 +673,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         public void onClick(View view) {
 
             int btnId = view.getId();
+            //On désactive les boutons d'annotation
+            setAnnotButtonStatus(false);
             switch (btnId) {
                 case R.id.audio_annot_btn:
                     player.setPlayWhenReady(false);
@@ -770,9 +772,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     initExoPlayer();
 
                     if (currentVideo != null) {
-                        controlerAnnotation = new ControllerAnnotation(MainActivity.this, MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+                        controlerAnnotation = new ControllerAnnotation( MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
                     } else {
-                        controlerAnnotation = new ControllerAnnotation(MainActivity.this, MainActivity.this, null, mainHandler);
+                        controlerAnnotation = new ControllerAnnotation(MainActivity.this, null, mainHandler);
                     }
                 }else {
                     playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
@@ -825,11 +827,28 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
 
+    /**
+     * Sauvegarde d'une annotation graphique
+     *
+     * @param annotation
+     */
     @Override
     public void onSaveDrawAnnotation(Annotation annotation) {
+
+        onSaveAnnotation(annotation);
+        closeDrawFragment();
+    }
+
+
+    /**
+     * Ajoute l'annotation passée en paramètre dans la liste des annotations de la vidéo courrante
+     *
+     * @param annotation
+     */
+    @Override
+    public void onSaveAnnotation(Annotation annotation) {
         // création de l'annotation
         annotation.setAnnotationStartTime(player.getCurrentPosition());
-        Log.e("GRAPHIC_ANNOT", "Annotation file name " + annotation.getDrawFileName() + " ==> Annotation title " + annotation.getAnnotationTitle());
 
         currentVAnnot.getAnnotationList().add(annotation);
         currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
@@ -838,17 +857,17 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             Collections.sort(currentVAnnot.getAnnotationList(), new AnnotationComparator());
             String directory = currentSubCategorie.getPath() + File.separator + videoName;
             Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
-            Log.e("GRAPHIC_ANNOT_SAVE", " **** Graphic annot saved successfully ****");
             annotFragment.updateAnnotationList(currentVAnnot);
 
             reloadAfterAnnotUpdate();
 
         } else {
-            Log.e("GRAPHIC_ANNOT_SAVE", "One of initialization object is null");
+            Log.e("ANNOT_SAVE", "One of initialization object is null");
         }
 
-        closeDrawFragment();
+        setAnnotButtonStatus(true);
     }
+
 
     @Override
     public void setColor(int color) {
@@ -873,49 +892,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             ft.commit();
         }
         drawView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void addAudioAnnot(Annotation annotation) {
-
-        annotation.setAnnotationStartTime(player.getCurrentPosition());
-        currentVAnnot.getAnnotationList().add(annotation);
-        currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
-
-        if (currentVAnnot != null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null) {
-            Collections.sort(currentVAnnot.getAnnotationList(), new AnnotationComparator());
-            String directory = currentSubCategorie.getPath() + File.separator + videoName;
-            Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
-            annotFragment.updateAnnotationList(currentVAnnot);
-            Log.e("AUDIO_ANNOT_SAVE", " **** Audio annot saved successfully ****");
-
-            reloadAfterAnnotUpdate();
-
-        } else {
-            Log.e("AUDIO_ANNOT_SAVE", "One of initialization object is null");
-        }
-    }
-
-    @Override
-    public void addTextAnnot(Annotation annotation) {
-        Log.i("TEXT_ANNOT", " Annotation title: " + annotation.getAnnotationTitle() + "[" + annotation.getAnnotationStartTime() + "]" + "Duration : " + annotation.getAnnotationDuration());
-
-        annotation.setAnnotationStartTime(player.getCurrentPosition());
-        currentVAnnot.getAnnotationList().add(annotation);
-        currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
-
-        if (currentVAnnot != null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null) {
-            Collections.sort(currentVAnnot.getAnnotationList(), new AnnotationComparator());
-            String directory = currentSubCategorie.getPath() + File.separator + videoName;
-            Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
-            annotFragment.updateAnnotationList(currentVAnnot);
-            Log.e("TEXT_ANNOT_SAVE", " **** TEXT annot saved successfully ****");
-
-            reloadAfterAnnotUpdate();
-
-        } else {
-            Log.e("TEXT_ANNOT_SAVE", "One of initialization object is null");
-        }
     }
 
 
@@ -953,76 +929,15 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     /**
      * Implémentation du Listener de la class "FramentAnnotation"
+     *
+     * Gestion de la lecture/affichage de annotations au clic
      * @param annotation
      */
     @Override
     public void onAnnotItemClick(final Annotation annotation) {
-        player.seekTo(annotation.getAnnotationStartTime());
-        player.setPlayWhenReady(false);
 
-        playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
+        onAnnotationLauched(annotation);
 
-        final String annotFileDirectory = currentSubCategorie.getPath()+"/"+currentVideo.getFileName();
-
-        switch (annotation.getAnnotationType()){
-            case AUDIO:
-                //Juste pour récupérer la durée de l'audio
-                //Pas nécessaire si "annotation.getAnnotationDuration()" est bien défini
-                Uri uri = Uri.parse(this.getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
-                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                mmr.setDataSource(this,uri);
-                String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                int duration = Integer.parseInt(durationStr);
-
-                Audio audio = new Audio(this, this.getExternalFilesDir(annotFileDirectory) + File.separator + annotation.getAudioFileName());
-                audio.listen();
-
-                mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        player.setPlayWhenReady(true);
-                    }
-                }, duration);  // ==> annotation.getAnnotationDuration()
-
-                break;
-
-            case DRAW:
-                Bitmap bitmap = Util.getBitmapFromAppDir(this, annotFileDirectory, annotation.getDrawFileName());
-                drawBimapIv.setVisibility(View.VISIBLE);
-                drawBimapIv.setImageBitmap(bitmap);
-
-                mainHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                         drawBimapIv.setVisibility(View.GONE);
-                         drawBimapIv.setImageBitmap(null);
-                         player.setPlayWhenReady(true);
-                        }
-                }, annotation.getAnnotationDuration());
-
-                break;
-
-            case TEXT:
-                annotCommentTv.setVisibility(View.VISIBLE);
-                annotCommentTv.setText(annotation.getTextComment());
-
-                mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        annotCommentTv.setVisibility(View.GONE);
-                        annotCommentTv.setText("");
-                        player.setPlayWhenReady(true);
-                    }
-                }, annotation.getAnnotationDuration());
-
-                break;
-
-                default:
-                    if (drawBimapIv.getVisibility() == View.VISIBLE){
-                        drawBimapIv.setImageBitmap(null);
-                        drawBimapIv.setVisibility(View.GONE);
-                    }
-        }
     }
 
     /**
@@ -1032,8 +947,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     protected void onAnnotationLauched(Annotation annotation) {
 
         if(!ExoPlayerFullscreen) {
+            setAnnotButtonStatus(false);
             player.seekTo(annotation.getAnnotationStartTime());
             player.setPlayWhenReady(false);
+
+            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
+
             final String annotFileDirectory = currentSubCategorie.getPath() + "/" + currentVideo.getFileName();
 
             switch (annotation.getAnnotationType()) {
@@ -1051,6 +970,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                         @Override
                         public void run() {
                             player.setPlayWhenReady(true);
+                            setAnnotButtonStatus(true);
                         }
                     }, duration);  // ==> annotation.getAnnotationDuration()
 
@@ -1067,6 +987,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                             drawBimapIv.setVisibility(View.GONE);
                             drawBimapIv.setImageBitmap(null);
                             player.setPlayWhenReady(true);
+                            setAnnotButtonStatus(true);
                         }
                     }, annotation.getAnnotationDuration());
 
@@ -1082,12 +1003,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                             annotCommentTv.setVisibility(View.GONE);
                             annotCommentTv.setText("");
                             player.setPlayWhenReady(true);
+                            setAnnotButtonStatus(true);
                         }
                     }, annotation.getAnnotationDuration());
 
                     break;
 
                 default:
+                    setAnnotButtonStatus(true);
                     if (drawBimapIv.getVisibility() == View.VISIBLE) {
                         drawBimapIv.setImageBitmap(null);
                         drawBimapIv.setVisibility(View.GONE);
@@ -1150,8 +1073,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
     @Override
-    public void saveImportVideo(Categorie selectedSousCategorie) {
-        Util.saveImportVideoFile(this,selectedSousCategorie,fileVideoImport);
+    public void saveImportVideo(Categorie categorie) {
+        Util.saveImportVideoFile(this,categorie,fileVideoImport);
         videosAdapter.clear();
         videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
         videosAdapter.notifyDataSetChanged();
@@ -1187,13 +1110,21 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             initPlayButton();
             initExoPlayer();
 
-            controlerAnnotation  = new ControllerAnnotation(MainActivity.this, MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
-            //controlerAnnotation.resetInfoAnnoList();
+            controlerAnnotation  = new ControllerAnnotation(MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
         }else {
             playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
             exoplayerPlay = false;
             initPlayButton();
             initExoPlayer();
         }
+    }
+
+    /**
+     * Active/Désactive les bouton de lancement de dialogue pour l'édition des annotations
+     */
+    protected void setAnnotButtonStatus(boolean status){
+        audioAnnotBtn.setEnabled(status);
+        graphAnnotBtn.setEnabled(status);
+        textAnnotBtn.setEnabled(status);
     }
 }

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.master.info_ua.videoannottool.MainActivity;
@@ -36,8 +37,10 @@ public class DialogProfil {
 
             @Override
             public void onClick(View view) {
+                RelativeLayout btnLayout = main.findViewById(R.id.btn_layout_id);
                 if(!editTextModeCoach.getText().toString().isEmpty() && editTextModeCoach.getText().toString().equals("123")) {
-                    MainActivity.btnLayout.setVisibility(View.VISIBLE);
+
+                    btnLayout.setVisibility(View.VISIBLE);
                     audioAnnotBtn.setEnabled(true);
                     textAnnotBtn.setEnabled(true);
                     graphAnnotBtn.setEnabled(true);

@@ -7,9 +7,7 @@ import com.master.info_ua.videoannottool.util.Categorie;
 
 public interface DialogCallback {
 
-    void addAudioAnnot(Annotation annotation);
-
-    void addTextAnnot(Annotation annotation);
+    void onSaveAnnotation(Annotation annotation);
 
     void onClickVideoFileImport();
 

@@ -67,7 +67,7 @@ public class DialogText {
                     annotation.setAnnotationDuration(Integer.parseInt(etDuration.getText().toString()) * 1000);
                     annotation.setTextComment(texte);
                     annotation.setAnnotationTitle(ed_texte_titre.getText().toString());
-                    textAnnotDialogCallback.addTextAnnot(annotation);
+                    textAnnotDialogCallback.onSaveAnnotation(annotation);
                     Log.i("TEXT_DIALOG-BOX", "Validation :" + texte);
                     Toast toastConfirmAnnot;
                     toastConfirmAnnot = Toast.makeText(main, "Annotation Enregistrée", Toast.LENGTH_LONG);

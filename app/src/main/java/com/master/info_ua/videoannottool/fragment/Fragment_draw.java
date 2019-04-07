@@ -103,7 +103,7 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         }
         else {
             throw new ClassCastException(context.toString()
-                    + " must implemenet MyListFragment.OnItemSelectedListener");
+                    + " must implemenet DrawFragmentCallback.OnItemSelectedListener");
         }
     }
 
@@ -184,7 +184,6 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         drawAnnotation.setAnnotationDuration(duration);
         drawAnnotation.setAnnotationDate(new Date());
         fragmentCallback.onSaveDrawAnnotation(drawAnnotation);
-        //fragmentCallback.closeAnnotationFrame();
     }
 
     @Override

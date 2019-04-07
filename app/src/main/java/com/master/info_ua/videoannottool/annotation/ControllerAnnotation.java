@@ -1,6 +1,5 @@
 package com.master.info_ua.videoannottool.annotation;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,8 +14,6 @@ import java.util.List;
 
 
 public class ControllerAnnotation implements Runnable {
-    // Context utiliser pour crée les tache envoyé au Main Thread
-    private Context _mainActivity;
     // L'interface de notre player pour avoir accés aux methodes de ce dernier
     private Ecouteur m_ecouteur;
     // file d'excécution contenant des objet indiquant le temps, la position et si il faut lancer ou arreter l'annotation
@@ -34,9 +31,8 @@ public class ControllerAnnotation implements Runnable {
     private VideoAnnotation videoAnnotation;
 
     // constructeurs comme expliquer dans le rapport nous lui passont dans le main  deux fois la même valeur mais a termes cela devrait changer
-    public ControllerAnnotation(Context context, Ecouteur m_e, VideoAnnotation vAnnotation, Handler _mainHandler) {
+    public ControllerAnnotation(Ecouteur m_e, VideoAnnotation vAnnotation, Handler _mainHandler) {
         mainHandler = _mainHandler;
-        _mainActivity = context;
         m_ecouteur = m_e;
         this.videoAnnotation = vAnnotation;
         annotationList = new ArrayList<>();
@@ -76,12 +72,6 @@ public class ControllerAnnotation implements Runnable {
                         launch(annotationList.get(listInfoAnno.get(last_pos).getIndex()));
                         Log.e("Tag_Last_Pos", "Last position: "+last_pos+" Title: ["+ annotationList.get(listInfoAnno.get(last_pos).getIndex()).getAnnotationTitle()+"]");
                         listInfoAnno.remove(last_pos);
-                        //listInfoAnno.get(last_pos).setDebut(false);
-                        //annotActive.add(listInfoAnno.get(last_pos).getIndex());
-                    } else {
-                        //stop(annotationList.get(listInfoAnno.get(last_pos).getIndex()));
-                        Log.e("Tag_Last_Pos", "[STOP] - Last position: "+last_pos+" Title: ["+ annotationList.get(listInfoAnno.get(last_pos).getIndex()).getAnnotationTitle()+"]");
-                        //annotActive.remove(annotActive.lastIndexOf(listInfoAnno.get(last_pos).getIndex()));
                     }
                 }
                 last_pos++;
