@@ -28,6 +28,10 @@ adb install videoAnnotTool.apk
 # Manuel utilisateur 
 Accessible à l'adresse : [Manuel utilisateur](https://github.com/VideoAnnot/VideoAnnotTool/tree/master/docs/Manuel_utilisateur.pdf)
 
+#Rapport de soutenace (M2)
+Ici: [apport de soutenace](https://github.com/VideoAnnot/VideoAnnotTool/tree/master/docs/rapport_projet-VideoAnnot-version_finale.pdf)
+
+
 # Licence
 
 Copyright (C) 2019 CISSE Sékou Aboubacar, TRAORE Hamidou, VAUX Charline, LEMOINE Théo, SAOUT Thomas, ROUSSEAU Nans
