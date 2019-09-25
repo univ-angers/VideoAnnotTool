@@ -39,44 +39,30 @@ public class Util {
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-    /**
-     * Récupère un fichier dans le repertoire assets du projet et fait le parsing en objet Java
-     *
-     * @param context
-     * @param fichier
-     * @return
-     */
+    //Récupère un fichier dans le répertoire assets du projet et fait le parsing en objet Java
     public static VideoAnnotation parseJSONAssets(Context context, String fichier) {
-
         try {
+            //Lecture du fichier
             InputStream inputStream = context.getAssets().open(fichier);
-
             Reader reader = new InputStreamReader(inputStream);
             Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
             VideoAnnotation videoAnnotation = gson.fromJson(reader, VideoAnnotation.class);
             return videoAnnotation;
-
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    /**
-     * Récupère un fichier dans le repertoire indiqué de l'application et fait le parsing en objet Java
-     *
-     * @param context
-     * @param dirName
-     * @param fileName
-     * @return
-     */
+    //Récupère un fichier dans le répertoire indiqué de l'application et fait le parsing en objet Java
     public static VideoAnnotation parseJSON(Context context, String dirName, String fileName) {
-
+        //Récupère le chemin absolu du fichier
         String filePath = context.getExternalFilesDir(dirName).getAbsolutePath() + File.separator + fileName;
-
         try {
+            //Lecture du fichier
             FileInputStream fis = new FileInputStream(new File(filePath));
             Reader reader = new InputStreamReader(fis);
+            //Parsing du fichier
             Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
             VideoAnnotation videoAnnotation = gson.fromJson(reader, VideoAnnotation.class);
             fis.close();
@@ -88,19 +74,9 @@ public class Util {
         return null;
     }
 
-
-    /**
-     * Sauvegarde l'objet videoAnnotation dans un fichier Json
-     *
-     * @param context
-     * @param videoAnnotation
-     * @param dirPath
-     * @param videoName
-     */
+    //Sauvegarde l'objet videoAnnotation dans un fichier Json
     public static void saveVideoAnnotation(Context context, VideoAnnotation videoAnnotation, String dirPath, String videoName) {
-
         Writer writer;
-
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("dd-MM-yyyy HH:mm:ss");
         gsonBuilder.serializeNulls(); //Ne pas ignorer les attributs avec valeur null
@@ -108,21 +84,17 @@ public class Util {
         Gson gson = gsonBuilder.create();
         try {
             File file = new File(context.getExternalFilesDir(dirPath), videoName + ".json");
-
             writer = new FileWriter(file);
-
             String jsonStr = gson.toJson(videoAnnotation);
             writer.write(jsonStr);
             writer.close();
-
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("ERR_VANNOT", "Unable to save annotation ");
         }
-
     }
 
-
+    //Vérifie que l'on possède une autorisation d'écriture, sinon renvoie faux
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -131,15 +103,12 @@ public class Util {
         return false;
     }
 
-    /**
-     * Crée l'ensemble des repertoire spécifiés dans l'Enum "DirPath"
-     *
-     * @param context
-     */
+    // Crée l'ensemble des repertoire spécifiés dans l'Enum "DirPath"
     public static void createDir(Context context) {
         if (isExternalStorageWritable()) {
             for (DirPath dirPath : DirPath.values()) {
-                File file = context.getExternalFilesDir(dirPath.toString());
+                    File file = context.getExternalFilesDir(dirPath.toString());
+                //Pourquoi est-ce vide?
                 if (file != null) {
                 } else {
                     Log.e("FAIL", "Unable to create dir");
@@ -149,42 +118,41 @@ public class Util {
     }
 
 
-    /**
-     * Initialise la liste d'item du spinner categorie
-     *
-     * @return
-     */
+    //Initialise la liste d'item du spinner categorie
     public static List<Categorie> setCatSpinnerList(Context context) {
         List<Categorie> categorieList = new ArrayList<>();
-
+        //Si le dossier existe
         if (Util.appDirExist(context)) {
+            //Pour chacune des catégories et sous-catégories
             for (DirPath dirPath : DirPath.values()) {
+                //Si la catégorie ne possède pas de catégorie mère
                 if (!dirPath.isSubDir()) {
+                    //On ajoute la catégorie à la liste de catégories
                     categorieList.add(new Categorie(dirPath.getName(), null, dirPath.toString()));
                 }
             }
         } else {
+            //Si le dossier n'existe pas, on le crée
             Util.createDir(context);
+            //Puis, on rappelle une seconde fois la méthode
             categorieList = setCatSpinnerList(context);
         }
-
         return categorieList;
     }
 
 
-    /**
-     * Initialise la liste d'item du spinner sub-categorie
-     *
-     * @return
-     */
+    //Initialise la liste d'item du spinner sub-categorie
     public static List<Categorie> setSubCatSpinnerList(String parentDir) {
         List<Categorie> categorieList = new ArrayList<>();
-
         categorieList.add(new Categorie("Sous-categorie", null, "../"));
+        //Si le nom parentDir est un nom de dossier valide
         if (Util.isAppDirectory(parentDir)) {
+            //Pour chacune des catégories
             for (DirPath dirPath : DirPath.values()) {
+                //Si la catégorie est une sous-catégorie et que le dossier parent correspond bien au dossier passé en paramètre
                 if (dirPath.isSubDir() && dirPath.getPath().substring(0, dirPath.getPath().indexOf("/")).equals(parentDir)) {
                     //Log.e("SUB_CAT", dirPath.toString());
+                    //On ajoute la sous-catégorie à la liste
                     categorieList.add(new Categorie(dirPath.getName(), parentDir, dirPath.toString()));
                 }
             }
@@ -192,15 +160,11 @@ public class Util {
         return categorieList;
     }
 
-    /**
-     * Permet de vérifier la validité d'un nom de dossier: existe comme catégorie  pour l'application
-     *
-     * @param path
-     * @return
-     */
+    //Permet de vérifier la validité d'un nom de dossier: existe comme catégorie  pour l'application
     public static boolean isAppDirectory(String path) {
-
+        //Pour chaque catégorie
         for (DirPath dirPath : DirPath.values()) {
+            //Si le chemin passé en paramètre est égal au chemin de la catégorie, on renvoie True
             if (dirPath.toString().equals(path)) {
                 return true;
             }
@@ -208,17 +172,12 @@ public class Util {
         return false;
     }
 
-    /**
-     * Permet de vérifier la validité d'un nom de dossier: existe comme catégorie avec sous-catégorie pour l'application
-     *
-     * @param dirName:    nom du répertoire
-     * @param subDirName: nom du sous-repertoire
-     * @return
-     */
+    //Permet de vérifier la validité d'un nom de dossier: existe comme catégorie avec sous-catégorie pour l'application
     public static boolean isAppDirectory(String dirName, String subDirName) {
-
         String directory = dirName + File.separator + subDirName;
+        //Pour chaque catégorie
         for (DirPath dirPath : DirPath.values()) {
+            //Si le chemin de la sous-catégorie est égal à la catégorie, on renvoie True
             if (dirPath.toString().equals(directory)) {
                 return true;
             }
@@ -226,42 +185,31 @@ public class Util {
         return false;
     }
 
-    /**
-     * vérifie l'existence des sous-répertoires de l'application
-     *
-     * @param context
-     * @return
-     */
+    //Vérifie l'existence des sous-répertoires de l'application
     public static boolean appDirExist(Context context) {
+        //Chemin absolu de la racine de l'appareil
         File root = context.getExternalFilesDir(null);
         Log.e("ROOT", root.getAbsolutePath());
+        //Si la racine possède au moins un fichier
         if (root.listFiles().length > 0) {
+            //Pour chacun de ces fichiers
             for (File file : root.listFiles()) {
+                //Log?
                 Log.e("CONT_FILE", file.getAbsolutePath());
             }
         }
         return root.listFiles().length > 0;
     }
 
-    /**
-     * Crée une nouvelle instance de VideoAnnotation
-     *
-     * @return
-     */
+    //Crée une nouvelle instance de VideoAnnotation
     public static VideoAnnotation createNewVideoAnnotation() {
+        //Initialise une VideoAnnotation avec le bon format de Date
         VideoAnnotation videoAnnotation = new VideoAnnotation(DATE_FORMAT.format(new Date()), DATE_FORMAT.format(new Date()), new ArrayList<Annotation>());
-
         return videoAnnotation;
     }
 
-    /**
-     * Récupère un objet image (Bitmap) depuis le dossier propre au contexte de l'application
-     *
-     * @param filename
-     * @return
-     */
+    //Récupère un objet image (Bitmap) depuis le dossier propre au contexte de l'application
     public static Bitmap getBitmapFromAppDir(Context context, String path, String filename) {
-
         Bitmap bitmap = null;
         try {
             String dirPath = context.getExternalFilesDir(path).getAbsolutePath();
@@ -273,18 +221,10 @@ public class Util {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
         return bitmap;
     }
 
-    /**
-     * Sauvegarde une image Bitmap dans le répertoire indiqué
-     *
-     * @param context
-     * @param imageToSave
-     * @param path        chemin du répertoire de sauvegarde
-     * @param fileName    nom du fichier
-     */
+    //Sauvegarde une image Bitmap dans le répertoire indiqué
     public static void saveBitmapImage(Context context, Bitmap imageToSave, String path, String fileName) {
         final File externalFile;
         if (isExternalStorageWritable()) {
@@ -302,44 +242,28 @@ public class Util {
                 e.printStackTrace();
             }
         }
-
     }
 
     public static String getRealPathFromURI_BelowAPI11(Context context, Uri contentUri) {
         String[] proj = {MediaStore.Video.Media.DATA};
         Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-        int column_index
-                = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
 
-    /**
-     *
-     * Renvoie le chemin du fichier 'uploader'
-     *
-     * @param context
-     * @param contentUri
-     * @return
-     */
+    //Renvoie le chemin du fichier 'uploader'
     public static String getRealPathFromURI(Context context, Uri contentUri) {
         String filePath = "";
         if (contentUri.getHost().contains("com.android.providers.media")) {
-
             String wholeID = DocumentsContract.getDocumentId(contentUri);
             // Split at colon, use second item in the array
             String id = wholeID.split(":")[1];
-
             String[] column = {MediaStore.Video.Media.DATA};
-
             // where id is equal to
             String sel = MediaStore.Video.Media._ID + "=?";
-
-            Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                    column, sel, new String[]{id}, null);
-
+            Cursor cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, column, sel, new String[]{id}, null);
             int columnIndex = cursor.getColumnIndex(column[0]);
-
             if (cursor.moveToFirst()) {
                 filePath = cursor.getString(columnIndex);
             }
@@ -350,24 +274,16 @@ public class Util {
         }
     }
 
-    /**
-     * Permet la sauvegarde d'un fichier vidéo importé dans le repertoire désigné par la catégorie et sous catégorie indiquées
-     *
-     * @param context
-     * @param subCatDir
-     * @param videoFile
-     */
-
+    //Permet la sauvegarde d'un fichier vidéo importé dans le repertoire désigné par la catégorie et sous catégorie indiquées
     public static void saveImportVideoFile(Context context, Categorie subCatDir, File videoFile) {
-
         try {
-            // Destination
+            // Dossier source
             File subDirContent = context.getExternalFilesDir(subCatDir.getPath());
-
-            // Source
+            // Dossier de destination
             File videoFileDirectory = new File(subDirContent,FilenameUtils.removeExtension(videoFile.getName()));
+            //Création du dossier de destination
             videoFileDirectory.mkdir();
-
+            //Copie de la vidéo du dossier source au dossier de destination
             FileUtils.copyFileToDirectory(videoFile, videoFileDirectory);
         } catch (IOException e) {
             e.printStackTrace();
