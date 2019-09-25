@@ -4,10 +4,16 @@ import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 
 public class Video {
 
+    //Nom du fichier vidéo
     private String fileName;
+    //Chemin du fichier vidéo
     private String path;
+    //Instance de VideoAnnotation
     private VideoAnnotation videoAnnotation;
 
+    /*
+     * Constructeurs
+     */
     public Video() {
     }
 
@@ -17,6 +23,9 @@ public class Video {
         this.videoAnnotation = videoAnnotation;
     }
 
+    /*
+     * Getters & setters
+     */
     public String getFileName() {
         return fileName;
     }
