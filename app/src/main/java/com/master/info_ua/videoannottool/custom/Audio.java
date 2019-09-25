@@ -8,43 +8,32 @@ import android.widget.Toast;
 import java.io.IOException;
 
 /**
- * Classe gerant la lecture audio
+ * Classe gérant la lecture audio
  */
 public class Audio {
-    private String audioPath; //Chemin vers le fichier audio
+    //Chemin du fichier audio
+    private String audioPath;
     private Context mainActivity;
 
-    /**
-     *  Constructeur de la classe
-     * @param context
-     * @param path Chemin vers le fichier audio à lire
-     */
+    //Constructeur
     public Audio(Context context,String path){
        this.mainActivity=context;
        this.audioPath=path;
     }
-    /**
-     * Lis le fichier audio
-     */
+
+    //Lis le fichier audio
     public void listen() {
-        MediaPlayer AudioPlayer;
+        //Instanciation
+        MediaPlayer AudioPlayer = new MediaPlayer();;
         try{
-
-            AudioPlayer= new MediaPlayer();
             AudioPlayer.setDataSource(audioPath);
-
             AudioPlayer.prepare();
             AudioPlayer.start();
             Log.i("AUDIO_ANNOT","Lecture de "+audioPath+ " en cours");
-            Toast toastStartListen;
-            toastStartListen = Toast.makeText(mainActivity,"Lecture", Toast.LENGTH_LONG);
-            toastStartListen.show();
-
+            Toast.makeText(mainActivity,"Lecture", Toast.LENGTH_LONG).show();
+            //Tant que l'audio est en cours de lecture, on ne fait rien
             while(AudioPlayer.isPlaying());
             AudioPlayer.stop();
-
-
-
         }
         catch (IOException e) {
             Log.e("AUDIO_ANNOT","ECHEC DE LA LECTURE");
