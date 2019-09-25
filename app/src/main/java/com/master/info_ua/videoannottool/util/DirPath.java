@@ -1,10 +1,13 @@
 package com.master.info_ua.videoannottool.util;
 
+//Enumération des différentes catégories et sous-catégories...
 public enum DirPath {
+    //Catégories
     CATEGORIE1("SOLO", "solo", false),
     CATEGORIE2("DUO", "duo", false),
     CATEGORIE3("TRIO", "trio", false),
     CATEGORIE4("QUATUOR", "quatuor", false),
+    //Sous-catégories
     CATEGORIE1_SUB1("Souplesse", "solo/souplesse", true),
     CATEGORIE1_SUB2("Maintien", "solo/maintien", true),
     CATEGORIE1_SUB3("Agilité", "solo/agilite", true),
@@ -22,27 +25,28 @@ public enum DirPath {
     CATEGORIE4_SUB3("Dynamiques rattrapes", "quatuor/dynamique-rattrappes", true),
     CATEGORIE4_SUB4("Dynamiques sorties", "quatuor/dynamique-sorties", true);
 
+    //Nom de la catégorie
     private final String name;
+    //Chemin de la catégorie
     private final String path;
+    //Vrai si la catégorie possède une catégorie mère
     private final boolean isSubDir;
 
+    //Constructeur
     DirPath(String name, String path, boolean isSubDir) {
         this.name = name;
         this.path = path;
         this.isSubDir = isSubDir;
     }
 
-    public String getPath() {
-        return path;
-    }
+    /*
+     * Getters & setters
+     */
+    public String getPath() { return path; }
 
-    public boolean isSubDir() {
-        return isSubDir;
-    }
+    public boolean isSubDir() { return isSubDir; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
     @Override
     public String toString() {
