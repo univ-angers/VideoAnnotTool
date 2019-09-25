@@ -15,31 +15,22 @@ import java.util.List;
 
 public class AnnotationsAdapter extends ArrayAdapter<Annotation> {
     public AnnotationsAdapter(Context context, List<Annotation> annotations) {
-
         super(context, 0, annotations);
     }
 
-
     public View getView(int position, View convertView, ViewGroup parent) {
-
         // Get the data item for this position
-
         Annotation annotation = getItem(position);
-
         // Check if an existing view is being reused, otherwise inflate the view
-
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_annotation, parent, false);
         }
-
         // Lookup view for data population
         TextView tvTexte = convertView.findViewById(R.id.tvTexte);
         ImageView iconAnnotation = convertView.findViewById(R.id.iconAnnotation);
-
         // Populate the data into the template view using the data object
         tvTexte.setText(annotation.getAnnotationTitle());
         switch (annotation.getAnnotationType()){
-
             case TEXT:{
                 iconAnnotation.setImageResource(R.drawable.text_editor_32);
                 break;
@@ -53,11 +44,7 @@ public class AnnotationsAdapter extends ArrayAdapter<Annotation> {
                 break;
             }
         }
-
-
         // Return the completed view to render on screen
-
         return convertView;
-
     }
 }
