@@ -33,10 +33,11 @@
     <string name="TextBtnShareVideo">Partager la vidéo</string>
     <string name="TextBtnSelectVideo">Choisir la vidéo</string>
 
+    <string name="TextDialogEditAnnot">Editer l\'annotation</string>
 
     <string name="profil">Profil</string>
-
-
+    <string name="editValidateToast">Modification effectuée</string>
+    <string name="TextDialogEditVideo">Editer la vidéo</string>
 
 
 </resources>

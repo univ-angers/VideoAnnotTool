@@ -17,6 +17,7 @@ import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -56,23 +57,23 @@ import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
-import com.master.info_ua.videoannottool.annotation.AnnotationType;
-import com.master.info_ua.videoannottool.custom.Audio;
 import com.master.info_ua.videoannottool.annotation.ControllerAnnotation;
-import com.master.info_ua.videoannottool.dialog.DialogCallback;
-import com.master.info_ua.videoannottool.dialog.DialogProfil;
-import com.master.info_ua.videoannottool.player_view.ZoomableExoPlayerView;
-import com.master.info_ua.videoannottool.util.AnnotationComparator;
-import com.master.info_ua.videoannottool.util.DirPath;
-import com.master.info_ua.videoannottool.custom.Video;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
+import com.master.info_ua.videoannottool.custom.Audio;
 import com.master.info_ua.videoannottool.custom.DrawView;
+import com.master.info_ua.videoannottool.custom.Video;
 import com.master.info_ua.videoannottool.dialog.DialogAudio;
+import com.master.info_ua.videoannottool.dialog.DialogCallback;
+import com.master.info_ua.videoannottool.dialog.DialogEditVideo;
+import com.master.info_ua.videoannottool.dialog.DialogImport;
+import com.master.info_ua.videoannottool.dialog.DialogProfil;
 import com.master.info_ua.videoannottool.dialog.DialogText;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
-import com.master.info_ua.videoannottool.dialog.DialogImport;
+import com.master.info_ua.videoannottool.player_view.ZoomableExoPlayerView;
+import com.master.info_ua.videoannottool.util.AnnotationComparator;
 import com.master.info_ua.videoannottool.util.Categorie;
+import com.master.info_ua.videoannottool.util.DirPath;
 import com.master.info_ua.videoannottool.util.Ecouteur;
 import com.master.info_ua.videoannottool.util.Util;
 
@@ -85,7 +86,7 @@ import java.util.List;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.AUDIO;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 
-public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener {
+public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener {
 
     private static final int READ_REQUEST_CODE = 42;
 
@@ -194,6 +195,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         // récupération des donnée pour les transmettre via une instance lors du passage en mode pleine écran
         if (savedInstanceState != null) {
             ResumeWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW);
@@ -202,6 +205,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         }
 
         listViewVideos = findViewById(R.id.lv_videos);
+        registerForContextMenu(listViewVideos);
+
 
         spinnerCategorie = findViewById(R.id.spinner_cat);
         spinnerSubCategorie = findViewById(R.id.spinner_sub_cat);
@@ -349,6 +354,35 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         super.onSaveInstanceState(outState);
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.lv_videos) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.context_menu, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Video video = videosAdapter.getItem(info.position);
+        switch (item.getItemId()) {
+            case R.id.edit_item:
+                DialogEditVideo dialog = new DialogEditVideo(this, video);
+                dialog.showDialogEdit();
+                return true;
+            case R.id.delete_item:
+                videosAdapter.remove(video);
+                videosAdapter.notifyDataSetChanged();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
 
 
     private void initFullscreenDialog() {
@@ -1126,5 +1160,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         audioAnnotBtn.setEnabled(status);
         graphAnnotBtn.setEnabled(status);
         textAnnotBtn.setEnabled(status);
+    }
+
+    //Edition des infos de la video via context menu
+    @Override
+    public void onSaveEditVideo(Video video, String title) {
+        video.setFileName(title);
+        videosAdapter.notifyDataSetInvalidated();
     }
 }
