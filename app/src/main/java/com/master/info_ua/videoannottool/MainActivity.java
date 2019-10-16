@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -175,6 +176,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private TextView videoImportName;
     private File fileVideoImport;
 
+    //Attribut pour la recherche de vidéos
+    private EditText searchVideo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -277,6 +280,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         }
 
         fileVideoImport = new File("");
+
+        searchVideo = (EditText)findViewById(R.id.editText_search_video);
     }
 
     @Override
