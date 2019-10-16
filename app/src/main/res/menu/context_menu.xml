@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/edit_annot"
-        android:title="Modifier l'annotation"
-        android:enabled="false"/>
+    <item android:id="@+id/edit_item"
+        android:title="Modifier"
+        />
 
-    <item android:id="@+id/delete_annot"
-        android:title="Supprimer l'annotation"
+    <item android:id="@+id/delete_item"
+        android:title="Supprimer"
         />
 
 </menu>

@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
+import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
 import com.master.info_ua.videoannottool.util.AnnotationComparator;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class Fragment_annotation extends Fragment {
+public class Fragment_annotation extends Fragment implements DialogEditAnnot.EditAnnotDialogListener {
 
     private AnnotationsAdapter annotationsAdapter;
     private ListView listViewAnnotations;
@@ -136,18 +138,26 @@ public class Fragment_annotation extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Annotation annotation = annotationsAdapter.getItem(info.position);
         switch (item.getItemId()) {
-            case R.id.edit_annot:
-                Toast.makeText(getActivity(), "Développement en cours ...", Toast.LENGTH_SHORT).show();
+            case R.id.edit_item:
+                DialogEditAnnot dialog = new DialogEditAnnot(this, annotation);
+                dialog.showDialogEdit();
                 return true;
-            case R.id.delete_annot:
-                Annotation annotation = annotationsAdapter.getItem(info.position);
+            case R.id.delete_item:
                 fragmentListener.onDeleteAnnotation(annotation);
                 annotationsAdapter.notifyDataSetChanged();
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    @Override
+    public void onSaveEditAnnot(Annotation annotation, String title, int duree) {
+        annotation.setAnnotationTitle(title);
+        annotation.setAnnotationDuration(duree);
+        annotationsAdapter.notifyDataSetChanged();
     }
 
     public interface AnnotFragmentListener {
