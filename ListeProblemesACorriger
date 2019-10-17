@@ -1,4 +1,30 @@
 Ce fichier a pour but de mettre en commun l'ensemble des erreurs présentes dans l'application.
 
 Indiquez ci-dessous la liste des problèmes à corriger dans l'application :
-- 
+- Le bouton dans le menu principal pour passer en mode consultation/annotation reste 
+  bloquer à mode consultation une fois passer en mode annotation.
+
+- Dans le mode annotation :
+    ° dans le cas des annotations graphiques :
+        . si on annule une annotation avec les deux boutons annuler 
+            (Le premier entre effacer et save, le deuxième dans le menu du save).
+            On ne peut plus créer d'annotations. 
+                (Il faut passer à consultation puis annotation pour pouvoir ou utiliser l'autre bouton annuler)
+            Les boutons et couleurs restent même en mode consultation. (Ne s'en va qu'en enregistrant un graphique)
+    ° dans le cas des annotation sonores :
+        . Ecouter l'enregistrement que l'on vient de faire empêche d'utilise rle bouton Ecouter.
+        . Si on l'annule avec le bouton annuler on ne peut plus créer d'annotations. 
+            (Il faut passer à consultation puis annotation pour pouvoir)
+    ° dans le cas des annotation textuelles :
+        . Si on l'annule avec le bouton annuler ou on clique autre part que le dialogue on ne peut plus créer d'annotations. 
+            (Il faut passer à consultation puis annotation pour pouvoir)(Le seul avec Dialog de problématique)
+    ° Après avoir créee une annotation, toutes celles concernant des annotations de la même catégorie et sous-catégorie
+        sont affichées dans la liste jusqu'à ce qu'on change de vidéo.
+
+
+
+
+
+
+
+
