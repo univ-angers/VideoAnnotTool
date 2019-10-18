@@ -17,6 +17,11 @@
         android:clickable="false"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
+    <Spinner
+        android:id="@+id/spinner_annotation"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"/>
+
     <ListView
         android:id="@+id/lv_annotations"
         android:layout_width="match_parent"

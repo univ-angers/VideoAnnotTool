@@ -3,6 +3,7 @@ package com.master.info_ua.videoannottool.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -11,16 +12,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
+import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
 import com.master.info_ua.videoannottool.util.AnnotationComparator;
+import com.master.info_ua.videoannottool.util.Categorie;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +40,8 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
 
     private AnnotFragmentListener fragmentListener;
 
+    private Spinner spinnerAnnotation;
+    private ArrayAdapter<Categorie> spinnerAdapterAnnot;
 
     public Fragment_annotation() {
         // Required empty public constructor
@@ -45,6 +52,7 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         annotationsAdapter = new AnnotationsAdapter(getActivity(), new ArrayList<Annotation>()); //Initilisatisation de la liste d'annotations (vide)
+
     }
 
     @Override
@@ -80,6 +88,33 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
         listViewAnnotations = view.findViewById(R.id.lv_annotations);
         listViewAnnotations.setOnItemClickListener(annotationItemClickListener);
         registerForContextMenu(listViewAnnotations);
+
+
+        //Spinner annotation
+
+        spinnerAnnotation = view.findViewById(R.id.spinner_annotation);
+        //spinnerAnnotation.setBackgroundColor(Color.YELLOW);
+
+        List<Categorie> spinnerAdapterAnnot= new ArrayList<>();
+        spinnerAdapterAnnot.add(new Categorie("Annotations prédéfinis", null, "/"));
+
+
+        spinnerAdapterAnnot = new SpinnerAdapter(getActivity(), android.R.layout.simple_spinner_item, spinnerAdapterAnnot);
+
+      //  spinnerAdapterAnnot = new SpinnerAdapter(this, )
+
+
+
+
+
+        List<Categorie> categorieList = new ArrayList<>();
+        categorieList.add(new Categorie("Categorie", null, "/"));
+
+        spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
+
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategorie.setAdapter(spinnerAdapter);
+
 
         return view;
     }

@@ -58,6 +58,7 @@ import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.annotation.AnnotationType;
 import com.master.info_ua.videoannottool.annotation.ControllerAnnotation;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.custom.Audio;
@@ -236,10 +237,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         List<Categorie> spinnerList2 = new ArrayList<>();
         spinnerList2.add(new Categorie("Sous-categorie", null, "/"));
 
-
         spinnerAdapter2 = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, spinnerList2);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubCategorie.setAdapter(spinnerAdapter2);
+
+
+        //Spinner annotations
 
 
         //Listener btn audio_annot_btn
