@@ -16,6 +16,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -176,8 +178,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private TextView videoImportName;
     private File fileVideoImport;
 
-    //Attribut pour la recherche de vidéos
+    //Attributs pour la recherche de vidéos
     private EditText searchVideo;
+    String searchText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -281,7 +284,26 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         fileVideoImport = new File("");
 
+        searchText = new String();
         searchVideo = (EditText)findViewById(R.id.editText_search_video);
+        searchVideo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                searchText=charSequence.toString();
+                videosAdapter.clear();
+                videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
+                videosAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
     }
 
     @Override
@@ -321,7 +343,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-
         return true;
     }
 
@@ -702,9 +723,19 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             Log.e("SUB_CAT", "No content in " + subCatDir);
         }
 
-        return videoList;
+        return filter(videoList, searchText);
     }
 
+
+    private List<Video> filter(List<Video> vl, String toSearch) {
+        List<Video> ret = new ArrayList<>();
+        for (Video inlist : vl) {
+            if (inlist.getFileName().contains(toSearch)){
+                ret.add(inlist);
+            }
+        }
+        return ret;
+    }
     /**
      * listener de clic sur les button d'annotation
      */
@@ -787,7 +818,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 // Here you get the current item that is selected by its position
                 currentSubCategorie = (Categorie) adapterView.getItemAtPosition(position);
                 Log.e("SELECT_SUB_CAT", currentSubCategorie.getPath());
-
+                searchVideo.setText("");
                 videosAdapter.clear();
                 videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
                 videosAdapter.notifyDataSetChanged();
@@ -1174,4 +1205,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         video.setFileName(title);
         videosAdapter.notifyDataSetInvalidated();
     }
+
+
+
 }

@@ -14,7 +14,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="com.master.info_ua.videoannottool.MainActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
