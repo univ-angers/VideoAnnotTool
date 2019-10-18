@@ -2,11 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/edit_item"
-        android:title="Modifier"
+        android:title="@string/modifier"
         />
 
     <item android:id="@+id/delete_item"
-        android:title="Supprimer"
+        android:title="@string/supprimer"
+        />
+
+    <item android:id="@+id/edit_item_annot"
+        android:title="@string/modifier"
+        />
+
+    <item android:id="@+id/delete_item_annot"
+        android:title="@string/supprimer"
         />
 
 </menu>
