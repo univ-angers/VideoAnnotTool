@@ -22,7 +22,8 @@ Indiquez ci-dessous la liste des problèmes à corriger dans l'application :
         sont affichées dans la liste jusqu'à ce qu'on change de vidéo.
 
 
-
+- Lorsque l'on change de Catégorie la liste des vidéos de la Sous-catégorie par défaut ne s'actualise pas, 
+il faut passer par une autre sous-catégorie puis revenir à la première pour que les vidéos s'affichent.
 
 
 
