@@ -1,7 +1,6 @@
 package com.master.info_ua.videoannottool.dialog;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;

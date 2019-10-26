@@ -2,8 +2,11 @@ package com.master.info_ua.videoannottool.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -12,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
@@ -39,6 +41,8 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
 
     private AnnotFragmentListener fragmentListener;
 
+    private static final String FRAGMENT_DRAW_TAG = "drawFragment";
+
 
     public Fragment_annotation() {
         // Required empty public constructor
@@ -54,7 +58,6 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
         if (context instanceof AnnotFragmentListener) {
             fragmentListener = (AnnotFragmentListener) context;
         } else {
@@ -91,7 +94,6 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
     @Override
     public void onStart() {
         super.onStart();
-
         listViewAnnotations.setAdapter(annotationsAdapter);
         listViewAnnotations.setClickable(true);
     }
@@ -128,21 +130,34 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
         }
     };
 
-    // Crée le contextmenu pour les annotations qui utilisera le listener dans le MainActivity
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (v.getId() == R.id.lv_annotations) {
             MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
-            menu.findItem(R.id.edit_item_annot).setVisible(true);
-            menu.findItem(R.id.delete_item_annot).setVisible(true);
-            menu.findItem(R.id.edit_item).setVisible(false);
-            menu.findItem(R.id.delete_item).setVisible(false);
-
         }
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Annotation annotation = annotationsAdapter.getItem(info.position);
+        switch (item.getItemId()) {
+            case R.id.edit_item:
+                DialogEditAnnot dialog = new DialogEditAnnot(this, annotation);
+                dialog.showDialogEdit();
+                return true;
+            case R.id.delete_item:
+                fragmentListener.onDeleteAnnotation(annotation);
+                annotationsAdapter.notifyDataSetChanged();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
 
     @Override
     public void onSaveEditAnnot(Annotation annotation, String title, int duree) {
@@ -152,9 +167,8 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
     }
 
     public interface AnnotFragmentListener {
-
         void onAnnotItemClick(Annotation annotation);
-
+        void onEditAnnotation(Annotation annotation);
         void onDeleteAnnotation(Annotation annotation);
     }
 }

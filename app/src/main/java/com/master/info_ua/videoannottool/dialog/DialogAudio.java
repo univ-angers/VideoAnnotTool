@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.custom.Audio;

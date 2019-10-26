@@ -34,7 +34,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -372,7 +371,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Video video = videosAdapter.getItem(info.position);
         Annotation annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
@@ -608,34 +606,34 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
     private void initPlayButton() {
-            PlaybackControlView controlView = exoPlayerView.findViewById(R.id.exo_controller);
-            playIcon = controlView.findViewById(R.id.exo_play_icon);
-            playButton = controlView.findViewById(R.id.exo_play_button);
-            playButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (currentVideo != null) {
-                        if (exoplayerPlay == false) {
-                            // lance la video
-                            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
-                            exoplayerPlay = true;
-                            //exoPlayerView.setUseController(false);
+        PlaybackControlView controlView = exoPlayerView.findViewById(R.id.exo_controller);
+        playIcon = controlView.findViewById(R.id.exo_play_icon);
+        playButton = controlView.findViewById(R.id.exo_play_button);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentVideo != null) {
+                    if (exoplayerPlay == false) {
+                        // lance la video
+                        playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
+                        exoplayerPlay = true;
+                        //exoPlayerView.setUseController(false);
 
-                            controlerAnnotation.setLast_pos(0);
+                        controlerAnnotation.setLast_pos(0);
 
-                            player.setPlayWhenReady(true);
-                            new Thread(controlerAnnotation).start();
-                        } else {
-                            // augmente la vitesse
-                            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
-                            exoplayerPlay = false;
-                            //exoPlayerView.setUseController(false);
-                            player.setPlayWhenReady(false);
-                            controlerAnnotation.cancel();
-                        }
+                        player.setPlayWhenReady(true);
+                        new Thread(controlerAnnotation).start();
+                    } else {
+                        // augmente la vitesse
+                        playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+                        exoplayerPlay = false;
+                        //exoPlayerView.setUseController(false);
+                        player.setPlayWhenReady(false);
+                        controlerAnnotation.cancel();
                     }
                 }
-            });
+            }
+        });
     }
 
     private void closeFullscreenDialog() {
@@ -923,24 +921,38 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         drawView.setColor(color);
     }
 
+
+
     @Override
     public void closeAnnotationFrame() {
-
+        System.out.println("closeAnnotationFrame");
         drawView.resetCanvas();
+        System.out.println("1");
         FragmentTransaction ft = fragmentManager.beginTransaction();
         annotFragment = (Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
+        System.out.println("2");
         if (annotFragment == null) {
             annotFragment = new Fragment_annotation();
+            System.out.println("3");
             ft.add(R.id.annotation_menu, annotFragment, FRAGMENT_ANNOT_TAG);
+            System.out.println("4");
             ft.hide(drawFragment);
+            System.out.println("5");
             ft.show(annotFragment);
+            System.out.println("6");
             ft.commit();
+            System.out.println("7");
         } else {
+            if(drawView==null)
+                System.out.println("8");
+            else
+                System.out.println("9");
             ft.hide(drawFragment);
             ft.show(annotFragment);
             ft.commit();
         }
         drawView.setVisibility(View.GONE);
+        System.out.println("10");
     }
 
 
@@ -1067,6 +1079,41 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             }
         }
 
+    }
+
+    @Override
+    public void onEditAnnotation(Annotation annotation) {
+        final String annotFileDirectory = currentSubCategorie.getPath() + "/" + currentVideo.getFileName();
+        //Afficher l'annotation prise en paramètre
+        switch (annotation.getAnnotationType()){
+            case TEXT:
+
+                break;
+            case DRAW:
+                Bitmap bitmap = Util.getBitmapFromAppDir(getApplicationContext(), annotFileDirectory, annotation.getDrawFileName());
+                drawBimapIv.setVisibility(View.VISIBLE);
+                drawBimapIv.setImageBitmap(bitmap);
+
+                //Affichage du fragment draw : obligation de passer par l'activité pour communiquer entre les deux fragments
+                FragmentManager manager = getFragmentManager();
+                FragmentTransaction ft = manager.beginTransaction();
+                drawFragment = (Fragment_draw) manager.findFragmentByTag(FRAGMENT_DRAW_TAG);
+                if (drawFragment == null) {
+                    drawFragment = new Fragment_draw();
+                    ft.add(R.id.annotation_menu, drawFragment, FRAGMENT_DRAW_TAG);
+                    ft.hide(annotFragment);
+                    ft.show(drawFragment);
+                    ft.commit();
+                } else {
+                    ft.hide(annotFragment);
+                    ft.show(drawFragment);
+                    ft.commit();
+                }
+
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

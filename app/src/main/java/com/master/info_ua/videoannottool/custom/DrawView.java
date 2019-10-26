@@ -59,6 +59,9 @@ public class DrawView extends View {
         mPaint.setStrokeJoin(Paint.Join.MITER);
         mPaint.setStrokeWidth(4f);
         onTouchEnable = false;
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        mBitmap = Bitmap.createBitmap(displayMetrics.widthPixels, displayMetrics.heightPixels, Bitmap.Config.ARGB_8888);
+        mCanvas = new Canvas(mBitmap);
     }
 
     @Override
