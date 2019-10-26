@@ -38,6 +38,9 @@
     <string name="profil">Profil</string>
     <string name="editValidateToast">Modification effectuée</string>
     <string name="TextDialogEditVideo">Editer la vidéo</string>
+    <string name="titre_de_la_video">Titre de la vidéo</string>
+    <string name="modifier">Modifier</string>
+    <string name="supprimer">Supprimer</string>
 
 
 </resources>

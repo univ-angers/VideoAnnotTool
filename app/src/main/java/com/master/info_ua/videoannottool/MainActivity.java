@@ -65,6 +65,7 @@ import com.master.info_ua.videoannottool.custom.DrawView;
 import com.master.info_ua.videoannottool.custom.Video;
 import com.master.info_ua.videoannottool.dialog.DialogAudio;
 import com.master.info_ua.videoannottool.dialog.DialogCallback;
+import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
 import com.master.info_ua.videoannottool.dialog.DialogEditVideo;
 import com.master.info_ua.videoannottool.dialog.DialogImport;
 import com.master.info_ua.videoannottool.dialog.DialogProfil;
@@ -362,6 +363,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         if (v.getId() == R.id.lv_videos) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
+            menu.findItem(R.id.edit_item_annot).setVisible(false);
+            menu.findItem(R.id.delete_item_annot).setVisible(false);
+            menu.findItem(R.id.edit_item).setVisible(true);
+            menu.findItem(R.id.delete_item).setVisible(true);
         }
     }
 
@@ -370,6 +375,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Video video = videosAdapter.getItem(info.position);
+        Annotation annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
         switch (item.getItemId()) {
             case R.id.edit_item:
                 DialogEditVideo dialog = new DialogEditVideo(this, video);
@@ -378,6 +384,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             case R.id.delete_item:
                 videosAdapter.remove(video);
                 videosAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.edit_item_annot:
+                DialogEditAnnot dialog2 = new DialogEditAnnot(this.annotFragment, annotation);
+                dialog2.showDialogEdit();
+                return true;
+            case R.id.delete_item_annot:
+                annotFragment.getFragmentListener().onDeleteAnnotation(annotation);
+                annotFragment.getAnnotationsAdapter().notifyDataSetChanged();
                 return true;
             default:
                 return super.onContextItemSelected(item);
