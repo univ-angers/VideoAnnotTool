@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Fragment_annotation extends Fragment implements DialogEditAnnot.EditAnnotDialogListener {
+public class Fragment_annotation extends Fragment {
 
     public AnnotationsAdapter getAnnotationsAdapter() {
         return annotationsAdapter;
@@ -137,6 +137,7 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
             inflater.inflate(R.menu.context_menu, menu);
             menu.findItem(R.id.edit_item_annot).setVisible(true);
             menu.findItem(R.id.delete_item_annot).setVisible(true);
+            menu.findItem(R.id.add_item).setVisible(false);
             menu.findItem(R.id.edit_item).setVisible(false);
             menu.findItem(R.id.delete_item).setVisible(false);
 
@@ -144,12 +145,7 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
     }
 
 
-    @Override
-    public void onSaveEditAnnot(Annotation annotation, String title, int duree) {
-        annotation.setAnnotationTitle(title);
-        annotation.setAnnotationDuration(duree);
-        annotationsAdapter.notifyDataSetChanged();
-    }
+
 
     public interface AnnotFragmentListener {
 

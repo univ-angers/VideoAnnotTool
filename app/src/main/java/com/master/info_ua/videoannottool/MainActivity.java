@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -34,6 +35,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -79,6 +81,7 @@ import com.master.info_ua.videoannottool.util.Ecouteur;
 import com.master.info_ua.videoannottool.util.Util;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -87,9 +90,11 @@ import java.util.List;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.AUDIO;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 
-public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener {
+public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
 
     private static final int READ_REQUEST_CODE = 42;
+    static final int READ_CATEGORY_CODE = 1;
+
 
     // attribut servant pour l'option de pleine écran du lecteur a stocker des iinformation
     private final String STATE_RESUME_WINDOW = "resumeWindow";
@@ -137,6 +142,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private Spinner spinnerCategorie;
     private Spinner spinnerSubCategorie;
 
+    private List<Video> listvideo;
     private VideosAdapter videosAdapter;
 
     private Video currentVideo;
@@ -164,6 +170,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private Categorie currentCategorie;
     private Categorie currentSubCategorie;
 
+    private List<Categorie> categorieList;
+
     private ArrayAdapter<Categorie> spinnerAdapter;
     private ArrayAdapter<Categorie> spinnerAdapter2;
 
@@ -178,7 +186,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
             }
@@ -222,9 +230,29 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         listViewVideos.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         //Spinner catégorie
-        List<Categorie> categorieList = new ArrayList<>();
+        categorieList = new ArrayList<>();
         categorieList.add(new Categorie("Categorie", null, "/"));
-        categorieList.addAll(Util.setCatSpinnerList(this));
+//        categorieList.addAll(Util.setCatSpinnerList(this));
+
+//        List<Categorie> CATEGORIE1_SUB=new ArrayList<>();
+//        CATEGORIE1_SUB.add(new Categorie("Souplesse", "solo", "solo/souplesse"));
+//        CATEGORIE1_SUB.add(new Categorie("Maintien", "solo", "solo/maintien"));
+//        CATEGORIE1_SUB.add(new Categorie("Agilité", "solo", "solo/agilite"));
+//        CATEGORIE1_SUB.add(new Categorie("Dynamique", "solo", "solo/sdynamique"));
+//        CATEGORIE1_SUB.add(new Categorie("Molo", "solo", "solo/molo"));
+//        List<Categorie> CATEGORIE2_SUB=new ArrayList<>();
+//        CATEGORIE2_SUB.add(new Categorie("Statiques positions variées", "duo", "duo/statiques-variees"));
+//        CATEGORIE2_SUB.add(new Categorie("Statiques ATR", "duo", "duo/statiques-atr"));
+//        CATEGORIE2_SUB.add(new Categorie("Dynamiques rattrapes", "duo", "duo/dynamiques-rattrapes"));
+//        CATEGORIE2_SUB.add(new Categorie("Dynamiques sorties", "duo", "duo/dynamique-sorties"));
+
+//        categorieList.get(1).setSubCategories(CATEGORIE1_SUB);
+
+//        for (int i=2; i<categorieList.size();i++){
+//            categorieList.get(i).setSubCategories(CATEGORIE2_SUB);
+//        }
+
+        categorieList.addAll(Util.initCatList(this));
 
         spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
 
@@ -232,12 +260,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         spinnerCategorie.setAdapter(spinnerAdapter);
 
         //Spinner sous-catégorie
-
-        List<Categorie> spinnerList2 = new ArrayList<>();
-        spinnerList2.add(new Categorie("Sous-categorie", null, "/"));
-
-
-        spinnerAdapter2 = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, spinnerList2);
+        List<Categorie>subCategorieList = new ArrayList<>();
+        subCategorieList.add(new Categorie("Sous-catégorie", null, "/"));
+        spinnerAdapter2 = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, subCategorieList);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSubCategorie.setAdapter(spinnerAdapter2);
 
@@ -275,7 +300,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         if (!Util.appDirExist(this)) {
             Util.createDir(this);
         }
-
         fileVideoImport = new File("");
     }
 
@@ -324,7 +348,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_import:
-                DialogImport dialogImport = new DialogImport();
+                DialogImport dialogImport = new DialogImport(categorieList);
                 dialogImport.showDialogImport(MainActivity.this);
                 return true;
             case R.id.action_profile:
@@ -340,10 +364,20 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 }
 
                 return true;
+
+            case R.id.action_category:
+                Intent childintent = new Intent(MainActivity.this,CategoryActivity.class);
+                for( Categorie cat: categorieList)
+                {
+                    System.out.println(cat + "     " + cat.getSubCategories().size());
+                }
+                childintent.putParcelableArrayListExtra("categorieList", (ArrayList<? extends Parcelable>) categorieList);
+                startActivityForResult(childintent,READ_CATEGORY_CODE);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     @Override
@@ -362,6 +396,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         if (v.getId() == R.id.lv_videos) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
+            menu.findItem(R.id.add_item).setVisible(false);
             menu.findItem(R.id.edit_item_annot).setVisible(false);
             menu.findItem(R.id.delete_item_annot).setVisible(false);
             menu.findItem(R.id.edit_item).setVisible(true);
@@ -373,22 +408,43 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Video video = videosAdapter.getItem(info.position);
-        Annotation annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
+        Video video;
+        Annotation annotation;
         switch (item.getItemId()) {
             case R.id.edit_item:
+                video = videosAdapter.getItem(info.position);
                 DialogEditVideo dialog = new DialogEditVideo(this, video);
                 dialog.showDialogEdit();
                 return true;
             case R.id.delete_item:
+                video = videosAdapter.getItem(info.position);
+                String subCatDir= currentCategorie + "/" +video.getPath();
+                File subDirContent = this.getExternalFilesDir(subCatDir);
+                System.out.println(subDirContent.isDirectory()+"     "+ subCatDir + "     "+ subDirContent.getName() +"     "+ video.getPath());
+                if (subDirContent.isDirectory())
+                {
+                    String[] children = subDirContent.list();
+                    for (int i = 0; i < children.length; i++)
+                    {
+                        new File(subDirContent, children[i]).delete();
+                    }
+                }
+                this.getExternalFilesDir(currentCategorie+"/"+video.getPath()).delete();
                 videosAdapter.remove(video);
                 videosAdapter.notifyDataSetChanged();
+                initExoPlayer();
                 return true;
             case R.id.edit_item_annot:
-                DialogEditAnnot dialog2 = new DialogEditAnnot(this.annotFragment, annotation);
+                annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
+                DialogEditAnnot dialog2 = new DialogEditAnnot(this, annotation);
                 dialog2.showDialogEdit();
+                for(Annotation annot: currentVAnnot.getAnnotationList())
+                {
+                    System.out.println("currentVAnnot Titre : " +annot.getAnnotationTitle());
+                }
                 return true;
             case R.id.delete_item_annot:
+                annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
                 annotFragment.getFragmentListener().onDeleteAnnotation(annotation);
                 annotFragment.getAnnotationsAdapter().notifyDataSetChanged();
                 return true;
@@ -472,7 +528,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
             annotFragment.updateAnnotationList(currentVAnnot);
 
-            videoName = currentVideo.getFileName();
+            System.out.println(currentVideo.getFileName() +"              "+ currentVideo.getName());
+//            videoName = currentVideo.getFileName();
+            videoName = currentVideo.getName();
 
             if (currentVideo != null) {
                 controlerAnnotation = new ControllerAnnotation( MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
@@ -521,7 +579,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             filePath = this.getExternalFilesDir(DirPath.CATEGORIE1_SUB1.toString() + File.separator + videoName).getAbsolutePath();
         }
         //Uri uri = Uri.fromFile(new java.io.File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + File.separator + "Camera" + File.separator + videoName + ".mp4"));
-        Uri uri = Uri.fromFile(new java.io.File(filePath + File.separator + videoName + ".mp4"));
+        Uri uri = Uri.fromFile(new File(filePath + File.separator + videoName + ".mp4"));
 
         DataSpec dataSpec = new DataSpec(uri);
         FileDataSource fileDataSource = new FileDataSource();
@@ -607,34 +665,34 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
     private void initPlayButton() {
-            PlaybackControlView controlView = exoPlayerView.findViewById(R.id.exo_controller);
-            playIcon = controlView.findViewById(R.id.exo_play_icon);
-            playButton = controlView.findViewById(R.id.exo_play_button);
-            playButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (currentVideo != null) {
-                        if (exoplayerPlay == false) {
-                            // lance la video
-                            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
-                            exoplayerPlay = true;
-                            //exoPlayerView.setUseController(false);
+        PlaybackControlView controlView = exoPlayerView.findViewById(R.id.exo_controller);
+        playIcon = controlView.findViewById(R.id.exo_play_icon);
+        playButton = controlView.findViewById(R.id.exo_play_button);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentVideo != null) {
+                    if (exoplayerPlay == false) {
+                        // lance la video
+                        playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
+                        exoplayerPlay = true;
+                        //exoPlayerView.setUseController(false);
 
-                            controlerAnnotation.setLast_pos(0);
+                        controlerAnnotation.setLast_pos(0);
 
-                            player.setPlayWhenReady(true);
-                            new Thread(controlerAnnotation).start();
-                        } else {
-                            // augmente la vitesse
-                            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
-                            exoplayerPlay = false;
-                            //exoPlayerView.setUseController(false);
-                            player.setPlayWhenReady(false);
-                            controlerAnnotation.cancel();
-                        }
+                        player.setPlayWhenReady(true);
+                        new Thread(controlerAnnotation).start();
+                    } else {
+                        // augmente la vitesse
+                        playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+                        exoplayerPlay = false;
+                        //exoPlayerView.setUseController(false);
+                        player.setPlayWhenReady(false);
+                        controlerAnnotation.cancel();
                     }
                 }
-            });
+            }
+        });
     }
 
     private void closeFullscreenDialog() {
@@ -691,7 +749,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     for (File videoFile : videoFileDir.listFiles()) {
                         if (videoFile.getName().substring(videoFile.getName().lastIndexOf(".") + 1).equals("mp4")) {
                             Log.e("VIDEO", "Video found [" + videoFile.getName() + "]");
-                            video.setFileName(videoFileDir.getName()); //le fichir video porte le même nom que le répertoire qui le contient
+                            System.out.println("Nom de la vidéo: " + videoFileDir.getName());
+                            video.setFileName(videoFileDir.getName()); //le fichier video porte le même nom que le répertoire qui le contient
+                            video.setName(videoFileDir.getName());
                         }
 
                         if (videoFile.getName().substring(videoFile.getName().lastIndexOf(".") + 1).equals("json")) {
@@ -701,6 +761,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     }
 
                     if (video.getFileName() != null && !video.getFileName().isEmpty()) {
+                        System.out.println("2) Nom de la vidéo: "+videoFileDir.getName());
                         video.setPath(currentSubCategorie + File.separator + videoFileDir.getName());
                         videoList.add(video);
                     }
@@ -771,9 +832,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
             // Here you get the current item that is selected by its position
             currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
-
+//            System.out.println(categorieList.get(position).getPath()+"      "+categorieList.get(position).getSubCategories().get(0)+"    "+categorieList.get(position).getParentName() +"      "+ categorieList.get(position-1).getName());
             spinnerAdapter2.clear();
-            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
+//            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
+            spinnerAdapter2.add(new Categorie("Sous-catégorie", null, "/"));
+            spinnerAdapter2.addAll(categorieList.get(position).getSubCategories());
             spinnerAdapter2.notifyDataSetChanged();
             spinnerSubCategorie.setSelection(1);
             Log.e("SELECT_CAT", currentCategorie.getPath());
@@ -1069,6 +1132,27 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
     @Override
+    public void onSaveEditAnnot(Annotation annotation, String title, int duree) {
+        for(int i = 0; i<currentVAnnot.getAnnotationList().size(); i++)
+        {
+            System.out.println("Titre : " +currentVAnnot.getAnnotationList().get(i).getAnnotationTitle() +"    "+ annotation.getAnnotationTitle());
+            if(currentVAnnot.getAnnotationList().get(i).getAnnotationTitle().matches(annotation.getAnnotationTitle())) {
+                System.out.println("Modification en cours");
+                currentVAnnot.getAnnotationList().get(i).setAnnotationTitle(title);
+                currentVAnnot.getAnnotationList().get(i).setAnnotationDuration(duree);
+            }
+            if(currentVideo.getVideoAnnotation().getAnnotationList().get(i).getAnnotationTitle().matches(annotation.getAnnotationTitle())){
+                currentVideo.getVideoAnnotation().getAnnotationList().get(i).setAnnotationTitle(title);
+                currentVideo.getVideoAnnotation().getAnnotationList().get(i).setAnnotationDuration(duree);
+                System.out.println("Apres Video modif: " +currentVideo.getVideoAnnotation().getAnnotationList().get(i).getAnnotationTitle());
+            }
+        }
+        annotation.setAnnotationTitle(title);
+        annotation.setAnnotationDuration(duree);
+        annotFragment.updateAnnotationList(currentVAnnot);
+    }
+
+    @Override
     public void onDeleteAnnotation(Annotation annotation) {
         boolean isRemove = currentVAnnot.getAnnotationList().remove(annotation);
         if (isRemove){
@@ -1103,9 +1187,70 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
             if (data != null && data.getData() != null) {
                 Uri filePath = data.getData();
-                String s = Util.getRealPathFromURI(this,filePath);
-                fileVideoImport = new File(Util.getRealPathFromURI(this,filePath));
+                String s = Util.getRealPathFromURI(this, filePath);
+                fileVideoImport = new File(Util.getRealPathFromURI(this, filePath));
                 videoImportName.setText(fileVideoImport.getName());
+            }
+        }
+
+        //Gestion des Catégories
+        if (requestCode == READ_CATEGORY_CODE && resultCode != Activity.RESULT_CANCELED) {
+            if (!(data.getStringArrayListExtra("Categorie").isEmpty())) {
+                categorieList = new ArrayList<>();
+                List<Categorie> subcategorieList;
+                categorieList = data.getParcelableArrayListExtra("Categorie");
+                spinnerAdapter=new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
+                spinnerCategorie.setAdapter(spinnerAdapter);
+//                Création des répertoires pour les catégories et sous-catégories
+                File Dir = this.getExternalFilesDir("");
+                System.out.println("DIR "+ Dir);
+                File subDir;
+                for(int i=1; i<categorieList.size(); i++){
+                    File newDir=new File(Dir,categorieList.get(i).getOldName());
+//                En cas de modification du nom de la catégorie, modification du nom du répertoire
+                    if ((!categorieList.get(i).getName().matches(categorieList.get(i).getOldName())))
+                    {
+                        File renamed = new File(Dir,categorieList.get(i).getName());
+                        System.out.println("Test3 "+Dir);
+                        if (newDir.exists()) {
+                            System.out.println("Nouvellement renommé !");
+                            newDir.renameTo(renamed);
+                        }
+                    }
+//                Si le repertoire n'existe pas on le crée
+                    if (categorieList.get(i).getName().matches(categorieList.get(i).getOldName()) && !newDir.exists()) {
+                        newDir.mkdir();
+                        System.out.println("Nouvellement créé !");
+                        subDir = this.getExternalFilesDir("./" + newDir.getName());
+//                On crée les répertoires pour les sous-catégories de la catégorie
+                        for(Categorie cat: categorieList.get(i).getSubCategories())
+                        {
+                            File newSubCat = new File(subDir,cat.getName());
+                            newSubCat.mkdir();
+                            System.out.println("subCat  :" + newSubCat.exists());
+                        }
+                    }
+
+//                On fait de même pour les sous-catégories
+                    subcategorieList=categorieList.get(i).getSubCategories();
+                    for(int j=0; j<subcategorieList.size();j++){
+//                        File newsubDir=new File("./"+categorieList.get(i).getName(),subcategorieList.get(j).getOldName());
+                        File newsubDir=new File(Dir+"/"+subcategorieList.get(j).getParentName(),subcategorieList.get(j).getOldName());
+//                        System.out.println("TEST path " + newsubDir);
+                        if ((!subcategorieList.get(j).getName().matches(subcategorieList.get(j).getOldName())))
+                        {
+                            File subnamed = new File(Dir +"/"+subcategorieList.get(j).getParentName(),subcategorieList.get(j).getName());
+                            if (newsubDir.exists()) {
+                                System.out.println(newsubDir.renameTo(subnamed));
+                            }
+                        }
+//                Si le repertoire n'existe pas on le crée
+                        if (subcategorieList.get(j).getName().matches(subcategorieList.get(j).getOldName()) && !newsubDir.exists()) {
+                            System.out.println("BRAVO! "+newsubDir.mkdir());
+                        }
+                    }
+                }
+//                Util.reInitCatList(this,categorieList);
             }
         }
     }
@@ -1127,6 +1272,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
         videosAdapter.notifyDataSetChanged();
     }
+
 
     protected void reloadAfterAnnotUpdate(){
 
@@ -1177,9 +1323,36 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
     //Edition des infos de la video via context menu
+    //Modification du nom du repertoire et de la video
     @Override
     public void onSaveEditVideo(Video video, String title) {
+        String subCatDir= currentCategorie + "/" +video.getPath();
+        File subDirContent = this.getExternalFilesDir(subCatDir);
+        File renamed = new File(this.getExternalFilesDir(currentCategorie + "/" + currentSubCategorie),title);
+        subDirContent.renameTo(renamed);
+        subDirContent=this.getExternalFilesDir(currentCategorie + "/" + currentSubCategorie+"/"+title);
+        if (subDirContent.listFiles().length > 0) {
+            for (File videoFileDir : subDirContent.listFiles()) {
+                Log.e("SUB_CONT_FILE", videoFileDir.getAbsolutePath());
+                    if (videoFileDir.getName().substring(videoFileDir.getName().lastIndexOf(".") + 1).equals("mp4")) {
+                        File from = new File(subDirContent, video.getFileName() + ".mp4");
+                        File to = new File(subDirContent, title + ".mp4");
+                        if (from.exists()) {
+                            from.renameTo(to);
+                        }
+                    }
+                    if (videoFileDir.getName().substring(videoFileDir.getName().lastIndexOf(".") + 1).equals("json")) {
+                        File from = new File(subDirContent,video.getFileName()+".json");
+                        File to = new File(subDirContent,title+".json");
+                        if(from.exists())
+                            from.renameTo(to);
+                        }
+                    }
+        } else {
+            Log.e("SUB_CAT", "No content in " + subCatDir);
+        }
         video.setFileName(title);
+        video.setName(title);
         videosAdapter.notifyDataSetInvalidated();
     }
 }

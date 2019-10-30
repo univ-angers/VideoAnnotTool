@@ -6,13 +6,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
+import com.master.info_ua.videoannottool.custom.Video;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 
 public class DialogEditAnnot {
 
-    private Fragment_annotation context;
+    private MainActivity context;
     private Button btnValid;
     private Button btnCancel;
     private EditText titre;
@@ -20,12 +23,14 @@ public class DialogEditAnnot {
     private Dialog dialog;
     private EditAnnotDialogListener dialogListener;
     private Annotation annotation;
+    private VideoAnnotation videoAnnotation;
 
     //Constructeur
-    public DialogEditAnnot(Fragment_annotation context, Annotation annot) {
+    public DialogEditAnnot(MainActivity context, Annotation annot) {
         this.context = context;
         this.annotation = annot;
-        this.dialog = new Dialog(this.context.getActivity());
+        this.dialog = new Dialog(this.context);
+        this.videoAnnotation = videoAnnotation;
         dialog.setContentView(R.layout.boite_dialog_edit_annot);
         dialog.setCancelable(true);
         dialog.setTitle(R.string.TextDialogEditAnnot);
@@ -60,7 +65,7 @@ public class DialogEditAnnot {
                         dialogListener.onSaveEditAnnot(annotation, title, Integer.parseInt(duration)*1000);
                     }
                     dialog.dismiss();
-                    Toast.makeText(context.getActivity(),R.string.editValidateToast, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,R.string.editValidateToast, Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.btnAnnulerEdit:
                     //on ferme la boite de dialog

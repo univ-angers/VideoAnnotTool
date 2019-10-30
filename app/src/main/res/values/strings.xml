@@ -38,9 +38,20 @@
     <string name="profil">Profil</string>
     <string name="editValidateToast">Modification effectuée</string>
     <string name="TextDialogEditVideo">Editer la vidéo</string>
+    <string name="TextDialogEditCategorie">Editer la catégorie</string>
+    <string name="TextDialogAddSubCategorie">Ajouter la sous-catégorie</string>
     <string name="titre_de_la_video">Titre de la vidéo</string>
     <string name="modifier">Modifier</string>
     <string name="supprimer">Supprimer</string>
+    <string name="mode_categorie">Gestion des catégories</string>
+    <string name="quitter">Quitter</string>
+    <string name="sous_categorie">Sous-catégorie</string>
+    <string name="categorie">Catégorie</string>
+    <string name="nom_de_la_categorie">Nom de la catégorie</string>
+    <string name="nom_de_la_sous_categorie">Nom de la sous-catégorie</string>
+    <string name="TextDialogEditSubCategorie">Modification de la sous-catégorie</string>
+    <string name="ajouter">Ajouter</string>
+    <string name="ajouter_sous_categorie">Ajouter sous-catégorie</string>
 
 
 </resources>

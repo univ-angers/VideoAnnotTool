@@ -11,10 +11,12 @@ import android.widget.TextView;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.custom.Video;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VideosAdapter extends ArrayAdapter<Video> {
     protected int selectedListItem=0;
+    private TextView tvName;
 
     public VideosAdapter(Context context, List<Video> videos) {
         super(context, 0, videos);
@@ -28,11 +30,11 @@ public class VideosAdapter extends ArrayAdapter<Video> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_video, parent, false);
         }
         // Lookup view for data population
-        TextView tvName = convertView.findViewById(R.id.tvName);
+        tvName = convertView.findViewById(R.id.tvName);
         //ImageView moviePicture = convertView.findViewById(R.id.moviePicture);
         //TextView tvHome = convertView.findViewById(R.id.tvAuthor);
         // Populate the data into the template view using the data object
-        tvName.setText(video.getFileName());
+        tvName.setText(video.getName());
         /*moviePicture.setImageResource(R.drawable.movie);*/
         // Return the completed view to render on screen
         if (position == selectedListItem){
@@ -47,5 +49,6 @@ public class VideosAdapter extends ArrayAdapter<Video> {
     public void setSelectedListItem(int position){
         selectedListItem=position;
     }
+
 }
 

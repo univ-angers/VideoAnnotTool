@@ -5,12 +5,10 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -117,6 +115,16 @@ public class Util {
         }
     }
 
+    public static void deleteRecursiveDirectory(File fileOrDirectory) {
+
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                deleteRecursiveDirectory(child);
+            }
+        }
+        fileOrDirectory.delete();
+    }
+
 
     //Initialise la liste d'item du spinner categorie
     public static List<Categorie> setCatSpinnerList(Context context) {
@@ -126,6 +134,7 @@ public class Util {
             //Pour chacune des catégories et sous-catégories
             for (DirPath dirPath : DirPath.values()) {
                 //Si la catégorie ne possède pas de catégorie mère
+                System.out.println("Catégorie dirpath: " + dirPath.getName() +"  "+ dirPath.isSubDir());
                 if (!dirPath.isSubDir()) {
                     //On ajoute la catégorie à la liste de catégories
                     categorieList.add(new Categorie(dirPath.getName(), null, dirPath.toString()));
@@ -140,6 +149,54 @@ public class Util {
         return categorieList;
     }
 
+    public static List<Categorie> initCatList(Context context) {
+        List<Categorie> categorieList = new ArrayList<>();
+        Categorie newCat;
+        //Si le dossier existe
+        File Dir = context.getExternalFilesDir("");
+        if (Util.appDirExist(context)) {
+            //Pour chacune des catégories et sous-catégories
+            for (File catDir : Dir.listFiles()) {
+                newCat = new Categorie(catDir.getName(),null,catDir.getName());
+                for (File subCatDir: catDir.listFiles()){
+                    newCat.getSubCategories().add(new Categorie(subCatDir.getName(),newCat.getName(),newCat.getName()+"/"+subCatDir.getName()));
+                }
+                categorieList.add(newCat);
+            }
+        }
+        return categorieList;
+    }
+
+/*  Réinitialisation après modification des catégories */
+    public static void reInitCatList(Context context, List<Categorie> liste) {
+        File Dir = context.getExternalFilesDir("");
+        if (Util.appDirExist(context)) {
+            for (File catDir : Dir.listFiles()) {
+                for(int i=0;i<liste.size();i++){
+//          On vérifie si les catégories sont conservées sinon on supprime tout le répertoire
+                    if(catDir.getName().matches(liste.get(i).getName())){
+//          On vérifie également si des sous-catégories sont conservées ou supprimées
+                        for(File subCatDir: catDir.listFiles()){
+                            for(int j=0;j<liste.size();j++) {
+                                if(subCatDir.getName().matches(liste.get(j).getName())){
+                                    break;
+                                }
+                                if(j==liste.size()-1)
+                                {
+                                    deleteRecursiveDirectory(subCatDir);
+                                }
+                            }
+                        }
+                        break;
+                    }
+                    if(i==liste.size()-1)
+                    {
+                        deleteRecursiveDirectory(catDir);
+                    }
+                }
+            }
+        }
+    }
 
     //Initialise la liste d'item du spinner sub-categorie
     public static List<Categorie> setSubCatSpinnerList(String parentDir) {
