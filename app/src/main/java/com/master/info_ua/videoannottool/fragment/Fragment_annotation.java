@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
@@ -22,6 +23,9 @@ import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.master.info_ua.videoannottool.MainActivity.COACH;
+import static com.master.info_ua.videoannottool.MainActivity.ELEVE;
 
 
 public class Fragment_annotation extends Fragment {
@@ -39,6 +43,7 @@ public class Fragment_annotation extends Fragment {
 
     private AnnotFragmentListener fragmentListener;
 
+    private boolean statut_profil=ELEVE;
 
     public Fragment_annotation() {
         // Required empty public constructor
@@ -132,7 +137,7 @@ public class Fragment_annotation extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId() == R.id.lv_annotations) {
+        if (v.getId() == R.id.lv_annotations && statut_profil == COACH) {
             MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
             menu.findItem(R.id.edit_item_annot).setVisible(true);
@@ -144,7 +149,7 @@ public class Fragment_annotation extends Fragment {
         }
     }
 
-
+    public void setStatut_profil(boolean profil){ statut_profil = profil; }
 
 
     public interface AnnotFragmentListener {

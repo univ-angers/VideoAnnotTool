@@ -122,7 +122,7 @@ public class Util {
                 deleteRecursiveDirectory(child);
             }
         }
-        fileOrDirectory.delete();
+        System.out.println("Suppression "+fileOrDirectory.getAbsolutePath() +"    "+ fileOrDirectory.delete());
     }
 
 

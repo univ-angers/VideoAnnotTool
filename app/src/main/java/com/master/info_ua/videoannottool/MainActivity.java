@@ -354,13 +354,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             case R.id.action_profile:
                 if (statut_profil == ELEVE) {
                     DialogProfil dialogProfil = new DialogProfil();
-                    dialogProfil.showDialogProfil(MainActivity.this,item);
-
-
+                    dialogProfil.showDialogProfil(MainActivity.this,item,annotFragment);
                 } else if (statut_profil == COACH) {
                     btnLayout.setVisibility(View.GONE);
                     item.setTitle("Mode consultation");
                     statut_profil = ELEVE;
+                    annotFragment.setStatut_profil(ELEVE);
                 }
 
                 return true;
@@ -393,7 +392,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId() == R.id.lv_videos) {
+        if (v.getId() == R.id.lv_videos && statut_profil==COACH) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
             menu.findItem(R.id.add_item).setVisible(false);
@@ -423,16 +422,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 System.out.println(subDirContent.isDirectory()+"     "+ subCatDir + "     "+ subDirContent.getName() +"     "+ video.getPath());
                 if (subDirContent.isDirectory())
                 {
-                    String[] children = subDirContent.list();
-                    for (int i = 0; i < children.length; i++)
-                    {
-                        new File(subDirContent, children[i]).delete();
-                    }
+                    Util.deleteRecursiveDirectory(subDirContent);
                 }
-                this.getExternalFilesDir(currentCategorie+"/"+video.getPath()).delete();
                 videosAdapter.remove(video);
                 videosAdapter.notifyDataSetChanged();
                 initExoPlayer();
+                Util.deleteRecursiveDirectory(subDirContent);
                 return true;
             case R.id.edit_item_annot:
                 annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
@@ -829,6 +824,17 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     protected AdapterView.OnItemSelectedListener catItemSelectedListener = new AdapterView.OnItemSelectedListener() {
 
         @Override
+//        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+//            // Here you get the current item that is selected by its position
+//            currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
+//            spinnerAdapter2.clear();
+////            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
+//            spinnerAdapter2.add(new Categorie("Sous-catégorie", null, "/"));
+//            spinnerAdapter2.addAll(categorieList.get(position).getSubCategories());
+//            spinnerAdapter2.notifyDataSetChanged();
+//            spinnerSubCategorie.setSelection(1);
+//            Log.e("SELECT_CAT", currentCategorie.getPath());
+//        }
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
             // Here you get the current item that is selected by its position
             currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
@@ -840,6 +846,36 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             spinnerAdapter2.notifyDataSetChanged();
             spinnerSubCategorie.setSelection(1);
             Log.e("SELECT_CAT", currentCategorie.getPath());
+            annotFragment.updateAnnotationList(null);
+            if(videosAdapter.getCount()> 0 ){
+                //currentVideo = videosAdapter.getItem(0);
+
+                currentVideo = (Video) listViewVideos.getItemAtPosition(0);
+                setCurrentVAnnot();
+                if (currentVAnnot == null) {
+                    currentVAnnot = Util.createNewVideoAnnotation();
+                }
+                annotFragment.updateAnnotationList(currentVAnnot);
+                videoName = currentVideo.getFileName();
+
+                if (player != null){
+                    player.stop();
+                }
+
+
+                initExoPlayer();
+
+                if (currentVideo != null) {
+                    controlerAnnotation = new ControllerAnnotation( MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+                } else {
+                    controlerAnnotation = new ControllerAnnotation(MainActivity.this, null, mainHandler);
+                }
+            }else {
+                playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+                exoplayerPlay = false;
+                initPlayButton();
+                initExoPlayer();
+            }
         }
 
         @Override
@@ -852,6 +888,51 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      */
     protected AdapterView.OnItemSelectedListener subCatItemSelectedListener = new AdapterView.OnItemSelectedListener() {
 
+//        @Override
+//        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+//            if (position > 0) {
+//                // Here you get the current item that is selected by its position
+//                currentSubCategorie = (Categorie) adapterView.getItemAtPosition(position);
+//                Log.e("SELECT_SUB_CAT", currentSubCategorie.getPath());
+//
+//                videosAdapter.clear();
+//                videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
+//                videosAdapter.notifyDataSetChanged();
+//
+//                if(videosAdapter.getCount()> 0 ){
+//                    //currentVideo = videosAdapter.getItem(0);
+//                    currentVideo = (Video) listViewVideos.getItemAtPosition(0);
+//                    setCurrentVAnnot();
+//                    if (currentVAnnot == null) {
+//                        currentVAnnot = Util.createNewVideoAnnotation();
+//                    }
+//
+//                    annotFragment.updateAnnotationList(currentVAnnot);
+//
+//                    videoName = currentVideo.getFileName();
+//
+//                    if (player != null){
+//                        player.stop();
+//                    }
+//
+//
+//                    initExoPlayer();
+//
+//                    if (currentVideo != null) {
+//                        controlerAnnotation = new ControllerAnnotation( MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+//                    } else {
+//                        controlerAnnotation = new ControllerAnnotation(MainActivity.this, null, mainHandler);
+//                    }
+//                }else {
+//                    playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+//                    exoplayerPlay = false;
+//                    initPlayButton();
+//                    initExoPlayer();
+//                }
+//            }
+//
+//        }
+
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
             if (position > 0) {
@@ -863,16 +944,17 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
                 videosAdapter.notifyDataSetChanged();
 
+                annotFragment.updateAnnotationList(null);
+
                 if(videosAdapter.getCount()> 0 ){
                     //currentVideo = videosAdapter.getItem(0);
+
                     currentVideo = (Video) listViewVideos.getItemAtPosition(0);
                     setCurrentVAnnot();
                     if (currentVAnnot == null) {
                         currentVAnnot = Util.createNewVideoAnnotation();
                     }
-
                     annotFragment.updateAnnotationList(currentVAnnot);
-
                     videoName = currentVideo.getFileName();
 
                     if (player != null){
@@ -896,6 +978,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             }
 
         }
+
 
         @Override
         public void onNothingSelected(AdapterView<?> adapter) {
