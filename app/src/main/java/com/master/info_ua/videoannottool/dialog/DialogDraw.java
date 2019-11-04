@@ -3,6 +3,7 @@ package com.master.info_ua.videoannottool.dialog;
 import android.app.Dialog;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ public class DialogDraw {
     private EditText titre;
     private EditText duree;
     private Dialog dialog;
+    private CheckBox checkAnnotPredef;
     private DrawAnnotDialogListener dialogListener;
 
     //Constructeur
@@ -31,6 +33,7 @@ public class DialogDraw {
         btnCancel = dialog.findViewById(R.id.btnAnnulerDraw);
         titre = dialog.findViewById(R.id.ed_draw_titre);
         duree = dialog.findViewById(R.id.ed_draw_temps);
+        checkAnnotPredef = dialog.findViewById(R.id.CheckAnnotDraw);
         if (context instanceof DrawAnnotDialogListener) {
             dialogListener = context;
         }
@@ -54,7 +57,8 @@ public class DialogDraw {
                     if (title != null && !title.isEmpty() && duration != null && !duration.isEmpty()) {
                         //drawAnnot.setAnnotationTitle(title);
                         //drawAnnot.setAnnotationDuration(Integer.parseInt(duration));
-                        dialogListener.onSaveDrawImage(title, Integer.parseInt(duration)*1000);
+                        //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
+                        dialogListener.onSaveDrawImage(title, Integer.parseInt(duration)*1000,checkAnnotPredef.isChecked());
                     }
                     break;
                 case R.id.btnAnnulerDraw:
@@ -74,7 +78,7 @@ public class DialogDraw {
 
     public interface DrawAnnotDialogListener {
         //Appelée lors de la sauvegarde d'une annotation de type dessin
-        void onSaveDrawImage(String title, int duration);
+        void onSaveDrawImage(String title, int duration, boolean check);
         //Appelée lors de la réinitialisation de la toile
         void onResetCanvas();
     }

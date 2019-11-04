@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -70,6 +71,7 @@ import com.master.info_ua.videoannottool.dialog.DialogEditVideo;
 import com.master.info_ua.videoannottool.dialog.DialogImport;
 import com.master.info_ua.videoannottool.dialog.DialogProfil;
 import com.master.info_ua.videoannottool.dialog.DialogText;
+import com.master.info_ua.videoannottool.fragment.Fragment_AnnotPredef;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
 import com.master.info_ua.videoannottool.player_view.ZoomableExoPlayerView;
@@ -79,16 +81,20 @@ import com.master.info_ua.videoannottool.util.DirPath;
 import com.master.info_ua.videoannottool.util.Ecouteur;
 import com.master.info_ua.videoannottool.util.Util;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.AUDIO;
+import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 
-public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener {
+public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener {
 
     private static final int READ_REQUEST_CODE = 42;
 
@@ -100,6 +106,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
+    private Button annotPredefBtn;
     private RelativeLayout btnLayout;
 
     // Attribut en lien avec exoplayer
@@ -146,8 +153,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     private Fragment_draw drawFragment;
     private Fragment_annotation annotFragment;
+    private Fragment_AnnotPredef annotPredefFragment;
     private static final String FRAGMENT_DRAW_TAG = "drawFragment";
     private static final String FRAGMENT_ANNOT_TAG = "annotFragment";
+    private static final String FRAGMENT_ANNOT_PREDEF_TAG = "annotPredefFragment";
 
     private FragmentManager fragmentManager;
 
@@ -165,6 +174,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private Categorie currentCategorie;
     private Categorie currentSubCategorie;
 
+
     private ArrayAdapter<Categorie> spinnerAdapter;
     private ArrayAdapter<Categorie> spinnerAdapter2;
 
@@ -176,6 +186,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private TextView videoImportName;
     private File fileVideoImport;
 
+    // Listes de toutes les annotations prédéfinies
+    private ArrayList<Annotation> ListAnnotationsPredef = new ArrayList<>();
+
+    //Dossier contenant les fichiers nécéssaires aux annotations prédéfinies (.png, .mp4, ...)
+    private File AnnotPredefDirectory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -258,6 +273,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         graphAnnotBtn.setEnabled(false);        //bouton desactivés de base
         graphAnnotBtn.setOnClickListener(btnClickListener);
 
+        annotPredefBtn = findViewById(R.id.annot_predef_btn);
+        //annotPredefBtn.setEnabled(false);
+        annotPredefBtn.setOnClickListener(btnClickListener);
+
         btnLayout = findViewById(R.id.btn_layout_id);
         drawBimapIv = findViewById(R.id.draw_bitmap_iv);
         annotCommentTv = findViewById(R.id.annot_comment_tv);
@@ -280,6 +299,20 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         }
 
         fileVideoImport = new File("");
+
+
+        AnnotPredefDirectory = new File(MainActivity.this.getExternalFilesDir(""),"annotations");
+        AnnotPredefDirectory.mkdirs();
+
+
+        int i = 1;
+        Annotation recupAnnot = Util.parseJSON_Annot(MainActivity.this,i);
+        while( recupAnnot != null){
+            ListAnnotationsPredef.add(recupAnnot);
+            i++;
+            recupAnnot = Util.parseJSON_Annot(MainActivity.this,i);
+        }
+
     }
 
     @Override
@@ -312,6 +345,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 return true;
             }
         });
+
+
     }
 
 
@@ -479,6 +514,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             initPlayButton();
 
             initExoPlayer(); // recrée le lecteur
+
         }
     };
 
@@ -747,6 +783,24 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     dialogtext.showDialogBox(textAnnotation, MainActivity.this);
 
                     break;
+
+                case R.id.annot_predef_btn:
+                    player.setPlayWhenReady(false);
+                    FragmentTransaction ft2 = fragmentManager.beginTransaction();
+                    annotPredefFragment = (Fragment_AnnotPredef)fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_PREDEF_TAG);
+                    if (annotPredefFragment == null) {
+                        annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef,MainActivity.this);
+                        ft2.add(R.id.annotation_menu, annotPredefFragment, FRAGMENT_ANNOT_PREDEF_TAG);
+                        ft2.hide(annotFragment);
+                        ft2.show(annotPredefFragment);
+                        ft2.commit();
+                    } else {
+                        ft2.hide(annotFragment);
+                        ft2.show(annotPredefFragment);
+                        ft2.commit();
+                    }
+
+                    break;
             }
         }
     };
@@ -766,6 +820,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
             spinnerAdapter2.notifyDataSetChanged();
             spinnerSubCategorie.setSelection(1);
+
+            //videosAdapter.notifyDataSetChanged();
             Log.e("SELECT_CAT", currentCategorie.getPath());
         }
 
@@ -794,9 +850,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     //currentVideo = videosAdapter.getItem(0);
                     currentVideo = (Video) listViewVideos.getItemAtPosition(0);
                     setCurrentVAnnot();
-                    if (currentVAnnot == null) {
+                   /* if (currentVAnnot == null) {
                         currentVAnnot = Util.createNewVideoAnnotation();
-                    }
+                    }*/
 
                     annotFragment.updateAnnotationList(currentVAnnot);
 
@@ -821,6 +877,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     initExoPlayer();
                 }
             }
+
+
 
         }
 
@@ -871,9 +929,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      * @param annotation
      */
     @Override
-    public void onSaveDrawAnnotation(Annotation annotation) {
+    public void onSaveDrawAnnotation(Annotation annotation, boolean check) {
 
-        onSaveAnnotation(annotation);
+        onSaveAnnotation(annotation,check);
         closeDrawFragment();
     }
 
@@ -884,17 +942,47 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      * @param annotation
      */
     @Override
-    public void onSaveAnnotation(Annotation annotation) {
+    public void onSaveAnnotation(Annotation annotation,boolean checkAnnotPredef) {
         // création de l'annotation
         annotation.setAnnotationStartTime(player.getCurrentPosition());
 
         currentVAnnot.getAnnotationList().add(annotation);
+
         currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
 
         if (currentVAnnot != null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null) {
             Collections.sort(currentVAnnot.getAnnotationList(), new AnnotationComparator());
             String directory = currentSubCategorie.getPath() + File.separator + videoName;
             Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
+
+            //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
+            if (checkAnnotPredef) {
+                if (annotPredefFragment == null)
+                    annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef,MainActivity.this);
+                annotPredefFragment.getListAnnotationsPredef().add(annotation);
+                System.out.println("                            NOM DU DRAW "+MainActivity.this.getExternalFilesDir("")+" "+annotation.getDrawFileName());
+               // Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, "annotations", videoName);
+                Util.saveAnnotation(MainActivity.this, annotation,annotPredefFragment.getListAnnotationsPredef().size());
+
+                if (annotation.getAnnotationType() == DRAW){
+                    File ImageAnnotation = new File(MainActivity.this.getExternalFilesDir(directory),annotation.getDrawFileName());
+                    try {
+                        FileUtils.copyFileToDirectory(ImageAnnotation,this.AnnotPredefDirectory);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (annotation.getAnnotationType() == AUDIO){
+                    File AudioAnnotation = new File(MainActivity.this.getExternalFilesDir(directory),annotation.getAudioFileName());
+                    try {
+                        FileUtils.copyFileToDirectory(AudioAnnotation,this.AnnotPredefDirectory);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
             annotFragment.updateAnnotationList(currentVAnnot);
 
             reloadAfterAnnotUpdate();
@@ -932,16 +1020,36 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         drawView.setVisibility(View.GONE);
     }
 
+    public void closeAnnotPredef(){
+
+        FragmentTransaction ft2 = fragmentManager.beginTransaction();
+        annotPredefFragment = (Fragment_AnnotPredef)fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_PREDEF_TAG);
+     /*   if (annotPredefFragment == null) {
+            annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef);
+            ft2.add(R.id.annotation_menu, annotPredefFragment, FRAGMENT_ANNOT_PREDEF_TAG);
+            ft2.hide(annotPredefFragment);
+            ft2.show(annotFragment);
+            ft2.commit();
+        } else {*/
+            ft2.hide(annotPredefFragment);
+            ft2.show(annotFragment);
+            ft2.commit();
+            setAnnotButtonStatus(true);
+      //  }
+
+    }
 
     public void setStatutProfil(boolean nouveauStatut) {
         statut_profil = nouveauStatut;
     }
 
     protected void setCurrentVAnnot() {
-        currentVAnnot = Util.createNewVideoAnnotation();
+
         if (currentVideo.getVideoAnnotation() != null) {
+            //if currentVideo.
             currentVAnnot = currentVideo.getVideoAnnotation();
-        }
+        }else
+            currentVAnnot = Util.createNewVideoAnnotation();
     }
 
     /**
@@ -975,6 +1083,13 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public void onAnnotItemClick(final Annotation annotation) {
 
         onAnnotationLauched(annotation);
+
+    }
+
+    @Override
+    public void onAnnotPredefItemClick(final Annotation annotation) {
+
+        //onAnnotationLauched(annotation);
 
     }
 
@@ -1164,6 +1279,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         audioAnnotBtn.setEnabled(status);
         graphAnnotBtn.setEnabled(status);
         textAnnotBtn.setEnabled(status);
+        annotPredefBtn.setEnabled(status);
     }
 
     //Edition des infos de la video via context menu
@@ -1172,4 +1288,28 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         video.setFileName(title);
         videosAdapter.notifyDataSetInvalidated();
     }
+
+    // Copie les fichiers (images, fichiers mp4) du dossier d'annotations prédéfini vers le dossier de la vidéo courante
+    public void CopyFileAnnotPredef (Annotation annotation){
+        if (annotation.getAnnotationType() == DRAW){
+            File ImageAnnotation = new File(MainActivity.this.getExternalFilesDir("annotations"),annotation.getDrawFileName());
+            File DossierCurrentVideo = new File(MainActivity.this.getExternalFilesDir(currentSubCategorie.getPath()),currentVideo.getFileName());
+            try {
+                FileUtils.copyFileToDirectory(ImageAnnotation,DossierCurrentVideo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (annotation.getAnnotationType() == AUDIO){
+            File AudioAnnotation = new File(MainActivity.this.getExternalFilesDir("annotations"),annotation.getAudioFileName());
+            File DossierCurrentVideo = new File(MainActivity.this.getExternalFilesDir(currentSubCategorie.getPath()),currentVideo.getFileName());
+            try {
+                FileUtils.copyFileToDirectory(AudioAnnotation,DossierCurrentVideo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }

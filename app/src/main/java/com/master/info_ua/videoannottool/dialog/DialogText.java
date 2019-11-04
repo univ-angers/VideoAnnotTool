@@ -6,6 +6,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class DialogText {
         dialogBox.setTitle(R.string.TitleDialogText);
         Button btnValider = dialogBox.findViewById(R.id.btnValiderTextAnnot);
         Button btnAnnuler = dialogBox.findViewById(R.id.btnAnnulerTextAnnot);
+        final CheckBox checkAnnotPredef = dialogBox.findViewById(R.id.CheckAnnotText);
         final EditText ed_texte_titre = dialogBox.findViewById(R.id.ed_texte_titre);
         final TextView title_texte_error = dialogBox.findViewById(R.id.error_title_texte);
         final EditText etAnnot = dialogBox.findViewById(R.id.etAnnotText);
@@ -51,7 +53,9 @@ public class DialogText {
                     annotation.setAnnotationDuration(Integer.parseInt(etDuration.getText().toString()) * 1000);
                     annotation.setTextComment(texte);
                     annotation.setAnnotationTitle(ed_texte_titre.getText().toString());
-                    textAnnotDialogCallback.onSaveAnnotation(annotation);
+                    annotation.setAnnotationTitle(ed_texte_titre.getText().toString());
+                    //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
+                    textAnnotDialogCallback.onSaveAnnotation(annotation,checkAnnotPredef.isChecked());
                     Log.i("TEXT_DIALOG-BOX", "Validation :" + texte);
                     Toast.makeText(main, "Annotation Enregistrée", Toast.LENGTH_LONG).show();
                 } else {

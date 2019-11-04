@@ -179,11 +179,11 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
     }
 
     @Override
-    public void onSaveDrawImage(String title, int duration) {
+    public void onSaveDrawImage(String title, int duration, boolean check) {
         drawAnnotation.setAnnotationTitle(title);
         drawAnnotation.setAnnotationDuration(duration);
         drawAnnotation.setAnnotationDate(new Date());
-        fragmentCallback.onSaveDrawAnnotation(drawAnnotation);
+        fragmentCallback.onSaveDrawAnnotation(drawAnnotation, check);
     }
 
     @Override
@@ -205,7 +205,7 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         void resetCanvas();
         void setOnTouchEnable(boolean bool);
         String saveDrawImage();
-        void onSaveDrawAnnotation(Annotation annotation);
+        void onSaveDrawAnnotation(Annotation annotation, boolean check);
         void setColor(int color);
         void closeAnnotationFrame();
     }

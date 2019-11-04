@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 
@@ -29,6 +30,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,6 +74,47 @@ public class Util {
             Log.e("ERR_JSON", "ERREUR Lecture JSON ");
         }
         return null;
+    }
+
+
+    //Récupère un fichier dans le répertoire indiqué de l'application et fait le parsing en objet Java
+    public static Annotation parseJSON_Annot(Context context,int annotNum) {
+        //Récupère le chemin absolu du fichier
+        String filePath = context.getExternalFilesDir("annotations").getAbsolutePath() + File.separator + "AnnotPredef_num_"+annotNum+".json";
+        try {
+            //Lecture du fichier
+            FileInputStream fis = new FileInputStream(new File(filePath));
+            Reader reader = new InputStreamReader(fis);
+            //Parsing du fichier
+            Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
+            Annotation AnnotPredef = gson.fromJson(reader, Annotation.class);
+            fis.close();
+            return AnnotPredef;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ERR_JSON", "ERREUR Lecture JSON ");
+        }
+        return null;
+    }
+
+    //Sauvegarde l'objet Annotation dans un fichier Json dans le dossier des annotations prédéfinis
+    public static void saveAnnotation(Context context,Annotation AnnotPredef, int annotNum) {
+        Writer writer;
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("dd-MM-yyyy HH:mm:ss");
+        gsonBuilder.serializeNulls(); //Ne pas ignorer les attributs avec valeur null
+        gsonBuilder.setPrettyPrinting();
+        Gson gson = gsonBuilder.create();
+        try {
+            File file = new File(context.getExternalFilesDir("annotations"), "AnnotPredef_num_"+annotNum+ ".json");
+            writer = new FileWriter(file);
+            String jsonStr = gson.toJson(AnnotPredef);
+            writer.write(jsonStr);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ERR_VANNOT", "Unable to save ListAnnotationPredef ");
+        }
     }
 
     //Sauvegarde l'objet videoAnnotation dans un fichier Json
