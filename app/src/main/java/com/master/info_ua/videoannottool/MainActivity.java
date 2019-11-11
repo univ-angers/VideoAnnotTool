@@ -1018,19 +1018,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             ft.commit();
         }
         drawView.setVisibility(View.GONE);
+        setAnnotButtonStatus(true);
     }
 
     public void closeAnnotPredef(){
 
         FragmentTransaction ft2 = fragmentManager.beginTransaction();
         annotPredefFragment = (Fragment_AnnotPredef)fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_PREDEF_TAG);
-     /*   if (annotPredefFragment == null) {
-            annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef);
-            ft2.add(R.id.annotation_menu, annotPredefFragment, FRAGMENT_ANNOT_PREDEF_TAG);
-            ft2.hide(annotPredefFragment);
-            ft2.show(annotFragment);
-            ft2.commit();
-        } else {*/
+
             ft2.hide(annotPredefFragment);
             ft2.show(annotFragment);
             ft2.commit();
@@ -1310,6 +1305,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             }
         }
     }
+
+   public void OnOffBoutons(boolean bouton){
+       setAnnotButtonStatus(bouton);
+   }
 
 
 }

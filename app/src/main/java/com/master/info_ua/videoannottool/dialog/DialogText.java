@@ -67,6 +67,7 @@ public class DialogText {
             @Override
             public void onClick(View view) {
                 Log.i("TEXT_DIALOG-BOX", "Annulation");
+                textAnnotDialogCallback.OnOffBoutons(true);
                 dialogBox.cancel();
             }
         });

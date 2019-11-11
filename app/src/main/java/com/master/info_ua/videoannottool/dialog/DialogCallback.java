@@ -16,4 +16,6 @@ public interface DialogCallback {
     void saveImportVideo(Categorie selectedSousCategorie);
 
     void CopyFileAnnotPredef (Annotation annotation);
+
+    void OnOffBoutons(boolean bonton);
 }

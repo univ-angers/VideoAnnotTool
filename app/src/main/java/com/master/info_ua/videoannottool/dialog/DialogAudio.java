@@ -137,6 +137,7 @@ public class DialogAudio {
                     file.delete();
                     Log.i("AUDIO_DIALOG-BOX", "Annulation");
                     dialogBox.cancel();
+                    recordCallback.OnOffBoutons(true);
                     break;
             }
         }

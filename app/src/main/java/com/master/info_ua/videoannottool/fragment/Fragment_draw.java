@@ -188,7 +188,7 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
 
     @Override
     public void onResetCanvas() {
-
+        fragmentCallback.setOnTouchEnable(true);
     }
 
     protected void onShowDrawAnnotDialog(){
@@ -200,6 +200,7 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         this.drawAnnotation = new Annotation(AnnotationType.DRAW);
         this.drawAnnotation.setDrawFileName(drawFileName);
     }
+
 
     public interface DrawFragmentCallback {
         void resetCanvas();
