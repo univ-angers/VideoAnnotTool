@@ -12,13 +12,14 @@
         android:id="@+id/tv_edit_titre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/titre_de_la_video" />
+        android:text="@string/nom_de_la_sous_categorie" />
 
     <EditText
         android:id="@+id/ed_edit_titre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="@string/sous_categorie"
         android:inputType="textPersonName" />
 
     <LinearLayout

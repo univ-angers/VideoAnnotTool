@@ -18,7 +18,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.TextView;
 
+import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
@@ -31,17 +33,28 @@ import com.master.info_ua.videoannottool.util.Categorie;
 import com.master.info_ua.videoannottool.util.Util;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import static com.master.info_ua.videoannottool.MainActivity.COACH;
+import static com.master.info_ua.videoannottool.MainActivity.ELEVE;
 
-public class Fragment_annotation extends Fragment implements DialogEditAnnot.EditAnnotDialogListener {
+
+public class Fragment_annotation extends Fragment {
+
+    public AnnotationsAdapter getAnnotationsAdapter() {
+        return annotationsAdapter;
+    }
 
     private AnnotationsAdapter annotationsAdapter;
     private ListView listViewAnnotations;
 
+    public AnnotFragmentListener getFragmentListener() {
+        return fragmentListener;
+    }
+
     private AnnotFragmentListener fragmentListener;
+
+    private boolean statut_profil=ELEVE;
 
     public Fragment_annotation() {
         // Required empty public constructor
@@ -126,15 +139,18 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
         }
     };
 
-
+    // Crée le contextmenu pour les annotations qui utilisera le listener dans le MainActivity
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId() == R.id.lv_annotations) {
+        if (v.getId() == R.id.lv_annotations && statut_profil == COACH) {
             MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
-        }
-    }
+            menu.findItem(R.id.edit_item_annot).setVisible(true);
+            menu.findItem(R.id.delete_item_annot).setVisible(true);
+            menu.findItem(R.id.add_item).setVisible(false);
+            menu.findItem(R.id.edit_item).setVisible(false);
+            menu.findItem(R.id.delete_item).setVisible(false);
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -152,6 +168,9 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
                 return super.onContextItemSelected(item);
         }
     }
+
+    public void setStatut_profil(boolean profil){ statut_profil = profil; }
+
 
     @Override
     public void onSaveEditAnnot(Annotation annotation, String title, int duree) {

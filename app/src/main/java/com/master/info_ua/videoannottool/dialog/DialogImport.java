@@ -27,13 +27,17 @@ public class DialogImport {
     private Button btnAnnuler;
     private TextView videoImportTextView;
     private Categorie currentCategorie;
-    private Categorie currentSubCategorie;
     private ArrayAdapter<Categorie> spinnerAdapter2;
     private ArrayAdapter<Categorie> spinnerAdapter;
     private Spinner spinnerCategorie;
     private Spinner spinnerSubCategorie;
     private Dialog dialog;
     private DialogCallback dialogCallback;
+    private List<Categorie> categorieList;
+
+    public DialogImport(List<Categorie> categorieList) {
+        this.categorieList=categorieList;
+    }
 
     //Affiche la boîte de dialogue permettant d'importer une vidéo
     public void showDialogImport(Context context) {
@@ -44,9 +48,6 @@ public class DialogImport {
         dialog.setTitle(R.string.ImportVideo);
         //Initialisation du spinner categorie
         spinnerCategorie = dialog.findViewById(R.id.spinner_import_cat);
-        List<Categorie> categorieList = new ArrayList<>();
-        categorieList.add(new Categorie("Categorie", null, "/"));
-        categorieList.addAll(Util.setCatSpinnerList(context));
         spinnerAdapter = new SpinnerAdapter(context, android.R.layout.simple_spinner_item, categorieList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategorie.setAdapter(spinnerAdapter);
@@ -104,7 +105,8 @@ public class DialogImport {
             //Here you get the current item that is selected by its position
             currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
             spinnerAdapter2.clear();
-            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
+            spinnerAdapter2.add(new Categorie("Sous-categorie",null,"/"));
+            spinnerAdapter2.addAll(currentCategorie.getSubCategories());
             spinnerAdapter2.notifyDataSetChanged();
             spinnerSubCategorie.setSelection(1);
             Log.e("SELECT_CAT", currentCategorie.getPath());
