@@ -97,7 +97,7 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.AUDIO;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 
-public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
+public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
 
     private static final int READ_REQUEST_CODE = 42;
     static final int READ_CATEGORY_CODE = 1;
@@ -777,33 +777,36 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         File subDirContent = this.getExternalFilesDir(subCatDir);
 
-        if (subDirContent.listFiles().length > 0) {
-            for (File videoFileDir : subDirContent.listFiles()) {
-                Log.e("SUB_CONT_FILE", videoFileDir.getAbsolutePath());
-                if (videoFileDir.isDirectory() && videoFileDir.listFiles().length > 0) {
-                    Video video = new Video();
-                    for (File videoFile : videoFileDir.listFiles()) {
-                        if (videoFile.getName().substring(videoFile.getName().lastIndexOf(".") + 1).equals("mp4")) {
-                            Log.e("VIDEO", "Video found [" + videoFile.getName() + "]");
-                            System.out.println("Nom de la vidéo: " + videoFileDir.getName());
-                            video.setFileName(videoFileDir.getName()); //le fichier video porte le même nom que le répertoire qui le contient
-                            video.setName(videoFileDir.getName());
+        if(subDirContent.listFiles() != null){        
+            if (subDirContent.listFiles().length > 0) {
+                for (File videoFileDir : subDirContent.listFiles()) {
+                    Log.e("SUB_CONT_FILE", videoFileDir.getAbsolutePath());
+                    if (videoFileDir.isDirectory() && videoFileDir.listFiles().length > 0) {
+                        Video video = new Video();
+                        for (File videoFile : videoFileDir.listFiles()) {
+                            if (videoFile.getName().substring(videoFile.getName().lastIndexOf(".") + 1).equals("mp4")) {
+                                Log.e("VIDEO", "Video found [" + videoFile.getName() + "]");
+                                System.out.println("Nom de la vidéo: " + videoFileDir.getName());
+                                video.setFileName(videoFileDir.getName()); //le fichier video porte le même nom que le répertoire qui le contient
+                                video.setName(videoFileDir.getName());
+                            }
+
+                            if (videoFile.getName().substring(videoFile.getName().lastIndexOf(".") + 1).equals("json")) {
+                                VideoAnnotation videoAnnotation = Util.parseJSON(this, subCatDir + File.separator + videoFileDir.getName(), videoFile.getName());
+                                video.setVideoAnnotation(videoAnnotation);
+                            }
                         }
 
-                        if (videoFile.getName().substring(videoFile.getName().lastIndexOf(".") + 1).equals("json")) {
-                            VideoAnnotation videoAnnotation = Util.parseJSON(this, subCatDir + File.separator + videoFileDir.getName(), videoFile.getName());
-                            video.setVideoAnnotation(videoAnnotation);
+                        if (video.getFileName() != null && !video.getFileName().isEmpty()) {
+                            System.out.println("2) Nom de la vidéo: "+videoFileDir.getName());
+                            video.setPath(currentSubCategorie + File.separator + videoFileDir.getName());
+                            videoList.add(video);
                         }
-                    }
-
-                    if (video.getFileName() != null && !video.getFileName().isEmpty()) {
-                        System.out.println("2) Nom de la vidéo: "+videoFileDir.getName());
-                        video.setPath(currentSubCategorie + File.separator + videoFileDir.getName());
-                        videoList.add(video);
                     }
                 }
             }
-        } else {
+        }
+        else {
             Log.e("SUB_CAT", "No content in " + subCatDir);
         }
 
@@ -1040,11 +1043,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 }
             }
 
-
-
-        }
-
-
         @Override
         public void onNothingSelected(AdapterView<?> adapter) {
         }
@@ -1237,14 +1235,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      * Gestion de la lecture/affichage de annotations au clic
      * @param annotation
      */
-    @Override
+//    @Override
     public void onAnnotItemClick(final Annotation annotation) {
 
         onAnnotationLauched(annotation);
 
     }
 
-    @Override
+//    @Override
     public void onAnnotPredefItemClick(final Annotation annotation) {
 
         //onAnnotationLauched(annotation);
@@ -1349,6 +1347,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         }
         annotation.setAnnotationTitle(title);
         annotation.setAnnotationDuration(duree);
+        Collections.sort(currentVAnnot.getAnnotationList(), new AnnotationComparator());
+        String directory = currentSubCategorie.getPath() + File.separator + videoName;
+        Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory,videoName);
+
         annotFragment.updateAnnotationList(currentVAnnot);
     }
 

@@ -37,9 +37,29 @@ import java.util.List;
 
 import static com.master.info_ua.videoannottool.MainActivity.COACH;
 import static com.master.info_ua.videoannottool.MainActivity.ELEVE;
+import com.master.info_ua.videoannottool.MainActivity;
+import com.master.info_ua.videoannottool.R;
+import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
+import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
+import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
+
+import com.master.info_ua.videoannottool.R;
+import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
+import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
+import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.annotation.AnnotationType;
+import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
+import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
+import com.master.info_ua.videoannottool.util.AnnotationComparator;
+import com.master.info_ua.videoannottool.util.Categorie;
+import com.master.info_ua.videoannottool.util.Util;
+
+import com.master.info_ua.videoannottool.fragment.Fragment_AnnotPredef.AnnotFragmentListener;
 
 
-public class Fragment_annotation extends Fragment {
+
+public class Fragment_annotation extends Fragment  implements DialogEditAnnot.EditAnnotDialogListener {
 
     public AnnotationsAdapter getAnnotationsAdapter() {
         return annotationsAdapter;
@@ -48,11 +68,11 @@ public class Fragment_annotation extends Fragment {
     private AnnotationsAdapter annotationsAdapter;
     private ListView listViewAnnotations;
 
+    private AnnotFragmentListener fragmentListener;
+
     public AnnotFragmentListener getFragmentListener() {
         return fragmentListener;
     }
-
-    private AnnotFragmentListener fragmentListener;
 
     private boolean statut_profil=ELEVE;
 
@@ -151,6 +171,8 @@ public class Fragment_annotation extends Fragment {
             menu.findItem(R.id.add_item).setVisible(false);
             menu.findItem(R.id.edit_item).setVisible(false);
             menu.findItem(R.id.delete_item).setVisible(false);
+        }
+    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
