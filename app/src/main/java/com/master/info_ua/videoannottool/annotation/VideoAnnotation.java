@@ -1,14 +1,11 @@
 package com.master.info_ua.videoannottool.annotation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class VideoAnnotation {
 
     private String creationDate;
     private String lastModified;
-
-    //Une liste d'annotation différente pour chaque vidéo
     private List<Annotation> annotationList;
 
     public VideoAnnotation(String creationDate, String lastModified, List<Annotation> annotationList) {
@@ -40,5 +37,6 @@ public class VideoAnnotation {
     public void setAnnotationList(List<Annotation> annotationList) {
         this.annotationList = annotationList;
     }
+
 
 }

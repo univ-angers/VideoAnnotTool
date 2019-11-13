@@ -3,7 +3,6 @@ package com.master.info_ua.videoannottool.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -13,24 +12,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
+<<<<<<< HEAD
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.TextView;
+=======
+>>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
 
 import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
-import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
-import com.master.info_ua.videoannottool.annotation.AnnotationType;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
-import com.master.info_ua.videoannottool.util.AnnotationComparator;
-import com.master.info_ua.videoannottool.util.Categorie;
-import com.master.info_ua.videoannottool.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +71,9 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
 
     private boolean statut_profil=ELEVE;
 
+    private static final String FRAGMENT_DRAW_TAG = "drawFragment";
+
+
     public Fragment_annotation() {
         // Required empty public constructor
     }
@@ -116,9 +114,11 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_annotation, container, false);
-        listViewAnnotations = (ListView)view.findViewById(R.id.lv_annotations);
+
+        listViewAnnotations = view.findViewById(R.id.lv_annotations);
         listViewAnnotations.setOnItemClickListener(annotationItemClickListener);
         registerForContextMenu(listViewAnnotations);
+
         return view;
     }
 
@@ -138,15 +138,18 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
     }
 
     public void updateAnnotationList(VideoAnnotation videoAnnot) {
+
         annotationsAdapter.clear();
         //Mise à jour de la liste
         if (videoAnnot != null) {
             List<Annotation> annotationList = videoAnnot.getAnnotationList();
+            //Collections.sort(annotationList, new AnnotationComparator());
             annotationsAdapter.addAll(annotationList);
         }
         annotationsAdapter.notifyDataSetChanged();
 
     }
+
     /**
      * Listener pour le clic sur la liste d'annotations
      */
@@ -181,6 +184,8 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
         Annotation annotation = annotationsAdapter.getItem(info.position);
         switch (item.getItemId()) {
             case R.id.edit_item:
+                DialogEditAnnot dialog = new DialogEditAnnot(this, annotation);
+                dialog.showDialogEdit();
                 return true;
             case R.id.delete_item:
                 fragmentListener.onDeleteAnnotation(annotation);
@@ -200,6 +205,7 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
         annotation.setAnnotationDuration(duree);
         annotationsAdapter.notifyDataSetChanged();
     }
+
     public interface AnnotFragmentListener {
 
         void onAnnotItemClick(Annotation annotation);

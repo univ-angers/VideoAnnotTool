@@ -44,7 +44,7 @@ public class Annotation implements Serializable {
         this.annotationType = annotationType;
     }
 
-    public Annotation(String annotationTitle, Long annotationStartTime, Integer annotationDuration, AnnotationType annotationType, String audioFileName, String drawFileName, String textComment) {
+    public Annotation(String annotationTitle, Integer annotationStartTime, Integer annotationDuration, AnnotationType annotationType, String audioFileName, String drawFileName, String textComment) {
         this.annotationTitle = annotationTitle;
         this.annotationDate = new Date();
         this.annotationStartTime = annotationStartTime;

@@ -104,7 +104,7 @@
             android:id="@+id/annotation_menu"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_weight="5"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -119,47 +119,24 @@
             android:background="@color/colorBottomBar"
             android:visibility="gone">
 
-            <LinearLayout
-                android:id="@+id/layout_button"
+            <ImageButton android:id="@+id/graphic_annot_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_alignParentLeft="true"
-                android:orientation="vertical">
+                android:src="@drawable/draw_pencil_32"/>
 
-                 <ImageButton android:id="@+id/graphic_annot_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/draw_pencil_32"/>
-
-                <ImageButton android:id="@+id/audio_annot_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/graphic_annot_btn"
-                    android:src="@drawable/microphone_32"/>
-
-            </LinearLayout>
-
-            <LinearLayout
+            <ImageButton android:id="@+id/audio_annot_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_toRightOf="@id/layout_button"
-                android:orientation="vertical">
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/graphic_annot_btn"
+                android:src="@drawable/microphone_32"/>
 
-                <ImageButton android:id="@+id/text_annot_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/text_editor_32"/>
-
-                <Button android:id="@+id/annot_predef_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/text_annot_btn"
-                    android:text="AP"/>
-
-            </LinearLayout>
+            <ImageButton android:id="@+id/text_annot_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/audio_annot_btn"
+                android:src="@drawable/text_editor_32"/>
 
         </RelativeLayout>
 
