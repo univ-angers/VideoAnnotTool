@@ -22,6 +22,15 @@
                 android:ems="10"
                 android:hint="Titre"
                 android:inputType="textPersonName" />
+
+            <CheckBox
+                android:id="@+id/CheckAnnotRecord"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/CheckAnnotPredef"
+                android:layout_marginHorizontal="15dp"
+                />
+
         </LinearLayout>
         <TextView
             android:id="@+id/error_title_audio"

@@ -6,44 +6,37 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.master.info_ua.videoannottool.CategoryActivity;
 import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
-import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.custom.Video;
-import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
+import com.master.info_ua.videoannottool.util.Categorie;
 
-public class DialogEditAnnot {
-
-    private MainActivity context;
+public class DialogEditCategorie {
+    private CategoryActivity context;
     private Button btnValid;
     private Button btnCancel;
     private EditText titre;
-    private EditText duree;
     private Dialog dialog;
-    private EditAnnotDialogListener dialogListener;
-    private Annotation annotation;
-    private VideoAnnotation videoAnnotation;
+    private Categorie categorie;
+    private EditCategoryDialogListener dialogListener;
 
-    //Constructeur
-    public DialogEditAnnot(MainActivity context, Annotation annot) {
+    public DialogEditCategorie(CategoryActivity context, Categorie categorie) {
         this.context = context;
-        this.annotation = annot;
+        this.categorie = categorie;
         this.dialog = new Dialog(this.context);
-        this.videoAnnotation = videoAnnotation;
-        dialog.setContentView(R.layout.boite_dialog_edit_annot);
+        dialog.setContentView(R.layout.boite_dialog_edit_categorie);
         dialog.setCancelable(true);
-        dialog.setTitle(R.string.TextDialogEditAnnot);
+        dialog.setTitle(R.string.TextDialogEditCategorie);
         btnValid = dialog.findViewById(R.id.btnValiderEdit);
         btnCancel = dialog.findViewById(R.id.btnAnnulerEdit);
         titre = dialog.findViewById(R.id.ed_edit_titre);
-        duree = dialog.findViewById(R.id.ed_edit_temps);
-        if (context instanceof EditAnnotDialogListener) {
+        titre.setText(this.categorie.getName());
+
+        if (context instanceof DialogEditCategorie.EditCategoryDialogListener) {
             dialogListener = context;
         }
-
-        titre.setText(this.annotation.getAnnotationTitle());
-        duree.setText(String.valueOf(this.annotation.getAnnotationDuration()/1000));
     }
 
     //Affiche la boîte de dialogue
@@ -60,9 +53,8 @@ public class DialogEditAnnot {
             switch (btnId) {
                 case R.id.btnValiderEdit:
                     String title = titre.getText().toString();
-                    String duration = duree.getText().toString();
-                    if (title != null && !title.isEmpty() && duration != null && !duration.isEmpty()) {
-                        dialogListener.onSaveEditAnnot(annotation, title, Integer.parseInt(duration)*1000);
+                    if (title != null && !title.isEmpty()) {
+                        dialogListener.onSaveEditCategorie(categorie, title);
                     }
                     dialog.dismiss();
                     Toast.makeText(context,R.string.editValidateToast, Toast.LENGTH_SHORT).show();
@@ -75,7 +67,7 @@ public class DialogEditAnnot {
         }
     };
 
-    public interface EditAnnotDialogListener {
-        void onSaveEditAnnot(Annotation annot, String title, int duree);
+    public interface EditCategoryDialogListener {
+        void onSaveEditCategorie(Categorie categorie, String title);
     }
 }

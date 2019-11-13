@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
+import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 
 import static com.master.info_ua.videoannottool.MainActivity.COACH;
 
@@ -18,7 +19,7 @@ import static com.master.info_ua.videoannottool.MainActivity.COACH;
 public class DialogProfil {
 
     //Affichage de la boîte de dialog pour le choix du profil (Profil Coach ou Profil Athlète)
-    public void showDialogProfil(final MainActivity main,final MenuItem item) {
+    public void showDialogProfil(final MainActivity main, final MenuItem item, final Fragment_annotation fragment_annotation) {
         final Dialog dialog = new Dialog(main);
         final ImageButton audioAnnotBtn = main.findViewById(R.id.audio_annot_btn);
         final ImageButton textAnnotBtn = main.findViewById(R.id.text_annot_btn);
@@ -40,6 +41,7 @@ public class DialogProfil {
                     textAnnotBtn.setEnabled(true);
                     graphAnnotBtn.setEnabled(true);
                     main.setStatutProfil(COACH);
+                    fragment_annotation.setStatut_profil(COACH);
                     item.setTitle("Mode consultation");
                     dialog.cancel();
                 } else {
