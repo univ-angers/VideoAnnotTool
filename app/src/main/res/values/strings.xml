@@ -34,6 +34,7 @@
     <string name="TextBtnSelectVideo">Choisir la vidéo</string>
 
     <string name="TextDialogEditAnnot">Editer l\'annotation</string>
+    <string name="TitleDialogEditAnnotPredef">Enregitrement prédéfini</string>
 
     <string name="profil">Profil</string>
     <string name="editValidateToast">Modification effectuée</string>
@@ -41,6 +42,9 @@
     <string name="titre_video">Titre de la vidéo</string>
     <string name="delete">Supprimer</string>
     <string name="rename_annot">Changer nom ou durée</string>
+
+    <string name="CheckAnnotPredef">Enregistrer l\'annotation en prédéfinie</string>
+    <string name="TextAnnotPredef">Liste des annotations prédéfinies</string>
 
 
 </resources>
