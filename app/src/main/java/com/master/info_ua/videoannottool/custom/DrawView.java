@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -153,6 +154,7 @@ public class DrawView extends View {
 
     //Réinitialise la toile
     public void resetCanvas() {
+        mBitmap.eraseColor(android.graphics.Color.TRANSPARENT);
         mPath.reset();
         mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     }
@@ -163,7 +165,18 @@ public class DrawView extends View {
 
     //Définit la couleur du dessin
     public void setColor(int color) {
+        mPaint.setXfermode(null);
+        mPaint.setStrokeWidth(4f);
         mPaint.setColor(color);
+    }
+
+    //Permet de desiner avec un gomme pour effacer
+    public void setErase(){
+        mPaint.setColor(Color.TRANSPARENT);
+        mPaint.setAlpha(0);
+        mPaint.setStrokeWidth(50);
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        mPaint.setAntiAlias(true);
     }
 
     //Enregistre l'image
@@ -177,5 +190,9 @@ public class DrawView extends View {
         mPath.reset();
         invalidate();
         return drawFileName;
+    }
+
+    public void setmBitmap(Bitmap bitmap) {
+        mCanvas.drawBitmap(bitmap, 0, 0, mBitmapPaint);
     }
 }

@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -176,6 +174,25 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
             menu.findItem(R.id.delete_item).setVisible(false);
         }
     }
+//
+//    @Override
+//    public boolean onContextItemSelected(MenuItem item) {
+//
+//        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+//        Annotation annotation = annotationsAdapter.getItem(info.position);
+//        switch (item.getItemId()) {
+//            case R.id.edit_item:
+//                DialogEditAnnot dialog = new DialogEditAnnot(this, annotation);
+//                dialog.showDialogEdit();
+//                return true;
+//            case R.id.delete_item:
+//                fragmentListener.onDeleteAnnotation(annotation);
+//                annotationsAdapter.notifyDataSetChanged();
+//                return true;
+//            default:
+//                return super.onContextItemSelected(item);
+//        }
+//    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -209,7 +226,7 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
     public interface AnnotFragmentListener {
 
         void onAnnotItemClick(Annotation annotation);
-
+        void onEditAnnotation(Annotation annotation, int position);
         void onDeleteAnnotation(Annotation annotation);
     }
 }

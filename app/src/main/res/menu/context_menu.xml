@@ -5,19 +5,19 @@
         android:title="@string/ajouter_sous_categorie"/>
 
     <item android:id="@+id/edit_item"
-        android:title="@string/modifier"
+        android:title="@string/edit"
         />
 
     <item android:id="@+id/delete_item"
-        android:title="@string/supprimer"
+        android:title="@string/delete"
         />
 
     <item android:id="@+id/edit_item_annot"
-        android:title="@string/modifier"
+        android:title="@string/edit"
         />
 
     <item android:id="@+id/delete_item_annot"
-        android:title="@string/supprimer"
+        android:title="@string/delete"
         />
 
 </menu>

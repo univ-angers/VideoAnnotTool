@@ -9,3 +9,14 @@
 /build
 /captures
 .externalNativeBuild
+<<<<<<< Updated upstream
+=======
+.idea/caches/
+.idea/
+
+build.gradle
+
+.idea/caches/
+
+gradle/wrapper/gradle-wrapper.properties
+>>>>>>> Stashed changes

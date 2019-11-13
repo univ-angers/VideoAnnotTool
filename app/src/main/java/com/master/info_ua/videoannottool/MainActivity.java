@@ -73,7 +73,6 @@ import com.master.info_ua.videoannottool.custom.DrawView;
 import com.master.info_ua.videoannottool.custom.Video;
 import com.master.info_ua.videoannottool.dialog.DialogAudio;
 import com.master.info_ua.videoannottool.dialog.DialogCallback;
-import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
 import com.master.info_ua.videoannottool.dialog.DialogEditVideo;
 import com.master.info_ua.videoannottool.dialog.DialogImport;
 import com.master.info_ua.videoannottool.dialog.DialogProfil;
@@ -87,6 +86,7 @@ import com.master.info_ua.videoannottool.util.DirPath;
 import com.master.info_ua.videoannottool.util.Ecouteur;
 import com.master.info_ua.videoannottool.util.Util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 <<<<<<< HEAD
 import java.io.IOException;
@@ -509,12 +509,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 return true;
             case R.id.edit_item_annot:
                 annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
-                DialogEditAnnot dialog2 = new DialogEditAnnot(this, annotation);
-                dialog2.showDialogEdit();
-                for(Annotation annot: currentVAnnot.getAnnotationList())
-                {
-                    System.out.println("currentVAnnot Titre : " +annot.getAnnotationTitle());
-                }
                 return true;
             case R.id.delete_item_annot:
                 annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
@@ -1115,6 +1109,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         return player;
     }
 
+
+    @Override
+    public void setErase() {
+        drawView.setErase();
+    }
+
     @Override
     public void resetCanvas() {
         drawView.resetCanvas();
@@ -1141,8 +1141,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      */
     @Override
     public void onSaveDrawAnnotation(Annotation annotation) {
-
         onSaveAnnotation(annotation);
+        closeDrawFragment();
+    }
+
+    @Override
+    public void onSaveDrawAnnotation(Annotation annotation, int position) {
+        this.currentVAnnot.getAnnotationList().remove(position);
+        onSaveDrawAnnotation(annotation);
         closeDrawFragment();
     }
 
@@ -1154,8 +1160,13 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      */
     @Override
     public void onSaveAnnotation(Annotation annotation) {
+
         // création de l'annotation
         annotation.setAnnotationStartTime(player.getCurrentPosition());
+
+        if(drawFragment.isEditing()){
+            currentVAnnot.getAnnotationList().remove(annotation);
+        }
 
         currentVAnnot.getAnnotationList().add(annotation);
         currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
