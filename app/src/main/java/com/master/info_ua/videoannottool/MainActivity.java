@@ -1374,8 +1374,45 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         Collections.sort(currentVAnnot.getAnnotationList(), new AnnotationComparator());
         String directory = currentSubCategorie.getPath() + File.separator + videoName;
         Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory,videoName);
+    public void onEditAnnotation(Annotation annotation, int position) {
+        final String annotFileDirectory = currentSubCategorie.getPath() + "/" + currentVideo.getFileName();
+        //Afficher l'annotation prise en paramètre
+        switch (annotation.getAnnotationType()){
+            case TEXT:
 
         annotFragment.updateAnnotationList(currentVAnnot);
+                break;
+            case DRAW:
+                Bitmap bitmap = Util.getBitmapFromAppDir(getApplicationContext(), annotFileDirectory, annotation.getDrawFileName());
+
+                player.setPlayWhenReady(false);
+                drawView.setVisibility(View.VISIBLE);
+                drawView.setOnTouchEnable(true);
+
+                //Affichage du fragment draw : obligation de passer par l'activité pour communiquer entre les deux fragments
+                FragmentManager manager = getFragmentManager();
+                FragmentTransaction ft = manager.beginTransaction();
+                drawFragment = (Fragment_draw) manager.findFragmentByTag(FRAGMENT_DRAW_TAG);
+                if (drawFragment == null) {
+                    drawFragment = new Fragment_draw();
+                    drawFragment.setEditing(true);
+                    drawFragment.setPosition(position);
+                    ft.add(R.id.annotation_menu, drawFragment, FRAGMENT_DRAW_TAG);
+                    ft.hide(annotFragment);
+                    ft.show(drawFragment);
+                    ft.commit();
+                } else {
+                    drawFragment.setPosition(position);
+                    drawFragment.setEditing(true);
+                    ft.hide(annotFragment);
+                    ft.show(drawFragment);
+                    ft.commit();
+                }
+                drawView.setmBitmap(bitmap);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
