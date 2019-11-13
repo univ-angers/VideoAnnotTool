@@ -17,6 +17,8 @@ import android.os.Message;
 import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -196,11 +198,15 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     //Attribut pour la recherche de vidéos
     private EditText searchVideo;
+    private String searchText;
+
     // Listes de toutes les annotations prédéfinies
     private ArrayList<Annotation> ListAnnotationsPredef = new ArrayList<>();
 
     //Dossier contenant les fichiers nécéssaires aux annotations prédéfinies (.png, .mp4, ...)
     private File AnnotPredefDirectory;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -330,7 +336,25 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         fileVideoImport = new File("");
 
 
+        searchText = new String();
         searchVideo = (EditText)findViewById(R.id.editText_search_video);
+
+        searchVideo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                searchText=charSequence.toString();
+                videosAdapter.clear();
+                videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
+                videosAdapter.notifyDataSetChanged();
+            }            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        fileVideoImport = new File("");        searchText = new String();
+        searchVideo = (EditText)findViewById(R.id.editText_search_video);
+
 
         AnnotPredefDirectory = new File(MainActivity.this.getExternalFilesDir(""),"annotations");
         AnnotPredefDirectory.mkdirs();
@@ -410,11 +434,13 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 return true;
 
             case R.id.action_category:
+
                 Intent childintent = new Intent(MainActivity.this,CategoryActivity.class);
                 for( Categorie cat: categorieList)
                 {
                     System.out.println(cat + "     " + cat.getSubCategories().size());
                 }
+
                 childintent.putParcelableArrayListExtra("categorieList", (ArrayList<? extends Parcelable>) categorieList);
                 startActivityForResult(childintent,READ_CATEGORY_CODE);
                 return true;
@@ -815,7 +841,18 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             Log.e("SUB_CAT", "No content in " + subCatDir);
         }
 
-        return videoList;
+        return filter(videoList, searchText);
+    }
+
+
+    private List<Video> filter(List<Video> vl, String toSearch) {
+        List<Video> ret = new ArrayList<>();
+        for (Video inlist : vl) {
+            if (inlist.getFileName().contains(toSearch)){
+                ret.add(inlist);
+            }
+        }
+        return ret;
     }
 
     /**
@@ -906,6 +943,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             // Here you get the current item that is selected by its position
             currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
 //            System.out.println(categorieList.get(position).getPath()+"      "+categorieList.get(position).getSubCategories().get(0)+"    "+categorieList.get(position).getParentName() +"      "+ categorieList.get(position-1).getName());
+            currentSubCategorie = currentCategorie.getSubCategories().get(1);
+            searchVideo.setText("");
             spinnerAdapter2.clear();
 //            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
             spinnerAdapter2.add(new Categorie("Sous-catégorie", null, "/"));
@@ -1008,6 +1047,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 // Here you get the current item that is selected by its position
                 currentSubCategorie = (Categorie) adapterView.getItemAtPosition(position);
                 Log.e("SELECT_SUB_CAT", currentSubCategorie.getPath());
+
+                searchVideo.setText("");
+
 
                 videosAdapter.clear();
                 videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));

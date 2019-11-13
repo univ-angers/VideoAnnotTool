@@ -1,10 +1,10 @@
 package com.master.info_ua.videoannottool.util;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+        import android.os.Parcel;
+        import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.List;
+        import java.util.ArrayList;
+        import java.util.List;
 
 // Les catégories ont pour but de classer les vidéos en fonction de leur contenu
 public class Categorie implements Parcelable {
