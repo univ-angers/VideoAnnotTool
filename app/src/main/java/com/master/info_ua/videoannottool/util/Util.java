@@ -123,12 +123,33 @@ public class Util {
         List<Categorie> categorieList = new ArrayList<>();
         //Si le dossier existe
         if (Util.appDirExist(context)) {
-            //Pour chacune des catégories et sous-catégories
+            //Pour chacune des catégories
             for (DirPath dirPath : DirPath.values()) {
-                //Si la catégorie ne possède pas de catégorie mère
                 if (!dirPath.isSubDir()) {
                     //On ajoute la catégorie à la liste de catégories
                     categorieList.add(new Categorie(dirPath.getName(), null, dirPath.toString()));
+                }
+            }
+            //Pour chacune des sous-catégories
+            for(DirPath dirPath : DirPath.values()) {
+                if(dirPath.isSubDir()) {
+                    File subDir = new File(dirPath.getPath());
+                    //Récupère le nom de la catégorie mère
+                    String categorieMere = subDir.getParent();
+                    for (Categorie categorie : categorieList) {
+                        System.out.println(categorie.getName() + " = " + categorieMere + "?");
+                        //Si dans la liste de catégorie, il existe une catégorie correspondant à la catégorie mère
+                        if (categorie.getName().equals(categorieMere.toUpperCase())) {
+                            System.out.println("OK");
+                            //On récupère sa liste de sous-catégories
+                            List<Categorie> listSubCat = categorie.getSubCategories();
+                            //On ajoute la nouvelle
+                            listSubCat.add(new Categorie(subDir.getName(), categorieMere.toUpperCase(), subDir.getPath()));
+                            //On met à jour la liste
+                            categorie.setSubCategories(listSubCat);
+                            System.out.println("Ajout de " + subDir.getName() + " à " + categorieMere.toUpperCase() + " : taille " + categorie.getSubCategories().size());
+                        }
+                    }
                 }
             }
         } else {
@@ -139,6 +160,7 @@ public class Util {
         }
         return categorieList;
     }
+
 
 
     //Initialise la liste d'item du spinner sub-categorie

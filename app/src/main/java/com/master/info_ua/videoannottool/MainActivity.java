@@ -722,6 +722,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         } else {
             Log.e("SUB_CAT", "No content in " + subCatDir);
         }
+        /**
+         * Sébastien VIOT
+         * On filtre la liste de vidéos, avec le texte de la recherche
+         */
 
         return filter(videoList, searchText);
     }
@@ -730,7 +734,13 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private List<Video> filter(List<Video> vl, String toSearch) {
         List<Video> ret = new ArrayList<>();
         for (Video inlist : vl) {
-            if (inlist.getFileName().contains(toSearch)){
+            /**
+             * Sébastien VIOT.
+             * La recherche est insensible à la casse
+             */
+            String videoNameIgnoreCase = inlist.getFileName().toLowerCase();
+            String toSearchIgnoreCase = toSearch.toLowerCase();
+            if (videoNameIgnoreCase.contains(toSearchIgnoreCase)){
                 ret.add(inlist);
             }
         }
@@ -794,7 +804,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
             // Here you get the current item that is selected by its position
             currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
-
+            currentSubCategorie = currentCategorie.getSubCategories().get(1);
+            searchVideo.setText("");
             spinnerAdapter2.clear();
             spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
             spinnerAdapter2.notifyDataSetChanged();

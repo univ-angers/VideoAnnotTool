@@ -1,5 +1,6 @@
 package com.master.info_ua.videoannottool.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // Les catégories ont pour but de classer les vidéos en fonction de leur contenu
@@ -19,12 +20,15 @@ public class Categorie {
     public Categorie(String name, String path) {
         this.name = name;
         this.path = path;
+        subCategories = new ArrayList<>();
     }
 
     public Categorie(String name, String parentName, String path) {
         this.name = name;
         this.parentName = parentName;
         this.path = path;
+
+        subCategories = new ArrayList<>();
     }
 
     /*
