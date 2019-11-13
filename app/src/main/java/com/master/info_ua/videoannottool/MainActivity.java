@@ -956,7 +956,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             // Here you get the current item that is selected by its position
             currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
 //            System.out.println(categorieList.get(position).getPath()+"      "+categorieList.get(position).getSubCategories().get(0)+"    "+categorieList.get(position).getParentName() +"      "+ categorieList.get(position-1).getName());
-            currentSubCategorie = currentCategorie.getSubCategories().get(1);
+            currentSubCategorie = currentCategorie.getSubCategories().get(0);
             searchVideo.setText("");
             spinnerAdapter2.clear();
 //            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
@@ -1078,7 +1078,13 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
                     }
                     annotFragment.updateAnnotationList(currentVAnnot);
-                    videoName = currentVideo.getFileName();
+
+                    if (currentVideo != null) {
+                        videoName = currentVideo.getFileName();
+                    }
+                    else {
+                        videoName = "";
+                    }
 
                     if (player != null){
                         player.stop();
