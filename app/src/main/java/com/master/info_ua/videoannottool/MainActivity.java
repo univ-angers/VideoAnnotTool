@@ -70,10 +70,12 @@ import com.master.info_ua.videoannottool.custom.DrawView;
 import com.master.info_ua.videoannottool.custom.Video;
 import com.master.info_ua.videoannottool.dialog.DialogAudio;
 import com.master.info_ua.videoannottool.dialog.DialogCallback;
+import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
 import com.master.info_ua.videoannottool.dialog.DialogEditVideo;
 import com.master.info_ua.videoannottool.dialog.DialogImport;
 import com.master.info_ua.videoannottool.dialog.DialogProfil;
 import com.master.info_ua.videoannottool.dialog.DialogText;
+import com.master.info_ua.videoannottool.fragment.Fragment_AnnotPredef;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
 import com.master.info_ua.videoannottool.player_view.ZoomableExoPlayerView;
@@ -94,6 +96,8 @@ import java.util.List;
 
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.AUDIO;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
+import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
+
 
 public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
 
@@ -358,8 +362,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             recupAnnot = Util.parseJSON_Annot(MainActivity.this,i);
         }
 
-=======
->>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
     }
 
     @Override

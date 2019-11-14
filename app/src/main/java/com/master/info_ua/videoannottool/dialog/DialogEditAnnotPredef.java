@@ -1,18 +1,19 @@
 package com.master.info_ua.videoannottool.dialog;
 
-import android.app.Dialog;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+        import android.app.Dialog;
+        import android.view.View;
+        import android.widget.Button;
+        import android.widget.EditText;
+        import android.widget.Toast;
 
-import com.master.info_ua.videoannottool.R;
-import com.master.info_ua.videoannottool.annotation.Annotation;
-import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
+        import com.master.info_ua.videoannottool.R;
+        import com.master.info_ua.videoannottool.annotation.Annotation;
+        import com.master.info_ua.videoannottool.fragment.Fragment_AnnotPredef;
+        import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 
-public class DialogEditAnnot {
+public class DialogEditAnnotPredef {
 
-    private Fragment_annotation context;
+    private Fragment_AnnotPredef context;
     private Button btnValid;
     private Button btnCancel;
     private EditText titre;
@@ -22,13 +23,13 @@ public class DialogEditAnnot {
     private Annotation annotation;
 
     //Constructeur
-    public DialogEditAnnot(Fragment_annotation context, Annotation annot) {
+    public DialogEditAnnotPredef(Fragment_AnnotPredef context, Annotation annot) {
         this.context = context;
         this.annotation = annot;
         this.dialog = new Dialog(this.context.getActivity());
         dialog.setContentView(R.layout.boite_dialog_edit_annot);
         dialog.setCancelable(true);
-        dialog.setTitle(R.string.TextDialogEditAnnot);
+        dialog.setTitle(R.string.TitleDialogEditAnnotPredef);
         btnValid = dialog.findViewById(R.id.btnValiderEdit);
         btnCancel = dialog.findViewById(R.id.btnAnnulerEdit);
         titre = dialog.findViewById(R.id.ed_edit_titre);
