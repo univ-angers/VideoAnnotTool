@@ -60,6 +60,12 @@
     <string name="delete">Supprimer</string>
     <string name="edit">Editer</string>
 
+    <string name="CheckAnnotPredef">Enregistrer l\'annotation en prédéfinie</string>
+
+    <string name="titre_video">Titre de l\'annotation :</string>
+    <string name="TitleDialogEditAnnotPredef">Enregitrement prédéfini</string>
+
+
 
 
 </resources>

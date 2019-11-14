@@ -115,7 +115,9 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
-    private RelativeLayout btnLayout;
+    private Button annotPredefBtn;
+
+     private RelativeLayout btnLayout;
 
     // Attribut en lien avec exoplayer
     // le player et son mediaSource
@@ -306,6 +308,10 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
         graphAnnotBtn = findViewById(R.id.graphic_annot_btn);
         graphAnnotBtn.setEnabled(false);        //bouton desactivés de base
         graphAnnotBtn.setOnClickListener(btnClickListener);
+
+        annotPredefBtn = findViewById(R.id.annot_predef_btn);
+        //annotPredefBtn.setEnabled(false);
+        annotPredefBtn.setOnClickListener(btnClickListener);
 
         btnLayout = findViewById(R.id.btn_layout_id);
         drawBimapIv = findViewById(R.id.draw_bitmap_iv);
@@ -896,6 +902,24 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
                     dialogtext.showDialogBox(textAnnotation, MainActivity.this);
 
                     break;
+
+                case R.id.annot_predef_btn:
+                    player.setPlayWhenReady(false);
+                    FragmentTransaction ft2 = fragmentManager.beginTransaction();
+                    annotPredefFragment = (Fragment_AnnotPredef)fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_PREDEF_TAG);
+                    if (annotPredefFragment == null) {
+                        annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef,MainActivity.this);
+                        ft2.add(R.id.annotation_menu, annotPredefFragment, FRAGMENT_ANNOT_PREDEF_TAG);
+                        ft2.hide(annotFragment);
+                        ft2.show(annotPredefFragment);
+                        ft2.commit();
+                    } else {
+                        ft2.hide(annotFragment);
+                        ft2.show(annotPredefFragment);
+                        ft2.commit();
+                    }
+
+                    break;
             }
         }
     };
@@ -1116,17 +1140,6 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
     }
 
 
-    /**
-     * Sauvegarde d'une annotation graphique
-     *
-     * @param annotation
-     */
-    @Override
-    public void onSaveDrawAnnotation(Annotation annotation) {
-        onSaveAnnotation(annotation);
-        closeDrawFragment();
-    }
-
      /**
       * Sauvegarde d'une annotation graphique
       *
@@ -1140,9 +1153,9 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
      }
 
     @Override
-    public void onSaveDrawAnnotation(Annotation annotation, int position) {
+    public void onSaveDrawAnnotation(Annotation annotation, boolean check, int position) {
         this.currentVAnnot.getAnnotationList().remove(position);
-        onSaveDrawAnnotation(annotation);
+        onSaveDrawAnnotation(annotation, check);
         closeDrawFragment();
     }
 
@@ -1243,11 +1256,7 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
             ft.commit();
         }
         drawView.setVisibility(View.GONE);
-<<<<<<< HEAD
-        System.out.println("10");
-=======
         setAnnotButtonStatus(true);
->>>>>>> groupe_video
     }
 
 
@@ -1666,9 +1675,6 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
         video.setName(title);
         videosAdapter.notifyDataSetInvalidated();
     }
-<<<<<<< HEAD
-}
-=======
 
     // Copie les fichiers (images, fichiers mp4) du dossier d'annotations prédéfini vers le dossier de la vidéo courante
     public void CopyFileAnnotPredef (Annotation annotation){

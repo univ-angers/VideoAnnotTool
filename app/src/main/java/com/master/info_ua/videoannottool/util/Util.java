@@ -72,6 +72,48 @@ public class Util {
         return null;
     }
 
+    //Récupère un fichier dans le répertoire indiqué de l'application et fait le parsing en objet Java
+    public static Annotation parseJSON_Annot(Context context,int annotNum) {
+        //Récupère le chemin absolu du fichier
+        String filePath = context.getExternalFilesDir("annotations").getAbsolutePath() + File.separator + "AnnotPredef_num_"+annotNum+".json";
+        try {
+            //Lecture du fichier
+            FileInputStream fis = new FileInputStream(new File(filePath));
+            Reader reader = new InputStreamReader(fis);
+            //Parsing du fichier
+            Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
+            Annotation AnnotPredef = gson.fromJson(reader, Annotation.class);
+            fis.close();
+            return AnnotPredef;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ERR_JSON", "ERREUR Lecture JSON ");
+        }
+        return null;
+    }
+
+
+    //Sauvegarde l'objet Annotation dans un fichier Json dans le dossier des annotations prédéfinis
+    public static void saveAnnotation(Context context,Annotation AnnotPredef, int annotNum) {
+        Writer writer;
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("dd-MM-yyyy HH:mm:ss");
+        gsonBuilder.serializeNulls(); //Ne pas ignorer les attributs avec valeur null
+        gsonBuilder.setPrettyPrinting();
+        Gson gson = gsonBuilder.create();
+        try {
+            File file = new File(context.getExternalFilesDir("annotations"), "AnnotPredef_num_"+annotNum+ ".json");
+            writer = new FileWriter(file);
+            String jsonStr = gson.toJson(AnnotPredef);
+            writer.write(jsonStr);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ERR_VANNOT", "Unable to save ListAnnotationPredef ");
+        }
+    }
+
+
     //Sauvegarde l'objet videoAnnotation dans un fichier Json
     public static void saveVideoAnnotation(Context context, VideoAnnotation videoAnnotation, String dirPath, String videoName) {
         Writer writer;

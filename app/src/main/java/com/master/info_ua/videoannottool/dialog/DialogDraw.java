@@ -33,19 +33,12 @@ public class DialogDraw {
         btnCancel = dialog.findViewById(R.id.btnAnnulerDraw);
         titre = dialog.findViewById(R.id.ed_draw_titre);
         duree = dialog.findViewById(R.id.ed_draw_temps);
-        if (context instanceof DrawAnnotDialogListener) {
-            dialogListener = context;
-        }
-    }
-
-
-    //Constructeur
-    public DialogDraw(Fragment_draw context) {
         checkAnnotPredef = dialog.findViewById(R.id.CheckAnnotDraw);
         if (context instanceof DrawAnnotDialogListener) {
             dialogListener = context;
         }
     }
+
 
 
     //Affiche la boîte de dialogue
@@ -66,7 +59,7 @@ public class DialogDraw {
                     if (title != null && !title.isEmpty() && duration != null && !duration.isEmpty()) {
                         //drawAnnot.setAnnotationTitle(title);
                         //drawAnnot.setAnnotationDuration(Integer.parseInt(duration));
-                        dialogListener.onSaveDrawImage(title, Integer.parseInt(duration)*1000);
+                        dialogListener.onSaveDrawImage(title, Integer.parseInt(duration)*1000, checkAnnotPredef.isChecked());
                     }
                     break;
                 case R.id.btnAnnulerDraw:
@@ -86,7 +79,7 @@ public class DialogDraw {
 
     public interface DrawAnnotDialogListener {
         //Appelée lors de la sauvegarde d'une annotation de type dessin
-        void onSaveDrawImage(String title, int duration);
+        void onSaveDrawImage(String title, int duration, boolean check);
         //Appelée lors de la réinitialisation de la toile
         void onResetCanvas();
     }
