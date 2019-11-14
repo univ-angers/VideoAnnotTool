@@ -162,10 +162,13 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
 
     private Fragment_draw drawFragment;
     private Fragment_annotation annotFragment;
+    private Fragment_AnnotPredef annotPredefFragment;
     private static final String FRAGMENT_DRAW_TAG = "drawFragment";
     private static final String FRAGMENT_ANNOT_TAG = "annotFragment";
+     private static final String FRAGMENT_ANNOT_PREDEF_TAG = "annotPredefFragment";
 
-    private FragmentManager fragmentManager;
+
+     private FragmentManager fragmentManager;
 
     private DrawView drawView;
     private ImageView drawBimapIv;
@@ -1124,6 +1127,18 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
         onSaveAnnotation(annotation);
         closeDrawFragment();
     }
+
+     /**
+      * Sauvegarde d'une annotation graphique
+      *
+      * @param annotation
+      */
+     @Override
+     public void onSaveDrawAnnotation(Annotation annotation, boolean check) {
+
+         onSaveAnnotation(annotation,check);
+         closeDrawFragment();
+     }
 
     @Override
     public void onSaveDrawAnnotation(Annotation annotation, int position) {

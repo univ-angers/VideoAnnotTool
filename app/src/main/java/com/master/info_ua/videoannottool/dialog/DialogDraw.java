@@ -3,6 +3,7 @@ package com.master.info_ua.videoannottool.dialog;
 import android.app.Dialog;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ public class DialogDraw {
     private EditText titre;
     private EditText duree;
     private Dialog dialog;
+    private CheckBox checkAnnotPredef;
     private DrawAnnotDialogListener dialogListener;
 
     //Constructeur
@@ -35,6 +37,16 @@ public class DialogDraw {
             dialogListener = context;
         }
     }
+
+
+    //Constructeur
+    public DialogDraw(Fragment_draw context) {
+        checkAnnotPredef = dialog.findViewById(R.id.CheckAnnotDraw);
+        if (context instanceof DrawAnnotDialogListener) {
+            dialogListener = context;
+        }
+    }
+
 
     //Affiche la boîte de dialogue
     public void showDialogDraw() {

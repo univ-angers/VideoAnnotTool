@@ -34,6 +34,8 @@
     <string name="TextBtnSelectVideo">Choisir la vidéo</string>
 
     <string name="TextDialogEditAnnot">Editer l\'annotation</string>
+    <string name="TextAnnotPredef">Liste des annotations prédéfinies</string>
+
 
     <string name="profil">Profil</string>
     <string name="editValidateToast">Modification effectuée</string>
@@ -52,6 +54,10 @@
     <string name="TextDialogEditSubCategorie">Modification de la sous-catégorie</string>
     <string name="ajouter">Ajouter</string>
     <string name="ajouter_sous_categorie">Ajouter sous-catégorie</string>
+
+
+    <string name="delete">Supprimer</string>
+    <string name="edit">Editer</string>
 
 
 
