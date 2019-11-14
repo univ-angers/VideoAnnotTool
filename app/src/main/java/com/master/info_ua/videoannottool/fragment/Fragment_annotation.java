@@ -137,8 +137,12 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (v.getId() == R.id.lv_annotations) {
-            MenuInflater inflater = getActivity().getMenuInflater();
-            inflater.inflate(R.menu.context_menu, menu);
+			MenuInflater inflater = getActivity().getMenuInflater();
+            boolean statut_profil  = ((MainActivity)getActivity()).getStatusProfil();
+            
+            if(statut_profil) {
+                inflater.inflate(R.menu.context_menu, menu);
+            }
         }
     }
 
@@ -149,6 +153,61 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
         Annotation annotation = annotationsAdapter.getItem(info.position);
         switch (item.getItemId()) {
             case R.id.edit_item:
+				// Récuperer l'annotaion qu'on veut modifier
+                //final Annotation textAnnotation = annotationsAdapter.getItem(info.position);
+
+                // Récuperer les informations de l'annotation
+                String annotationTitle = annotation.getAnnotationTitle();
+                final String textComment = annotation.getTextComment();
+                long annotationDuration = annotation.getAnnotationDuration();
+                
+                final Dialog dialogBox = new Dialog(getActivity());
+                dialogBox.setContentView(R.layout.boite_dialog_text);
+                dialogBox.setTitle(R.string.TitleDialogTextModif);
+                Button btnValider = dialogBox.findViewById(R.id.btnValiderTextAnnot);
+                Button btnAnnuler = dialogBox.findViewById(R.id.btnAnnulerTextAnnot);
+
+                final EditText titte = (EditText)dialogBox.findViewById(R.id.ed_texte_titre);
+                final String titteText = titte.getText().toString();
+                titte.setText(annotationTitle);
+
+                final EditText duree = (EditText)dialogBox.findViewById(R.id.etDurationAnnot);
+                final String dureeText = duree.getText().toString();
+                duree.setText(""+annotationDuration/1000);
+
+                final EditText comment = (EditText)dialogBox.findViewById(R.id.etAnnotText);
+                final String commentText = comment.getText().toString();
+                comment.setText(textComment);
+
+                // Validation des modifications
+                btnValider.setOnClickListener(new View.OnClickListener() {
+                    private String texte = "";
+                    //click sur le bouton valider
+                    @Override
+                    public void onClick(View view) {
+                        if(!titteText.isEmpty() && ! commentText.isEmpty() && !dureeText.isEmpty()){
+                            dialogBox.cancel();
+                            annotation.setAnnotationDuration(Integer.parseInt(duree.getText().toString()) * 1000);
+                            annotation.setTextComment(comment.getText().toString());
+                            annotation.setAnnotationTitle(titte.getText().toString());
+                            Log.i(TAG, "validation succes" + texte);
+                        } else {
+                            Log.i(TAG, "validation errors" + texte);
+                        }
+
+                    }
+                });
+                // Annuler les modifications
+                btnAnnuler.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.i(TAG, "Annuler les modifications");
+                        dialogBox.cancel();
+                    }
+                });
+
+                dialogBox.show();
+                
                 return true;
             case R.id.delete_item:
                 fragmentListener.onDeleteAnnotation(annotation);

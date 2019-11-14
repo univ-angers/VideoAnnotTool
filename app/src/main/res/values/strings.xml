@@ -15,6 +15,7 @@
     <string name="TextBtnAnnulerRecord">Annuler</string>
     <string name="BtnValiderDialogText">Valider</string>
     <string name="TitleDialogText">Entrez le texte à afficher</string>
+    <string name="TitleDialogTextModif">Modifier l\'annotaion</string>
 
     <string name="TextDialogDraw">Enregistrement Graphique</string>
     <string name="invalidPassword">Mot de passe invalide</string>

@@ -191,6 +191,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     //Dossier contenant les fichiers nécéssaires aux annotations prédéfinies (.png, .mp4, ...)
     private File AnnotPredefDirectory;
+    
+    public boolean getStatusProfil(){
+        return  statut_profil;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
