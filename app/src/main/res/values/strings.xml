@@ -54,6 +54,7 @@
     <string name="TextDialogEditSubCategorie">Modification de la sous-catégorie</string>
     <string name="ajouter">Ajouter</string>
     <string name="ajouter_sous_categorie">Ajouter sous-catégorie</string>
+    <string name="rename_annot">Changer nom ou durée</string>
 
 
     <string name="delete">Supprimer</string>

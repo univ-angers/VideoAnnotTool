@@ -41,10 +41,9 @@ import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.ErrorMessageProvider;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoListener;
+import com.master.info_ua.videoannottool.R;
 
 import java.util.List;
-
-import com.master.info_ua.videoannottool.R;
 
 public class ZoomableExoPlayerView extends FrameLayout {
 

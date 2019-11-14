@@ -472,7 +472,6 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Video video;
         Annotation annotation;
@@ -1213,25 +1212,42 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
         drawView.setColor(color);
     }
 
+
+
     @Override
     public void closeAnnotationFrame() {
-
+        System.out.println("closeAnnotationFrame");
         drawView.resetCanvas();
+        System.out.println("1");
         FragmentTransaction ft = fragmentManager.beginTransaction();
         annotFragment = (Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
+        System.out.println("2");
         if (annotFragment == null) {
             annotFragment = new Fragment_annotation();
+            System.out.println("3");
             ft.add(R.id.annotation_menu, annotFragment, FRAGMENT_ANNOT_TAG);
+            System.out.println("4");
             ft.hide(drawFragment);
+            System.out.println("5");
             ft.show(annotFragment);
+            System.out.println("6");
             ft.commit();
+            System.out.println("7");
         } else {
+            if(drawView==null)
+                System.out.println("8");
+            else
+                System.out.println("9");
             ft.hide(drawFragment);
             ft.show(annotFragment);
             ft.commit();
         }
         drawView.setVisibility(View.GONE);
+<<<<<<< HEAD
+        System.out.println("10");
+=======
         setAnnotButtonStatus(true);
+>>>>>>> groupe_video
     }
 
 
@@ -1650,6 +1666,9 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
         video.setName(title);
         videosAdapter.notifyDataSetInvalidated();
     }
+<<<<<<< HEAD
+}
+=======
 
     // Copie les fichiers (images, fichiers mp4) du dossier d'annotations prédéfini vers le dossier de la vidéo courante
     public void CopyFileAnnotPredef (Annotation annotation){

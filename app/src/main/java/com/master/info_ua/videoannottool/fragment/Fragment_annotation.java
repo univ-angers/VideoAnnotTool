@@ -2,6 +2,8 @@ package com.master.info_ua.videoannottool.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -11,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -84,7 +88,6 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
         if (context instanceof AnnotFragmentListener) {
             fragmentListener = (AnnotFragmentListener) context;
         } else {
@@ -121,7 +124,6 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
     @Override
     public void onStart() {
         super.onStart();
-
         listViewAnnotations.setAdapter(annotationsAdapter);
         listViewAnnotations.setClickable(true);
     }
@@ -158,7 +160,7 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
         }
     };
 
-    // Crée le contextmenu pour les annotations qui utilisera le listener dans le MainActivity
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -222,7 +224,6 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
     }
 
     public interface AnnotFragmentListener {
-
         void onAnnotItemClick(Annotation annotation);
         void onEditAnnotation(Annotation annotation, int position);
         void onDeleteAnnotation(Annotation annotation);

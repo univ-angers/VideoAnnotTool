@@ -12,7 +12,7 @@
         android:id="@+id/tv_edit_titre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/titre_de_la_video" />
+        android:text="@string/titre_video" />
 
     <EditText
         android:id="@+id/ed_edit_titre"
