@@ -85,6 +85,8 @@ import com.master.info_ua.videoannottool.util.DirPath;
 import com.master.info_ua.videoannottool.util.Ecouteur;
 import com.master.info_ua.videoannottool.util.Util;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -99,7 +101,7 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
 
 
-public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
+ public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
 
     private static final int READ_REQUEST_CODE = 42;
     static final int READ_CATEGORY_CODE = 1;
@@ -1137,22 +1139,47 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      * @param annotation
      */
     @Override
-    public void onSaveAnnotation(Annotation annotation) {
-
+    public void onSaveAnnotation(Annotation annotation,boolean checkAnnotPredef) {
         // création de l'annotation
         annotation.setAnnotationStartTime(player.getCurrentPosition());
 
-        if(drawFragment.isEditing()){
-            currentVAnnot.getAnnotationList().remove(annotation);
-        }
-
         currentVAnnot.getAnnotationList().add(annotation);
+
         currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
 
         if (currentVAnnot != null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null) {
             Collections.sort(currentVAnnot.getAnnotationList(), new AnnotationComparator());
             String directory = currentSubCategorie.getPath() + File.separator + videoName;
             Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
+
+            //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
+            if (checkAnnotPredef) {
+                if (annotPredefFragment == null)
+                    annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef,MainActivity.this);
+                annotPredefFragment.getListAnnotationsPredef().add(annotation);
+                System.out.println("                            NOM DU DRAW "+MainActivity.this.getExternalFilesDir("")+" "+annotation.getDrawFileName());
+                // Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, "annotations", videoName);
+                Util.saveAnnotation(MainActivity.this, annotation,annotPredefFragment.getListAnnotationsPredef().size());
+
+                if (annotation.getAnnotationType() == DRAW){
+                    File ImageAnnotation = new File(MainActivity.this.getExternalFilesDir(directory),annotation.getDrawFileName());
+                    try {
+                        FileUtils.copyFileToDirectory(ImageAnnotation,this.AnnotPredefDirectory);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if (annotation.getAnnotationType() == AUDIO){
+                    File AudioAnnotation = new File(MainActivity.this.getExternalFilesDir(directory),annotation.getAudioFileName());
+                    try {
+                        FileUtils.copyFileToDirectory(AudioAnnotation,this.AnnotPredefDirectory);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
             annotFragment.updateAnnotationList(currentVAnnot);
 
             reloadAfterAnnotUpdate();
@@ -1165,7 +1192,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
 
-    @Override
+
+     @Override
     public void setColor(int color) {
         drawView.setColor(color);
     }
@@ -1244,7 +1272,20 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     }
 
-    /**
+     public void closeAnnotPredef(){
+
+         FragmentTransaction ft2 = fragmentManager.beginTransaction();
+         annotPredefFragment = (Fragment_AnnotPredef)fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_PREDEF_TAG);
+
+         ft2.hide(annotPredefFragment);
+         ft2.show(annotFragment);
+         ft2.commit();
+         setAnnotButtonStatus(true);
+         //  }
+
+     }
+
+     /**
      *Méthode prenant en charge le lancement des annotations
      * @param annotation
      */
@@ -1494,7 +1535,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         }
     }
 
-    @Override
+     @Override
     public void onClickVideoFileImport() {
         performFileSearch();
     }
