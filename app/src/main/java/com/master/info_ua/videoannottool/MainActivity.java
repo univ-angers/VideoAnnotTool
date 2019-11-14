@@ -28,11 +28,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-<<<<<<< HEAD
 import android.widget.EditText;
 import android.widget.Button;
-=======
->>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -88,11 +85,8 @@ import com.master.info_ua.videoannottool.util.Util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-<<<<<<< HEAD
 import java.io.IOException;
 import java.lang.reflect.Array;
-=======
->>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -101,11 +95,7 @@ import java.util.List;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.AUDIO;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 
-<<<<<<< HEAD
 public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
-=======
-public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener {
->>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
 
     private static final int READ_REQUEST_CODE = 42;
     static final int READ_CATEGORY_CODE = 1;
@@ -185,11 +175,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private Categorie currentCategorie;
     private Categorie currentSubCategorie;
 
-<<<<<<< HEAD
     private List<Categorie> categorieList;
 
-=======
->>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
     private ArrayAdapter<Categorie> spinnerAdapter;
     private ArrayAdapter<Categorie> spinnerAdapter2;
 
@@ -201,7 +188,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private TextView videoImportName;
     private File fileVideoImport;
 
-<<<<<<< HEAD
     //Attributs pour la recherche de vidéos
     private EditText searchVideo;
     private String searchText;
@@ -211,9 +197,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     //Dossier contenant les fichiers nécéssaires aux annotations prédéfinies (.png, .mp4, ...)
     private File AnnotPredefDirectory;
-=======
->>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
-
 
 
     @Override
@@ -336,7 +319,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             Util.createDir(this);
         }
         fileVideoImport = new File("");
-<<<<<<< HEAD
 
 
         searchText = new String();
@@ -1081,12 +1063,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     initExoPlayer();
                 }
             }
-
-<<<<<<< HEAD
-=======
-        }
-
->>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
         @Override
         public void onNothingSelected(AdapterView<?> adapter) {
         }
@@ -1210,11 +1186,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             ft.commit();
         }
         drawView.setVisibility(View.GONE);
-<<<<<<< HEAD
         setAnnotButtonStatus(true);
-=======
-        System.out.println("10");
->>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
     }
 
 
@@ -1263,7 +1235,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     }
 
-<<<<<<< HEAD
 //    @Override
     public void onAnnotPredefItemClick(final Annotation annotation) {
 
@@ -1271,8 +1242,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     }
 
-=======
->>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
     /**
      *Méthode prenant en charge le lancement des annotations
      * @param annotation
@@ -1374,13 +1343,18 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         Collections.sort(currentVAnnot.getAnnotationList(), new AnnotationComparator());
         String directory = currentSubCategorie.getPath() + File.separator + videoName;
         Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory,videoName);
+
+    }
+
+
+
     public void onEditAnnotation(Annotation annotation, int position) {
         final String annotFileDirectory = currentSubCategorie.getPath() + "/" + currentVideo.getFileName();
         //Afficher l'annotation prise en paramètre
-        switch (annotation.getAnnotationType()){
+        switch (annotation.getAnnotationType()) {
             case TEXT:
 
-        annotFragment.updateAnnotationList(currentVAnnot);
+                annotFragment.updateAnnotationList(currentVAnnot);
                 break;
             case DRAW:
                 Bitmap bitmap = Util.getBitmapFromAppDir(getApplicationContext(), annotFileDirectory, annotation.getDrawFileName());
@@ -1618,7 +1592,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         video.setName(title);
         videosAdapter.notifyDataSetInvalidated();
     }
-<<<<<<< HEAD
 
     // Copie les fichiers (images, fichiers mp4) du dossier d'annotations prédéfini vers le dossier de la vidéo courante
     public void CopyFileAnnotPredef (Annotation annotation){
@@ -1648,6 +1621,3 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
 
 }
-=======
-}
->>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
