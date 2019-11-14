@@ -27,12 +27,26 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
     private Button b_red;
     private Button b_yellow;
     private Button b_black;
+    private Button b_eraser;
+
+    public boolean isEditing() {
+        return isEditing;
+    }
+
+    public void setEditing(boolean editing) {
+        isEditing = editing;
+    }
+
     private Button b_green;
     private Button b_white;
+
+    private boolean isEditing = false;
 
     private DrawFragmentCallback fragmentCallback;
 
     private Annotation drawAnnotation;
+
+    private int position;
 
     public Fragment_draw() {
         // Required empty public constructor
@@ -43,11 +57,18 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         super.onCreate(savedInstanceState);
     }
 
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_draw, container, false);
+
+        b_eraser = view.findViewById(R.id.b_draw_eraser);
+        b_eraser.setOnClickListener(btnClickListener);
 
         b_clear = view.findViewById(R.id.b_draw_reset);
         b_clear.setOnClickListener(btnClickListener);
@@ -121,8 +142,15 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
             int btnId = v.getId();
 
             switch (btnId){
+                case R.id.b_draw_eraser:
+                    fragmentCallback.setErase();
+                    setAllEnable();
+                    b_eraser.setEnabled(false);
+                    break;
+
                 case R.id.b_draw_reset:
                     fragmentCallback.resetCanvas();
+
                     break;
                 case R.id.b_draw_cancel:
                     fragmentCallback.setOnTouchEnable(false);
@@ -176,6 +204,7 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         b_yellow.setEnabled(true);
         b_white.setEnabled(true);
         b_green.setEnabled(true);
+        b_eraser.setEnabled(true);
     }
 
     @Override
@@ -183,7 +212,11 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         drawAnnotation.setAnnotationTitle(title);
         drawAnnotation.setAnnotationDuration(duration);
         drawAnnotation.setAnnotationDate(new Date());
-        fragmentCallback.onSaveDrawAnnotation(drawAnnotation);
+        if(isEditing){
+            fragmentCallback.onSaveDrawAnnotation(drawAnnotation, position);
+        } else {
+            fragmentCallback.onSaveDrawAnnotation(drawAnnotation);
+        }
     }
 
     @Override
@@ -202,10 +235,12 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
     }
 
     public interface DrawFragmentCallback {
+        void setErase();
         void resetCanvas();
         void setOnTouchEnable(boolean bool);
         String saveDrawImage();
         void onSaveDrawAnnotation(Annotation annotation);
+        void onSaveDrawAnnotation(Annotation annotation, int position);
         void setColor(int color);
         void closeAnnotationFrame();
     }

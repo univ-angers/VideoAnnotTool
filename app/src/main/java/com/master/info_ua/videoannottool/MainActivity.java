@@ -14,8 +14,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -25,6 +28,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+<<<<<<< HEAD
+import android.widget.EditText;
+import android.widget.Button;
+=======
+>>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -34,7 +42,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -78,7 +86,13 @@ import com.master.info_ua.videoannottool.util.DirPath;
 import com.master.info_ua.videoannottool.util.Ecouteur;
 import com.master.info_ua.videoannottool.util.Util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+<<<<<<< HEAD
+import java.io.IOException;
+import java.lang.reflect.Array;
+=======
+>>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -87,9 +101,15 @@ import java.util.List;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.AUDIO;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 
+<<<<<<< HEAD
+public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
+=======
 public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener {
+>>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
 
     private static final int READ_REQUEST_CODE = 42;
+    static final int READ_CATEGORY_CODE = 1;
+
 
     // attribut servant pour l'option de pleine écran du lecteur a stocker des iinformation
     private final String STATE_RESUME_WINDOW = "resumeWindow";
@@ -137,6 +157,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private Spinner spinnerCategorie;
     private Spinner spinnerSubCategorie;
 
+    private List<Video> listvideo;
     private VideosAdapter videosAdapter;
 
     private Video currentVideo;
@@ -164,6 +185,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private Categorie currentCategorie;
     private Categorie currentSubCategorie;
 
+<<<<<<< HEAD
+    private List<Categorie> categorieList;
+
+=======
+>>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
     private ArrayAdapter<Categorie> spinnerAdapter;
     private ArrayAdapter<Categorie> spinnerAdapter2;
 
@@ -175,10 +201,24 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private TextView videoImportName;
     private File fileVideoImport;
 
+<<<<<<< HEAD
+    //Attributs pour la recherche de vidéos
+    private EditText searchVideo;
+    private String searchText;
+
+    // Listes de toutes les annotations prédéfinies
+    private ArrayList<Annotation> ListAnnotationsPredef = new ArrayList<>();
+
+    //Dossier contenant les fichiers nécéssaires aux annotations prédéfinies (.png, .mp4, ...)
+    private File AnnotPredefDirectory;
+=======
+>>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
             }
@@ -222,9 +262,29 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         listViewVideos.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         //Spinner catégorie
-        List<Categorie> categorieList = new ArrayList<>();
+        categorieList = new ArrayList<>();
         categorieList.add(new Categorie("Categorie", null, "/"));
-        categorieList.addAll(Util.setCatSpinnerList(this));
+//        categorieList.addAll(Util.setCatSpinnerList(this));
+
+//        List<Categorie> CATEGORIE1_SUB=new ArrayList<>();
+//        CATEGORIE1_SUB.add(new Categorie("Souplesse", "solo", "solo/souplesse"));
+//        CATEGORIE1_SUB.add(new Categorie("Maintien", "solo", "solo/maintien"));
+//        CATEGORIE1_SUB.add(new Categorie("Agilité", "solo", "solo/agilite"));
+//        CATEGORIE1_SUB.add(new Categorie("Dynamique", "solo", "solo/sdynamique"));
+//        CATEGORIE1_SUB.add(new Categorie("Molo", "solo", "solo/molo"));
+//        List<Categorie> CATEGORIE2_SUB=new ArrayList<>();
+//        CATEGORIE2_SUB.add(new Categorie("Statiques positions variées", "duo", "duo/statiques-variees"));
+//        CATEGORIE2_SUB.add(new Categorie("Statiques ATR", "duo", "duo/statiques-atr"));
+//        CATEGORIE2_SUB.add(new Categorie("Dynamiques rattrapes", "duo", "duo/dynamiques-rattrapes"));
+//        CATEGORIE2_SUB.add(new Categorie("Dynamiques sorties", "duo", "duo/dynamique-sorties"));
+
+//        categorieList.get(1).setSubCategories(CATEGORIE1_SUB);
+
+//        for (int i=2; i<categorieList.size();i++){
+//            categorieList.get(i).setSubCategories(CATEGORIE2_SUB);
+//        }
+
+        categorieList.addAll(Util.initCatList(this));
 
         spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
 
@@ -275,8 +335,49 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         if (!Util.appDirExist(this)) {
             Util.createDir(this);
         }
-
         fileVideoImport = new File("");
+<<<<<<< HEAD
+
+
+        searchText = new String();
+        searchVideo = (EditText)findViewById(R.id.editText_search_video);
+
+        searchVideo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                searchText=charSequence.toString();
+                videosAdapter.clear();
+                videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
+                videosAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+        fileVideoImport = new File("");        searchText = new String();
+        searchVideo = (EditText)findViewById(R.id.editText_search_video);
+
+
+        AnnotPredefDirectory = new File(MainActivity.this.getExternalFilesDir(""),"annotations");
+        AnnotPredefDirectory.mkdirs();
+
+
+        int i = 1;
+        Annotation recupAnnot = Util.parseJSON_Annot(MainActivity.this,i);
+        while( recupAnnot != null){
+            ListAnnotationsPredef.add(recupAnnot);
+            i++;
+            recupAnnot = Util.parseJSON_Annot(MainActivity.this,i);
+        }
+
+=======
+>>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
     }
 
     @Override
@@ -316,7 +417,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-
         return true;
     }
 
@@ -324,26 +424,37 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_import:
-                DialogImport dialogImport = new DialogImport();
+                DialogImport dialogImport = new DialogImport(categorieList);
                 dialogImport.showDialogImport(MainActivity.this);
                 return true;
             case R.id.action_profile:
                 if (statut_profil == ELEVE) {
                     DialogProfil dialogProfil = new DialogProfil();
-                    dialogProfil.showDialogProfil(MainActivity.this,item);
-
-
+                    dialogProfil.showDialogProfil(MainActivity.this,item,annotFragment);
                 } else if (statut_profil == COACH) {
                     btnLayout.setVisibility(View.GONE);
                     item.setTitle("Mode consultation");
                     statut_profil = ELEVE;
+                    annotFragment.setStatut_profil(ELEVE);
                 }
 
                 return true;
+
+            case R.id.action_category:
+
+                Intent childintent = new Intent(MainActivity.this,CategoryActivity.class);
+                for( Categorie cat: categorieList)
+                {
+                    System.out.println(cat + "     " + cat.getSubCategories().size());
+                }
+
+                childintent.putParcelableArrayListExtra("categorieList", (ArrayList<? extends Parcelable>) categorieList);
+                startActivityForResult(childintent,READ_CATEGORY_CODE);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     @Override
@@ -359,9 +470,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId() == R.id.lv_videos) {
+        if (v.getId() == R.id.lv_videos && statut_profil==COACH) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
+            menu.findItem(R.id.add_item).setVisible(false);
+            menu.findItem(R.id.edit_item_annot).setVisible(false);
+            menu.findItem(R.id.delete_item_annot).setVisible(false);
+            menu.findItem(R.id.edit_item).setVisible(true);
+            menu.findItem(R.id.delete_item).setVisible(true);
         }
     }
 
@@ -369,15 +485,35 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Video video = videosAdapter.getItem(info.position);
+        Video video;
+        Annotation annotation;
         switch (item.getItemId()) {
             case R.id.edit_item:
+                video = videosAdapter.getItem(info.position);
                 DialogEditVideo dialog = new DialogEditVideo(this, video);
                 dialog.showDialogEdit();
                 return true;
             case R.id.delete_item:
+                video = videosAdapter.getItem(info.position);
+                String subCatDir= currentCategorie + "/" +video.getPath();
+                File subDirContent = this.getExternalFilesDir(subCatDir);
+                System.out.println(subDirContent.isDirectory()+"     "+ subCatDir + "     "+ subDirContent.getName() +"     "+ video.getPath());
+                if (subDirContent.isDirectory())
+                {
+                    Util.deleteRecursiveDirectory(subDirContent);
+                }
                 videosAdapter.remove(video);
                 videosAdapter.notifyDataSetChanged();
+                initExoPlayer();
+                Util.deleteRecursiveDirectory(subDirContent);
+                return true;
+            case R.id.edit_item_annot:
+                annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
+                return true;
+            case R.id.delete_item_annot:
+                annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
+                annotFragment.getFragmentListener().onDeleteAnnotation(annotation);
+                annotFragment.getAnnotationsAdapter().notifyDataSetChanged();
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -459,7 +595,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
             annotFragment.updateAnnotationList(currentVAnnot);
 
-            videoName = currentVideo.getFileName();
+            System.out.println(currentVideo.getFileName() +"              "+ currentVideo.getName());
+//            videoName = currentVideo.getFileName();
+            videoName = currentVideo.getName();
 
             if (currentVideo != null) {
                 controlerAnnotation = new ControllerAnnotation( MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
@@ -508,7 +646,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             filePath = this.getExternalFilesDir(DirPath.CATEGORIE1_SUB1.toString() + File.separator + videoName).getAbsolutePath();
         }
         //Uri uri = Uri.fromFile(new java.io.File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + File.separator + "Camera" + File.separator + videoName + ".mp4"));
-        Uri uri = Uri.fromFile(new java.io.File(filePath + File.separator + videoName + ".mp4"));
+        Uri uri = Uri.fromFile(new File(filePath + File.separator + videoName + ".mp4"));
 
         DataSpec dataSpec = new DataSpec(uri);
         FileDataSource fileDataSource = new FileDataSource();
@@ -594,34 +732,34 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
     private void initPlayButton() {
-            PlaybackControlView controlView = exoPlayerView.findViewById(R.id.exo_controller);
-            playIcon = controlView.findViewById(R.id.exo_play_icon);
-            playButton = controlView.findViewById(R.id.exo_play_button);
-            playButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (currentVideo != null) {
-                        if (exoplayerPlay == false) {
-                            // lance la video
-                            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
-                            exoplayerPlay = true;
-                            //exoPlayerView.setUseController(false);
+        PlaybackControlView controlView = exoPlayerView.findViewById(R.id.exo_controller);
+        playIcon = controlView.findViewById(R.id.exo_play_icon);
+        playButton = controlView.findViewById(R.id.exo_play_button);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentVideo != null) {
+                    if (exoplayerPlay == false) {
+                        // lance la video
+                        playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
+                        exoplayerPlay = true;
+                        //exoPlayerView.setUseController(false);
 
-                            controlerAnnotation.setLast_pos(0);
+                        controlerAnnotation.setLast_pos(0);
 
-                            player.setPlayWhenReady(true);
-                            new Thread(controlerAnnotation).start();
-                        } else {
-                            // augmente la vitesse
-                            playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
-                            exoplayerPlay = false;
-                            //exoPlayerView.setUseController(false);
-                            player.setPlayWhenReady(false);
-                            controlerAnnotation.cancel();
-                        }
+                        player.setPlayWhenReady(true);
+                        new Thread(controlerAnnotation).start();
+                    } else {
+                        // augmente la vitesse
+                        playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+                        exoplayerPlay = false;
+                        //exoPlayerView.setUseController(false);
+                        player.setPlayWhenReady(false);
+                        controlerAnnotation.cancel();
                     }
                 }
-            });
+            }
+        });
     }
 
     private void closeFullscreenDialog() {
@@ -670,36 +808,62 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         File subDirContent = this.getExternalFilesDir(subCatDir);
 
-        if (subDirContent.listFiles().length > 0) {
-            for (File videoFileDir : subDirContent.listFiles()) {
-                Log.e("SUB_CONT_FILE", videoFileDir.getAbsolutePath());
-                if (videoFileDir.isDirectory() && videoFileDir.listFiles().length > 0) {
-                    Video video = new Video();
-                    for (File videoFile : videoFileDir.listFiles()) {
-                        if (videoFile.getName().substring(videoFile.getName().lastIndexOf(".") + 1).equals("mp4")) {
-                            Log.e("VIDEO", "Video found [" + videoFile.getName() + "]");
-                            video.setFileName(videoFileDir.getName()); //le fichir video porte le même nom que le répertoire qui le contient
+        if(subDirContent.listFiles() != null){        
+            if (subDirContent.listFiles().length > 0) {
+                for (File videoFileDir : subDirContent.listFiles()) {
+                    Log.e("SUB_CONT_FILE", videoFileDir.getAbsolutePath());
+                    if (videoFileDir.isDirectory() && videoFileDir.listFiles().length > 0) {
+                        Video video = new Video();
+                        for (File videoFile : videoFileDir.listFiles()) {
+                            if (videoFile.getName().substring(videoFile.getName().lastIndexOf(".") + 1).equals("mp4")) {
+                                Log.e("VIDEO", "Video found [" + videoFile.getName() + "]");
+                                System.out.println("Nom de la vidéo: " + videoFileDir.getName());
+                                video.setFileName(videoFileDir.getName()); //le fichier video porte le même nom que le répertoire qui le contient
+                                video.setName(videoFileDir.getName());
+                            }
+
+                            if (videoFile.getName().substring(videoFile.getName().lastIndexOf(".") + 1).equals("json")) {
+                                VideoAnnotation videoAnnotation = Util.parseJSON(this, subCatDir + File.separator + videoFileDir.getName(), videoFile.getName());
+                                video.setVideoAnnotation(videoAnnotation);
+                            }
                         }
 
-                        if (videoFile.getName().substring(videoFile.getName().lastIndexOf(".") + 1).equals("json")) {
-                            VideoAnnotation videoAnnotation = Util.parseJSON(this, subCatDir + File.separator + videoFileDir.getName(), videoFile.getName());
-                            video.setVideoAnnotation(videoAnnotation);
+                        if (video.getFileName() != null && !video.getFileName().isEmpty()) {
+                            System.out.println("2) Nom de la vidéo: "+videoFileDir.getName());
+                            video.setPath(currentSubCategorie + File.separator + videoFileDir.getName());
+                            videoList.add(video);
                         }
-                    }
-
-                    if (video.getFileName() != null && !video.getFileName().isEmpty()) {
-                        video.setPath(currentSubCategorie + File.separator + videoFileDir.getName());
-                        videoList.add(video);
                     }
                 }
             }
-        } else {
+        }
+        else {
             Log.e("SUB_CAT", "No content in " + subCatDir);
         }
+        /**
+         * Sébastien VIOT
+         * On filtre la liste de vidéos, avec le texte de la recherche
+         */
 
-        return videoList;
+        return filter(videoList, searchText);
     }
 
+
+    private List<Video> filter(List<Video> vl, String toSearch) {
+        List<Video> ret = new ArrayList<>();
+        for (Video inlist : vl) {
+            /**
+             * Sébastien VIOT.
+             * La recherche est insensible à la casse
+             */
+            String videoNameIgnoreCase = inlist.getFileName().toLowerCase();
+            String toSearchIgnoreCase = toSearch.toLowerCase();
+            if (videoNameIgnoreCase.contains(toSearchIgnoreCase)){
+                ret.add(inlist);
+            }
+        }
+        return ret;
+    }
     /**
      * listener de clic sur les button d'annotation
      */
@@ -755,15 +919,60 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     protected AdapterView.OnItemSelectedListener catItemSelectedListener = new AdapterView.OnItemSelectedListener() {
 
         @Override
+//        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+//            // Here you get the current item that is selected by its position
+//            currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
+//            spinnerAdapter2.clear();
+////            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
+//            spinnerAdapter2.add(new Categorie("Sous-catégorie", null, "/"));
+//            spinnerAdapter2.addAll(categorieList.get(position).getSubCategories());
+//            spinnerAdapter2.notifyDataSetChanged();
+//            spinnerSubCategorie.setSelection(1);
+//            Log.e("SELECT_CAT", currentCategorie.getPath());
+//        }
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
             // Here you get the current item that is selected by its position
             currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
-
+//            System.out.println(categorieList.get(position).getPath()+"      "+categorieList.get(position).getSubCategories().get(0)+"    "+categorieList.get(position).getParentName() +"      "+ categorieList.get(position-1).getName());
+            currentSubCategorie = currentCategorie.getSubCategories().get(0);
+            searchVideo.setText("");
             spinnerAdapter2.clear();
-            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
+//            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
+            spinnerAdapter2.add(new Categorie("Sous-catégorie", null, "/"));
+            spinnerAdapter2.addAll(categorieList.get(position).getSubCategories());
             spinnerAdapter2.notifyDataSetChanged();
             spinnerSubCategorie.setSelection(1);
             Log.e("SELECT_CAT", currentCategorie.getPath());
+            annotFragment.updateAnnotationList(null);
+            if(videosAdapter.getCount()> 0 ){
+                //currentVideo = videosAdapter.getItem(0);
+
+                currentVideo = (Video) listViewVideos.getItemAtPosition(0);
+                setCurrentVAnnot();
+                if (currentVAnnot == null) {
+                    currentVAnnot = Util.createNewVideoAnnotation();
+                }
+                annotFragment.updateAnnotationList(currentVAnnot);
+                videoName = currentVideo.getFileName();
+
+                if (player != null){
+                    player.stop();
+                }
+
+
+                initExoPlayer();
+
+                if (currentVideo != null) {
+                    controlerAnnotation = new ControllerAnnotation( MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+                } else {
+                    controlerAnnotation = new ControllerAnnotation(MainActivity.this, null, mainHandler);
+                }
+            }else {
+                playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+                exoplayerPlay = false;
+                initPlayButton();
+                initExoPlayer();
+            }
         }
 
         @Override
@@ -776,28 +985,82 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      */
     protected AdapterView.OnItemSelectedListener subCatItemSelectedListener = new AdapterView.OnItemSelectedListener() {
 
+//        @Override
+//        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+//            if (position > 0) {
+//                // Here you get the current item that is selected by its position
+//                currentSubCategorie = (Categorie) adapterView.getItemAtPosition(position);
+//                Log.e("SELECT_SUB_CAT", currentSubCategorie.getPath());
+//
+//                videosAdapter.clear();
+//                videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
+//                videosAdapter.notifyDataSetChanged();
+//
+//                if(videosAdapter.getCount()> 0 ){
+//                    //currentVideo = videosAdapter.getItem(0);
+//                    currentVideo = (Video) listViewVideos.getItemAtPosition(0);
+//                    setCurrentVAnnot();
+//                    if (currentVAnnot == null) {
+//                        currentVAnnot = Util.createNewVideoAnnotation();
+//                    }
+//
+//                    annotFragment.updateAnnotationList(currentVAnnot);
+//
+//                    videoName = currentVideo.getFileName();
+//
+//                    if (player != null){
+//                        player.stop();
+//                    }
+//
+//
+//                    initExoPlayer();
+//
+//                    if (currentVideo != null) {
+//                        controlerAnnotation = new ControllerAnnotation( MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+//                    } else {
+//                        controlerAnnotation = new ControllerAnnotation(MainActivity.this, null, mainHandler);
+//                    }
+//                }else {
+//                    playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+//                    exoplayerPlay = false;
+//                    initPlayButton();
+//                    initExoPlayer();
+//                }
+//            }
+//
+//        }
+
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
             if (position > 0) {
                 // Here you get the current item that is selected by its position
                 currentSubCategorie = (Categorie) adapterView.getItemAtPosition(position);
                 Log.e("SELECT_SUB_CAT", currentSubCategorie.getPath());
-
+                searchVideo.setText("");
                 videosAdapter.clear();
                 videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
                 videosAdapter.notifyDataSetChanged();
 
+                annotFragment.updateAnnotationList(null);
+
                 if(videosAdapter.getCount()> 0 ){
                     //currentVideo = videosAdapter.getItem(0);
+
                     currentVideo = (Video) listViewVideos.getItemAtPosition(0);
                     setCurrentVAnnot();
                     if (currentVAnnot == null) {
                         currentVAnnot = Util.createNewVideoAnnotation();
                     }
 
+                    }
                     annotFragment.updateAnnotationList(currentVAnnot);
 
-                    videoName = currentVideo.getFileName();
+                    if (currentVideo != null) {
+                        videoName = currentVideo.getFileName();
+                    }
+                    else {
+                        videoName = "";
+                    }
 
                     if (player != null){
                         player.stop();
@@ -819,8 +1082,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 }
             }
 
+<<<<<<< HEAD
+=======
         }
 
+>>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
         @Override
         public void onNothingSelected(AdapterView<?> adapter) {
         }
@@ -841,6 +1107,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     @Override
     public SimpleExoPlayer getPlayer() {
         return player;
+    }
+
+
+    @Override
+    public void setErase() {
+        drawView.setErase();
     }
 
     @Override
@@ -869,8 +1141,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      */
     @Override
     public void onSaveDrawAnnotation(Annotation annotation) {
-
         onSaveAnnotation(annotation);
+        closeDrawFragment();
+    }
+
+    @Override
+    public void onSaveDrawAnnotation(Annotation annotation, int position) {
+        this.currentVAnnot.getAnnotationList().remove(position);
+        onSaveDrawAnnotation(annotation);
         closeDrawFragment();
     }
 
@@ -882,8 +1160,13 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      */
     @Override
     public void onSaveAnnotation(Annotation annotation) {
+
         // création de l'annotation
         annotation.setAnnotationStartTime(player.getCurrentPosition());
+
+        if(drawFragment.isEditing()){
+            currentVAnnot.getAnnotationList().remove(annotation);
+        }
 
         currentVAnnot.getAnnotationList().add(annotation);
         currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
@@ -927,6 +1210,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             ft.commit();
         }
         drawView.setVisibility(View.GONE);
+<<<<<<< HEAD
+        setAnnotButtonStatus(true);
+=======
+        System.out.println("10");
+>>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
     }
 
 
@@ -968,13 +1256,23 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      * Gestion de la lecture/affichage de annotations au clic
      * @param annotation
      */
-    @Override
+//    @Override
     public void onAnnotItemClick(final Annotation annotation) {
 
         onAnnotationLauched(annotation);
 
     }
 
+<<<<<<< HEAD
+//    @Override
+    public void onAnnotPredefItemClick(final Annotation annotation) {
+
+        //onAnnotationLauched(annotation);
+
+    }
+
+=======
+>>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
     /**
      *Méthode prenant en charge le lancement des annotations
      * @param annotation
@@ -1056,6 +1354,68 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
     @Override
+    public void onSaveEditAnnot(Annotation annotation, String title, int duree) {
+        for(int i = 0; i<currentVAnnot.getAnnotationList().size(); i++)
+        {
+            System.out.println("Titre : " +currentVAnnot.getAnnotationList().get(i).getAnnotationTitle() +"    "+ annotation.getAnnotationTitle());
+            if(currentVAnnot.getAnnotationList().get(i).getAnnotationTitle().matches(annotation.getAnnotationTitle())) {
+                System.out.println("Modification en cours");
+                currentVAnnot.getAnnotationList().get(i).setAnnotationTitle(title);
+                currentVAnnot.getAnnotationList().get(i).setAnnotationDuration(duree);
+            }
+            if(currentVideo.getVideoAnnotation().getAnnotationList().get(i).getAnnotationTitle().matches(annotation.getAnnotationTitle())){
+                currentVideo.getVideoAnnotation().getAnnotationList().get(i).setAnnotationTitle(title);
+                currentVideo.getVideoAnnotation().getAnnotationList().get(i).setAnnotationDuration(duree);
+                System.out.println("Apres Video modif: " +currentVideo.getVideoAnnotation().getAnnotationList().get(i).getAnnotationTitle());
+            }
+        }
+        annotation.setAnnotationTitle(title);
+        annotation.setAnnotationDuration(duree);
+        Collections.sort(currentVAnnot.getAnnotationList(), new AnnotationComparator());
+        String directory = currentSubCategorie.getPath() + File.separator + videoName;
+        Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory,videoName);
+    public void onEditAnnotation(Annotation annotation, int position) {
+        final String annotFileDirectory = currentSubCategorie.getPath() + "/" + currentVideo.getFileName();
+        //Afficher l'annotation prise en paramètre
+        switch (annotation.getAnnotationType()){
+            case TEXT:
+
+        annotFragment.updateAnnotationList(currentVAnnot);
+                break;
+            case DRAW:
+                Bitmap bitmap = Util.getBitmapFromAppDir(getApplicationContext(), annotFileDirectory, annotation.getDrawFileName());
+
+                player.setPlayWhenReady(false);
+                drawView.setVisibility(View.VISIBLE);
+                drawView.setOnTouchEnable(true);
+
+                //Affichage du fragment draw : obligation de passer par l'activité pour communiquer entre les deux fragments
+                FragmentManager manager = getFragmentManager();
+                FragmentTransaction ft = manager.beginTransaction();
+                drawFragment = (Fragment_draw) manager.findFragmentByTag(FRAGMENT_DRAW_TAG);
+                if (drawFragment == null) {
+                    drawFragment = new Fragment_draw();
+                    drawFragment.setEditing(true);
+                    drawFragment.setPosition(position);
+                    ft.add(R.id.annotation_menu, drawFragment, FRAGMENT_DRAW_TAG);
+                    ft.hide(annotFragment);
+                    ft.show(drawFragment);
+                    ft.commit();
+                } else {
+                    drawFragment.setPosition(position);
+                    drawFragment.setEditing(true);
+                    ft.hide(annotFragment);
+                    ft.show(drawFragment);
+                    ft.commit();
+                }
+                drawView.setmBitmap(bitmap);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
     public void onDeleteAnnotation(Annotation annotation) {
         boolean isRemove = currentVAnnot.getAnnotationList().remove(annotation);
         if (isRemove){
@@ -1090,9 +1450,70 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
             if (data != null && data.getData() != null) {
                 Uri filePath = data.getData();
-                String s = Util.getRealPathFromURI(this,filePath);
-                fileVideoImport = new File(Util.getRealPathFromURI(this,filePath));
+                String s = Util.getRealPathFromURI(this, filePath);
+                fileVideoImport = new File(Util.getRealPathFromURI(this, filePath));
                 videoImportName.setText(fileVideoImport.getName());
+            }
+        }
+
+        //Gestion des Catégories
+        if (requestCode == READ_CATEGORY_CODE && resultCode != Activity.RESULT_CANCELED) {
+            if (!(data.getStringArrayListExtra("Categorie").isEmpty())) {
+                categorieList = new ArrayList<>();
+                List<Categorie> subcategorieList;
+                categorieList = data.getParcelableArrayListExtra("Categorie");
+                spinnerAdapter=new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
+                spinnerCategorie.setAdapter(spinnerAdapter);
+//                Création des répertoires pour les catégories et sous-catégories
+                File Dir = this.getExternalFilesDir("");
+                System.out.println("DIR "+ Dir);
+                File subDir;
+                for(int i=1; i<categorieList.size(); i++){
+                    File newDir=new File(Dir,categorieList.get(i).getOldName());
+//                En cas de modification du nom de la catégorie, modification du nom du répertoire
+                    if ((!categorieList.get(i).getName().matches(categorieList.get(i).getOldName())))
+                    {
+                        File renamed = new File(Dir,categorieList.get(i).getName());
+                        System.out.println("Test3 "+Dir);
+                        if (newDir.exists()) {
+                            System.out.println("Nouvellement renommé !");
+                            newDir.renameTo(renamed);
+                        }
+                    }
+//                Si le repertoire n'existe pas on le crée
+                    if (categorieList.get(i).getName().matches(categorieList.get(i).getOldName()) && !newDir.exists()) {
+                        newDir.mkdir();
+                        System.out.println("Nouvellement créé !");
+                        subDir = this.getExternalFilesDir("./" + newDir.getName());
+//                On crée les répertoires pour les sous-catégories de la catégorie
+                        for(Categorie cat: categorieList.get(i).getSubCategories())
+                        {
+                            File newSubCat = new File(subDir,cat.getName());
+                            newSubCat.mkdir();
+                            System.out.println("subCat  :" + newSubCat.exists());
+                        }
+                    }
+
+//                On fait de même pour les sous-catégories
+                    subcategorieList=categorieList.get(i).getSubCategories();
+                    for(int j=0; j<subcategorieList.size();j++){
+//                        File newsubDir=new File("./"+categorieList.get(i).getName(),subcategorieList.get(j).getOldName());
+                        File newsubDir=new File(Dir+"/"+subcategorieList.get(j).getParentName(),subcategorieList.get(j).getOldName());
+//                        System.out.println("TEST path " + newsubDir);
+                        if ((!subcategorieList.get(j).getName().matches(subcategorieList.get(j).getOldName())))
+                        {
+                            File subnamed = new File(Dir +"/"+subcategorieList.get(j).getParentName(),subcategorieList.get(j).getName());
+                            if (newsubDir.exists()) {
+                                System.out.println(newsubDir.renameTo(subnamed));
+                            }
+                        }
+//                Si le repertoire n'existe pas on le crée
+                        if (subcategorieList.get(j).getName().matches(subcategorieList.get(j).getOldName()) && !newsubDir.exists()) {
+                            System.out.println("BRAVO! "+newsubDir.mkdir());
+                        }
+                    }
+                }
+//                Util.reInitCatList(this,categorieList);
             }
         }
     }
@@ -1114,6 +1535,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
         videosAdapter.notifyDataSetChanged();
     }
+
 
     protected void reloadAfterAnnotUpdate(){
 
@@ -1164,9 +1586,68 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
     //Edition des infos de la video via context menu
+    //Modification du nom du repertoire et de la video
     @Override
     public void onSaveEditVideo(Video video, String title) {
+        String subCatDir= currentCategorie + "/" +video.getPath();
+        File subDirContent = this.getExternalFilesDir(subCatDir);
+        File renamed = new File(this.getExternalFilesDir(currentCategorie + "/" + currentSubCategorie),title);
+        subDirContent.renameTo(renamed);
+        subDirContent=this.getExternalFilesDir(currentCategorie + "/" + currentSubCategorie+"/"+title);
+        if (subDirContent.listFiles().length > 0) {
+            for (File videoFileDir : subDirContent.listFiles()) {
+                Log.e("SUB_CONT_FILE", videoFileDir.getAbsolutePath());
+                    if (videoFileDir.getName().substring(videoFileDir.getName().lastIndexOf(".") + 1).equals("mp4")) {
+                        File from = new File(subDirContent, video.getFileName() + ".mp4");
+                        File to = new File(subDirContent, title + ".mp4");
+                        if (from.exists()) {
+                            from.renameTo(to);
+                        }
+                    }
+                    if (videoFileDir.getName().substring(videoFileDir.getName().lastIndexOf(".") + 1).equals("json")) {
+                        File from = new File(subDirContent,video.getFileName()+".json");
+                        File to = new File(subDirContent,title+".json");
+                        if(from.exists())
+                            from.renameTo(to);
+                        }
+                    }
+        } else {
+            Log.e("SUB_CAT", "No content in " + subCatDir);
+        }
         video.setFileName(title);
+        video.setName(title);
         videosAdapter.notifyDataSetInvalidated();
     }
+<<<<<<< HEAD
+
+    // Copie les fichiers (images, fichiers mp4) du dossier d'annotations prédéfini vers le dossier de la vidéo courante
+    public void CopyFileAnnotPredef (Annotation annotation){
+        if (annotation.getAnnotationType() == DRAW){
+            File ImageAnnotation = new File(MainActivity.this.getExternalFilesDir("annotations"),annotation.getDrawFileName());
+            File DossierCurrentVideo = new File(MainActivity.this.getExternalFilesDir(currentSubCategorie.getPath()),currentVideo.getFileName());
+            try {
+                FileUtils.copyFileToDirectory(ImageAnnotation,DossierCurrentVideo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (annotation.getAnnotationType() == AUDIO){
+            File AudioAnnotation = new File(MainActivity.this.getExternalFilesDir("annotations"),annotation.getAudioFileName());
+            File DossierCurrentVideo = new File(MainActivity.this.getExternalFilesDir(currentSubCategorie.getPath()),currentVideo.getFileName());
+            try {
+                FileUtils.copyFileToDirectory(AudioAnnotation,DossierCurrentVideo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+   public void OnOffBoutons(boolean bouton){
+       setAnnotButtonStatus(bouton);
+   }
+
+
 }
+=======
+}
+>>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video

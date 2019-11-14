@@ -7,33 +7,69 @@ import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
+<<<<<<< HEAD
+import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.TextView;
+=======
+>>>>>>> parent of 677f168... Merge remote-tracking branch 'origin/groupe_video' into groupe_video
 
+import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
 import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
-import com.master.info_ua.videoannottool.util.AnnotationComparator;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import static com.master.info_ua.videoannottool.MainActivity.COACH;
+import static com.master.info_ua.videoannottool.MainActivity.ELEVE;
+import com.master.info_ua.videoannottool.MainActivity;
+import com.master.info_ua.videoannottool.R;
+import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
+import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
+import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
 
-public class Fragment_annotation extends Fragment implements DialogEditAnnot.EditAnnotDialogListener {
+import com.master.info_ua.videoannottool.R;
+import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
+import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
+import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.annotation.AnnotationType;
+import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
+import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
+import com.master.info_ua.videoannottool.util.AnnotationComparator;
+import com.master.info_ua.videoannottool.util.Categorie;
+import com.master.info_ua.videoannottool.util.Util;
+
+import com.master.info_ua.videoannottool.fragment.Fragment_AnnotPredef.AnnotFragmentListener;
+
+
+
+public class Fragment_annotation extends Fragment  implements DialogEditAnnot.EditAnnotDialogListener {
+
+    public AnnotationsAdapter getAnnotationsAdapter() {
+        return annotationsAdapter;
+    }
 
     private AnnotationsAdapter annotationsAdapter;
     private ListView listViewAnnotations;
 
     private AnnotFragmentListener fragmentListener;
+
+    public AnnotFragmentListener getFragmentListener() {
+        return fragmentListener;
+    }
+
+    private boolean statut_profil=ELEVE;
+
+    private static final String FRAGMENT_DRAW_TAG = "drawFragment";
 
 
     public Fragment_annotation() {
@@ -124,15 +160,39 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
         }
     };
 
-
+    // Crée le contextmenu pour les annotations qui utilisera le listener dans le MainActivity
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId() == R.id.lv_annotations) {
+        if (v.getId() == R.id.lv_annotations && statut_profil == COACH) {
             MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
+            menu.findItem(R.id.edit_item_annot).setVisible(true);
+            menu.findItem(R.id.delete_item_annot).setVisible(true);
+            menu.findItem(R.id.add_item).setVisible(false);
+            menu.findItem(R.id.edit_item).setVisible(false);
+            menu.findItem(R.id.delete_item).setVisible(false);
         }
     }
+//
+//    @Override
+//    public boolean onContextItemSelected(MenuItem item) {
+//
+//        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+//        Annotation annotation = annotationsAdapter.getItem(info.position);
+//        switch (item.getItemId()) {
+//            case R.id.edit_item:
+//                DialogEditAnnot dialog = new DialogEditAnnot(this, annotation);
+//                dialog.showDialogEdit();
+//                return true;
+//            case R.id.delete_item:
+//                fragmentListener.onDeleteAnnotation(annotation);
+//                annotationsAdapter.notifyDataSetChanged();
+//                return true;
+//            default:
+//                return super.onContextItemSelected(item);
+//        }
+//    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -153,6 +213,9 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
         }
     }
 
+    public void setStatut_profil(boolean profil){ statut_profil = profil; }
+
+
     @Override
     public void onSaveEditAnnot(Annotation annotation, String title, int duree) {
         annotation.setAnnotationTitle(title);
@@ -163,7 +226,7 @@ public class Fragment_annotation extends Fragment implements DialogEditAnnot.Edi
     public interface AnnotFragmentListener {
 
         void onAnnotItemClick(Annotation annotation);
-
+        void onEditAnnotation(Annotation annotation, int position);
         void onDeleteAnnotation(Annotation annotation);
     }
 }
