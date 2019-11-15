@@ -72,6 +72,7 @@ public class Util {
         return null;
     }
 
+
     //Récupère un fichier dans le répertoire indiqué de l'application et fait le parsing en objet Java
     public static Annotation parseJSON_Annot(Context context,int annotNum) {
         //Récupère le chemin absolu du fichier
@@ -91,7 +92,6 @@ public class Util {
         }
         return null;
     }
-
 
     //Sauvegarde l'objet Annotation dans un fichier Json dans le dossier des annotations prédéfinis
     public static void saveAnnotation(Context context,Annotation AnnotPredef, int annotNum) {

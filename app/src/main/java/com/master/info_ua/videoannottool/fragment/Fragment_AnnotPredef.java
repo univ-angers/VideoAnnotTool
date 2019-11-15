@@ -39,7 +39,7 @@ public class Fragment_AnnotPredef extends Fragment implements DialogEditAnnotPre
 
     private DialogCallback ContextMain;
 
-
+    //A modifier : utiliser setArguments(bundle)
     public Fragment_AnnotPredef(ArrayList<Annotation> LAnnotPredef, DialogCallback contextMain ){
         // Required empty public constructor
         this.ListAnnotationsPredef = LAnnotPredef;

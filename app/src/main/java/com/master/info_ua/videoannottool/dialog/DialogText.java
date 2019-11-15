@@ -2,16 +2,18 @@ package com.master.info_ua.videoannottool.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
+import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 
 //Classe permettant l'affichage d'une boite de dialogue pour acquérir les annotations textuelles
@@ -51,6 +53,7 @@ public class DialogText {
                     annotation.setAnnotationDuration(Integer.parseInt(etDuration.getText().toString()) * 1000);
                     annotation.setTextComment(texte);
                     annotation.setAnnotationTitle(ed_texte_titre.getText().toString());
+                    annotation.setAnnotationTitle(ed_texte_titre.getText().toString());
                     //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
                     textAnnotDialogCallback.onSaveAnnotation(annotation,checkAnnotPredef.isChecked());
                     Log.i("TEXT_DIALOG-BOX", "Validation :" + texte);
@@ -64,6 +67,7 @@ public class DialogText {
             @Override
             public void onClick(View view) {
                 Log.i("TEXT_DIALOG-BOX", "Annulation");
+                textAnnotDialogCallback.OnOffBoutons(true);
                 dialogBox.cancel();
             }
         });

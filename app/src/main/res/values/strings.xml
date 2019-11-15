@@ -34,17 +34,16 @@
     <string name="TextBtnSelectVideo">Choisir la vidéo</string>
 
     <string name="TextDialogEditAnnot">Editer l\'annotation</string>
+    <string name="TitleDialogEditAnnotPredef">Enregitrement prédéfini</string>
+
+    <string name="CheckAnnotPredef">Enregistrer l\'annotation en prédéfinie</string>
     <string name="TextAnnotPredef">Liste des annotations prédéfinies</string>
-
-
     <string name="profil">Profil</string>
     <string name="editValidateToast">Modification effectuée</string>
     <string name="TextDialogEditVideo">Editer la vidéo</string>
     <string name="TextDialogEditCategorie">Editer la catégorie</string>
     <string name="TextDialogAddSubCategorie">Ajouter la sous-catégorie</string>
     <string name="titre_de_la_video">Titre de la vidéo</string>
-    <string name="modifier">Modifier</string>
-    <string name="supprimer">Supprimer</string>
     <string name="mode_categorie">Gestion des catégories</string>
     <string name="quitter">Quitter</string>
     <string name="sous_categorie">Sous-catégorie</string>
@@ -53,19 +52,21 @@
     <string name="nom_de_la_sous_categorie">Nom de la sous-catégorie</string>
     <string name="TextDialogEditSubCategorie">Modification de la sous-catégorie</string>
     <string name="ajouter">Ajouter</string>
-    <string name="ajouter_sous_categorie">Ajouter sous-catégorie</string>
-    <string name="rename_annot">Changer nom ou durée</string>
 
+    <!-- Menu contextuel -->
+    <string name="add_sub_cat">Ajouter une sous-catégorie</string>
+    <string name="edit_sub_cat">Modifier la sous-catégorie</string>
+    <string name="delete_sub_cat">Supprimer la sous-catégorie</string>
+    <string name="delete_cat">Supprimer la catégorie</string>
+    <string name="edit_cat">Modifier la catégorie</string>
 
-    <string name="delete">Supprimer</string>
-    <string name="edit">Editer</string>
+    <string name="modifierInfos">Modifier le nom et la durée</string>
+    <string name="modifierItem">Modifier le nom et la durée</string>
+    <string name="modifier_annot">Modifier l\'annotation</string>
+    <string name="supprimer_annot">Supprimer l\'annotation</string>
 
-    <string name="CheckAnnotPredef">Enregistrer l\'annotation en prédéfinie</string>
-
-    <string name="titre_video">Titre de l\'annotation :</string>
-    <string name="TitleDialogEditAnnotPredef">Enregitrement prédéfini</string>
-
-
+    <string name="modifier_video">Modifier la vidéo</string>
+    <string name="supprimer_video">Supprimer la vidéo</string>
 
 
 </resources>

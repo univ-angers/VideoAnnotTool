@@ -1,10 +1,10 @@
 package com.master.info_ua.videoannottool.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -213,16 +213,15 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         drawAnnotation.setAnnotationDuration(duration);
         drawAnnotation.setAnnotationDate(new Date());
         if(isEditing){
-            fragmentCallback.onSaveDrawAnnotation(drawAnnotation, check, position);
+            fragmentCallback.onSaveDrawAnnotation(drawAnnotation, position);
         } else {
             fragmentCallback.onSaveDrawAnnotation(drawAnnotation, check);
         }
     }
 
-
     @Override
     public void onResetCanvas() {
-
+        fragmentCallback.setOnTouchEnable(true);
     }
 
     protected void onShowDrawAnnotDialog(){
@@ -241,7 +240,7 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         void setOnTouchEnable(boolean bool);
         String saveDrawImage();
         void onSaveDrawAnnotation(Annotation annotation, boolean check);
-        void onSaveDrawAnnotation(Annotation annotation, boolean check, int position);
+        void onSaveDrawAnnotation(Annotation annotation, int position);
         void setColor(int color);
         void closeAnnotationFrame();
     }

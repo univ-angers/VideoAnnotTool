@@ -28,11 +28,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -87,10 +88,8 @@ import com.master.info_ua.videoannottool.util.Util;
 
 import org.apache.commons.io.FileUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -101,7 +100,7 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
 
 
- public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
+public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
 
     private static final int READ_REQUEST_CODE = 42;
     static final int READ_CATEGORY_CODE = 1;
@@ -116,8 +115,7 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
     private Button annotPredefBtn;
-
-     private RelativeLayout btnLayout;
+    private LinearLayout btnLayout;
 
     // Attribut en lien avec exoplayer
     // le player et son mediaSource
@@ -167,10 +165,9 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
     private Fragment_AnnotPredef annotPredefFragment;
     private static final String FRAGMENT_DRAW_TAG = "drawFragment";
     private static final String FRAGMENT_ANNOT_TAG = "annotFragment";
-     private static final String FRAGMENT_ANNOT_PREDEF_TAG = "annotPredefFragment";
+    private static final String FRAGMENT_ANNOT_PREDEF_TAG = "annotPredefFragment";
 
-
-     private FragmentManager fragmentManager;
+    private FragmentManager fragmentManager;
 
     private DrawView drawView;
     private ImageView drawBimapIv;
@@ -313,7 +310,7 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
         //annotPredefBtn.setEnabled(false);
         annotPredefBtn.setOnClickListener(btnClickListener);
 
-        btnLayout = findViewById(R.id.btn_layout_id);
+        btnLayout = findViewById(R.id.layout_button);
         drawBimapIv = findViewById(R.id.draw_bitmap_iv);
         annotCommentTv = findViewById(R.id.annot_comment_tv);
 
@@ -357,7 +354,9 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
             }
         });
 
-        fileVideoImport = new File("");        searchText = new String();
+        fileVideoImport = new File("");
+
+        searchText = new String();
         searchVideo = (EditText)findViewById(R.id.editText_search_video);
 
 
@@ -468,11 +467,11 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
         if (v.getId() == R.id.lv_videos && statut_profil==COACH) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
-            menu.findItem(R.id.add_item).setVisible(false);
+            menu.findItem(R.id.edit_item_video).setVisible(true);
+            menu.findItem(R.id.delete_item_video).setVisible(true);
             menu.findItem(R.id.edit_item_annot).setVisible(false);
             menu.findItem(R.id.delete_item_annot).setVisible(false);
-            menu.findItem(R.id.edit_item).setVisible(true);
-            menu.findItem(R.id.delete_item).setVisible(true);
+            menu.findItem(R.id.edit_item_infos_annot).setVisible(false);
         }
     }
 
@@ -482,12 +481,12 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
         Video video;
         Annotation annotation;
         switch (item.getItemId()) {
-            case R.id.edit_item:
+            case R.id.edit_item_video:
                 video = videosAdapter.getItem(info.position);
                 DialogEditVideo dialog = new DialogEditVideo(this, video);
                 dialog.showDialogEdit();
                 return true;
-            case R.id.delete_item:
+            case R.id.delete_item_video:
                 video = videosAdapter.getItem(info.position);
                 String subCatDir= currentCategorie + "/" +video.getPath();
                 File subDirContent = this.getExternalFilesDir(subCatDir);
@@ -501,8 +500,15 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
                 initExoPlayer();
                 Util.deleteRecursiveDirectory(subDirContent);
                 return true;
-            case R.id.edit_item_annot:
+            case R.id.edit_item_infos_annot:
                 annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
+                DialogEditAnnot dialogEditAnnot = new DialogEditAnnot(annotFragment, annotation);
+                dialogEditAnnot.showDialogEdit();
+                return true;
+            case R.id.edit_item_annot:
+                System.out.println("Annotation modifiée!!!");
+                annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
+                annotFragment.getFragmentListener().onEditAnnotation(annotation, info.position); //Inutile de repasser par le fragment pour revenir dans l'activité??
                 return true;
             case R.id.delete_item_annot:
                 annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
@@ -900,7 +906,6 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
                     Annotation textAnnotation = new Annotation("Text Annot ", TEXT);
                     DialogText dialogtext = new DialogText(MainActivity.this, 1);
                     dialogtext.showDialogBox(textAnnotation, MainActivity.this);
-
                     break;
 
                 case R.id.annot_predef_btn:
@@ -1139,23 +1144,18 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
         return drawfileName;
     }
 
-
-     /**
-      * Sauvegarde d'une annotation graphique
-      *
-      * @param annotation
-      */
-     @Override
-     public void onSaveDrawAnnotation(Annotation annotation, boolean check) {
-
-         onSaveAnnotation(annotation,check);
-         closeDrawFragment();
-     }
-
     @Override
-    public void onSaveDrawAnnotation(Annotation annotation, boolean check, int position) {
+    public void onSaveDrawAnnotation(Annotation annotation, boolean check) {
+        onSaveAnnotation(annotation,check);
+        closeDrawFragment();
+    }
+
+
+    //Ne devrait plus exister???
+    @Override
+    public void onSaveDrawAnnotation(Annotation annotation, int position) {
         this.currentVAnnot.getAnnotationList().remove(position);
-        onSaveDrawAnnotation(annotation, check);
+        onSaveDrawAnnotation(annotation, false); //True ou false???
         closeDrawFragment();
     }
 
@@ -1166,12 +1166,16 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
      * @param annotation
      */
     @Override
-    public void onSaveAnnotation(Annotation annotation,boolean checkAnnotPredef) {
+    public void onSaveAnnotation(Annotation annotation, boolean checkAnnotPredef) {
+
         // création de l'annotation
         annotation.setAnnotationStartTime(player.getCurrentPosition());
 
-        currentVAnnot.getAnnotationList().add(annotation);
+        if(drawFragment!=null && drawFragment.isEditing()){
+            currentVAnnot.getAnnotationList().remove(annotation);
+        }
 
+        currentVAnnot.getAnnotationList().add(annotation);
         currentVAnnot.setLastModified(Util.DATE_FORMAT.format(new Date()));
 
         if (currentVAnnot != null && (currentVAnnot.getAnnotationList().size() > 0) && currentSubCategorie.getPath() != null) {
@@ -1219,38 +1223,24 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
     }
 
 
-
-     @Override
+    @Override
     public void setColor(int color) {
         drawView.setColor(color);
     }
 
-
-
     @Override
     public void closeAnnotationFrame() {
-        System.out.println("closeAnnotationFrame");
+
         drawView.resetCanvas();
-        System.out.println("1");
         FragmentTransaction ft = fragmentManager.beginTransaction();
         annotFragment = (Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
-        System.out.println("2");
         if (annotFragment == null) {
             annotFragment = new Fragment_annotation();
-            System.out.println("3");
             ft.add(R.id.annotation_menu, annotFragment, FRAGMENT_ANNOT_TAG);
-            System.out.println("4");
             ft.hide(drawFragment);
-            System.out.println("5");
             ft.show(annotFragment);
-            System.out.println("6");
             ft.commit();
-            System.out.println("7");
         } else {
-            if(drawView==null)
-                System.out.println("8");
-            else
-                System.out.println("9");
             ft.hide(drawFragment);
             ft.show(annotFragment);
             ft.commit();
@@ -1265,9 +1255,13 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
     }
 
     protected void setCurrentVAnnot() {
-        currentVAnnot = Util.createNewVideoAnnotation();
+        //currentVAnnot = Util.createNewVideoAnnotation(); à supprimer?
+
         if (currentVideo.getVideoAnnotation() != null) {
+            //if currentVideo.
             currentVAnnot = currentVideo.getVideoAnnotation();
+        } else {
+            currentVAnnot = Util.createNewVideoAnnotation();
         }
     }
 
@@ -1290,6 +1284,7 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
             ft.commit();
         }
         drawView.setVisibility(View.GONE);
+        setAnnotButtonStatus(true);
     }
 
     /**
@@ -1312,20 +1307,27 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
 
     }
 
-     public void closeAnnotPredef(){
+    @Override
+    public void closeAnnotPredef(){
 
-         FragmentTransaction ft2 = fragmentManager.beginTransaction();
-         annotPredefFragment = (Fragment_AnnotPredef)fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_PREDEF_TAG);
+        FragmentTransaction ft2 = fragmentManager.beginTransaction();
+        annotPredefFragment = (Fragment_AnnotPredef)fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_PREDEF_TAG);
+     /*   if (annotPredefFragment == null) {
+            annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef);
+            ft2.add(R.id.annotation_menu, annotPredefFragment, FRAGMENT_ANNOT_PREDEF_TAG);
+            ft2.hide(annotPredefFragment);
+            ft2.show(annotFragment);
+            ft2.commit();
+        } else {*/
+        ft2.hide(annotPredefFragment);
+        ft2.show(annotFragment);
+        ft2.commit();
+        setAnnotButtonStatus(true);
+        //  }
 
-         ft2.hide(annotPredefFragment);
-         ft2.show(annotFragment);
-         ft2.commit();
-         setAnnotButtonStatus(true);
-         //  }
+    }
 
-     }
-
-     /**
+    /**
      *Méthode prenant en charge le lancement des annotations
      * @param annotation
      */
@@ -1575,7 +1577,8 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
         }
     }
 
-     @Override
+
+    @Override
     public void onClickVideoFileImport() {
         performFileSearch();
     }
@@ -1640,6 +1643,7 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
         audioAnnotBtn.setEnabled(status);
         graphAnnotBtn.setEnabled(status);
         textAnnotBtn.setEnabled(status);
+        annotPredefBtn.setEnabled(status);
     }
 
     //Edition des infos de la video via context menu

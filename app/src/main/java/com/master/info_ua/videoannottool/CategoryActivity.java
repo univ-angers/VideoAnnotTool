@@ -100,18 +100,21 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.context_menu_cat, menu);
         if (v.getId() == R.id.lv_category) {
-            MenuInflater inflater = this.getMenuInflater();
-            inflater.inflate(R.menu.context_menu, menu);
-            menu.findItem(R.id.edit_item_annot).setVisible(false);
-            menu.findItem(R.id.delete_item_annot).setVisible(false);
-            menu.findItem(R.id.add_item).setVisible(true);
-            menu.findItem(R.id.edit_item).setVisible(true);
-            menu.findItem(R.id.delete_item).setVisible(true);
+            menu.findItem(R.id.edit_categorie).setVisible(true);
+            menu.findItem(R.id.delete_categorie).setVisible(true);
+            menu.findItem(R.id.add_sub_cat).setVisible(true);
+            menu.findItem(R.id.edit_sub_cat).setVisible(false);
+            menu.findItem(R.id.delete_sub_cat).setVisible(false);
         }
         if (v.getId() == R.id.lv_sub_category) {
-            MenuInflater inflater = this.getMenuInflater();
-            inflater.inflate(R.menu.context_menu_sub_cat, menu);
+            menu.findItem(R.id.edit_categorie).setVisible(false);
+            menu.findItem(R.id.delete_categorie).setVisible(false);
+            menu.findItem(R.id.add_sub_cat).setVisible(false);
+            menu.findItem(R.id.edit_sub_cat).setVisible(true);
+            menu.findItem(R.id.delete_sub_cat).setVisible(true);
         }
 
     }
@@ -122,25 +125,25 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Categorie categorie = spinnerAdapter.getItem(info.position);
         switch (item.getItemId()) {
-            case R.id.add_item:
-                DialogAddSubCategorie addSubCategorie = new DialogAddSubCategorie(this,categorie);
-                addSubCategorie.showDialogEdit();
-                return true;
-            case R.id.edit_item:
+            case R.id.edit_categorie:
                 DialogEditCategorie editCategorie = new DialogEditCategorie(this, categorie);
                 editCategorie.showDialogEdit();
                 return true;
-            case R.id.delete_item:
+            case R.id.delete_categorie:
                 categorie = spinnerAdapter.getItem(info.position);
                 list_categorie.remove(categorie);
                 spinnerAdapter.remove(categorie);
                 return true;
-            case R.id.edit_sub_cat_item:
+            case R.id.add_sub_cat:
+                DialogAddSubCategorie addSubCategorie = new DialogAddSubCategorie(this,categorie);
+                addSubCategorie.showDialogEdit();
+                return true;
+            case R.id.edit_sub_cat:
                 categorie = spinnerAdapter2.getItem(info.position);
                 DialogEditSubCategorie editSubCategorie = new DialogEditSubCategorie(this, categorie);
                 editSubCategorie.showDialogEdit();
                 return true;
-            case R.id.delete_sub_cat_item:
+            case R.id.delete_sub_cat:
                 categorie = spinnerAdapter2.getItem(info.position);
                 for(Categorie cat: list_categorie){
                     System.out.println(cat.getName()+"    "+categorie.getParentName());

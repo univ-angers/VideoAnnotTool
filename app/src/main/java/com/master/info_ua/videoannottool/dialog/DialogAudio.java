@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.custom.Audio;
@@ -127,6 +128,7 @@ public class DialogAudio {
                         Toast.makeText(mainActivity, "Annotation Enregistrée", Toast.LENGTH_LONG).show();
                         Log.i("AUDIO_DIALOG-BOX", "Validation " + audioName);
                         dialogBox.cancel();
+                        recordCallback.OnOffBoutons(true);
                     } else {
                         error_title_audio.setVisibility(View.VISIBLE);
                     }

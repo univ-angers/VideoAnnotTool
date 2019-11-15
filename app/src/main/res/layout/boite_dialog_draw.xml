@@ -55,6 +55,7 @@
             android:text="@string/CheckAnnotPredef"
             android:layout_marginHorizontal="15dp"
             />
+
     </LinearLayout>
 
     <LinearLayout
