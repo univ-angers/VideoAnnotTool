@@ -73,5 +73,57 @@ public class DialogText {
         });
         dialogBox.show();
     }
+    
+     //Ouvre la boite de dialogue pour la modification d'annotation textuelles
+    public void showDialogBoxModif(final Annotation annotation, final MainActivity main) {
+        Log.i("showDialogBoxModif",annotation.getAnnotationTitle());
+        final Dialog dialogBox = new Dialog(main);
+        dialogBox.setContentView(R.layout.boite_dialog_text);
+        dialogBox.setTitle(R.string.ModifDialogText);
+        Button btnValider = dialogBox.findViewById(R.id.btnValiderTextAnnot);
+        Button btnAnnuler = dialogBox.findViewById(R.id.btnAnnulerTextAnnot);
+        final CheckBox checkAnnotPredef = dialogBox.findViewById(R.id.CheckAnnotText);
+        final EditText ed_texte_titre = dialogBox.findViewById(R.id.ed_texte_titre);
+        ed_texte_titre.setText(annotation.getAnnotationTitle());
+        // EditText disable
+        ed_texte_titre.setFocusable(false);
+        final TextView comment_texte_error = dialogBox.findViewById(R.id.error_comment_texte);
+        final EditText etAnnot = dialogBox.findViewById(R.id.etAnnotText);
+        etAnnot.setText(annotation.getTextComment());
+        final EditText etDuration = dialogBox.findViewById(R.id.etDurationAnnot);
+        etDuration.setText(""+annotation.getAnnotationDuration()/1000);
+        etDuration.setFocusable(false);
+        btnValider.setOnClickListener(new View.OnClickListener() {
+            private String texte = "";
+            //Lors d'un clic sur le bouton valider
+            @Override
+            public void onClick(View view) {
+                if(!etAnnot.getText().toString().isEmpty()){
+                    this.texte = etAnnot.getText().toString();
+                    dialogBox.cancel();
+//                    annotation.setAnnotationDuration(Integer.parseInt(etDuration.getText().toString()) * 1000);
+                    annotation.setTextComment(texte);
+//                    annotation.setAnnotationTitle(ed_texte_titre.getText().toString());
+//                    //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
+//                    textAnnotDialogCallback.onSaveAnnotation(annotation,checkAnnotPredef.isChecked());
+                    Log.i("TEXT_DIALOG-BOX", "Validation :" + texte);
+                    Toast.makeText(main, "Annotation Enregistrée", Toast.LENGTH_LONG).show();
+                } else {
+                    comment_texte_error.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        btnAnnuler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("TEXT_DIALOG-BOX", "Annulation");
+                textAnnotDialogCallback.OnOffBoutons(true);
+                dialogBox.cancel();
+                ed_texte_titre.setFocusable(true);
+                etDuration.setFocusable(true);
+            }
+        });
+        dialogBox.show();
+    }
 }
 
