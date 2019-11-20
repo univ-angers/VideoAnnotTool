@@ -773,6 +773,17 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
         ((FrameLayout) findViewById(R.id.main_media_frame)).addView(exoPlayerView);
+//        exoPlayerView.showController();
+
+        ((ViewGroup) drawBimapIv.getParent()).removeView(drawBimapIv);
+        ((FrameLayout) findViewById(R.id.main_media_frame)).addView(drawBimapIv);
+
+        ((ViewGroup) annotCommentTv.getParent()).removeView(annotCommentTv);
+        ((FrameLayout) findViewById(R.id.main_media_frame)).addView(annotCommentTv);
+
+        ((ViewGroup) drawView.getParent()).removeView(drawView);
+        ((FrameLayout) findViewById(R.id.main_media_frame)).addView(drawView);
+
         ExoPlayerFullscreen = false;
         FullScreenDialog.dismiss();
         if ((player.getDuration() - player.getCurrentPosition())<=15){
