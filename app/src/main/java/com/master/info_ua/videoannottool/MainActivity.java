@@ -1438,7 +1438,13 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         //Afficher l'annotation prise en paramètre
         switch (annotation.getAnnotationType()) {
             case TEXT:
-
+                annotFragment.updateAnnotationList(currentVAnnot);
+//                Log.i("edit annot text",annotation.getAnnotationTitle());
+                player.setPlayWhenReady(false);
+                DialogText dialogtext = new DialogText(MainActivity.this, 1);
+                dialogtext.showDialogBoxModif(annotation, MainActivity.this);
+                String directory = currentSubCategorie.getPath() + File.separator + videoName;
+                Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
                 annotFragment.updateAnnotationList(currentVAnnot);
                 break;
             case DRAW:

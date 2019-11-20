@@ -20,6 +20,7 @@
     <string name="invalidPassword">Mot de passe invalide</string>
     <string name="title_audio_error">Préciser le titre de l\'annotation</string>
     <string name="title_texte_error">Préciser le titre de l\'annotation</string>
+    <string name="comment_texte_error">Préciser le commentaire de l\'annotation</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="TextBtnImport">Sauvegarder la vidéo</string>

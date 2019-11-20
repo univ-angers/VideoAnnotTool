@@ -31,6 +31,14 @@
         android:textColor="@color/RED"
         android:gravity="center"
         android:visibility="invisible"/>
+    <TextView
+        android:id="@+id/error_comment_texte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/comment_texte_error"
+        android:textColor="@color/RED"
+        android:gravity="center"
+        android:visibility="invisible"/>    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
