@@ -87,6 +87,7 @@ import com.master.info_ua.videoannottool.custom.Video;
 import com.master.info_ua.videoannottool.dialog.DialogAudio;
 import com.master.info_ua.videoannottool.dialog.DialogCallback;
 import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
+import com.master.info_ua.videoannottool.dialog.DialogEditDifficulte;
 import com.master.info_ua.videoannottool.dialog.DialogEditVideo;
 import com.master.info_ua.videoannottool.dialog.DialogImport;
 import com.master.info_ua.videoannottool.dialog.DialogProfil;
@@ -391,9 +392,17 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                searchText=charSequence.toString();
+                searchText = charSequence.toString();
                 videosAdapter.clear();
-                videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
+                if ((i == 0) && (i2 == 0)) {
+                    videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
+                } else {
+                    for (Categorie cat : categorieList) {
+                        for (Categorie subCat : cat.getSubCategories()) {
+                            videosAdapter.addAll(setVideoList(subCat.getPath()));
+                        }
+                    }
+                }
                 videosAdapter.notifyDataSetChanged();
             }
 
@@ -520,6 +529,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             menu.findItem(R.id.edit_item_annot).setVisible(false);
             menu.findItem(R.id.delete_item_annot).setVisible(false);
             menu.findItem(R.id.edit_item_infos_annot).setVisible(false);
+            menu.findItem(R.id.edit_difficulte).setVisible(true);
         }
     }
 
@@ -528,6 +538,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Video video;
         Annotation annotation;
+
         switch (item.getItemId()) {
             case R.id.edit_item_video:
                 video = videosAdapter.getItem(info.position);
@@ -562,6 +573,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
                 annotFragment.getFragmentListener().onDeleteAnnotation(annotation);
                 annotFragment.getAnnotationsAdapter().notifyDataSetChanged();
+                return true;
+            case R.id.edit_difficulte:
+                video = videosAdapter.getItem(info.position);
+                DialogEditDifficulte dialogDiff = new DialogEditDifficulte(this, video);
+                dialogDiff.showDialogEditDiff();
                 return true;
             default:
                 return super.onContextItemSelected(item);

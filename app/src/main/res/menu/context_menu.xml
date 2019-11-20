@@ -21,4 +21,8 @@
         android:title="@string/supprimer_annot"
         />
 
+    <item android:id="@+id/edit_difficulte"
+        android:title="Modifier la difficulté"
+        />
+
 </menu>
