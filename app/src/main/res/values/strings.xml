@@ -68,6 +68,7 @@
 
     <string name="modifier_video">Modifier la vidéo</string>
     <string name="supprimer_video">Supprimer la vidéo</string>
+    <string name="ModifDialogText">Modifier Annotation Texte</string>
 
 
 </resources>
