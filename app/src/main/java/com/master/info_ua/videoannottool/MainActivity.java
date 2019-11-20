@@ -5,26 +5,42 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.hardware.display.DisplayManager;
+import android.hardware.display.VirtualDisplay;
+import android.media.MediaCodec;
+import android.media.MediaCodecInfo;
+import android.media.MediaFormat;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaMuxer;
+import android.media.MediaRecorder;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Surface;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -34,14 +50,12 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -91,14 +105,15 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.AUDIO;
-import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
+import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 
 
 public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
@@ -207,6 +222,38 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     //Dossier contenant les fichiers nécéssaires aux annotations prédéfinies (.png, .mp4, ...)
     private File AnnotPredefDirectory;
 
+
+
+    // RECORDER EXPORT
+    private static final int CAST_PERMISSION_CODE = 22;
+    private DisplayMetrics mDisplayMetrics;
+    private MediaProjection mMediaProjection;
+    private VirtualDisplay mVirtualDisplay;
+    private MediaRecorder mMediaRecorder;
+    private MediaProjectionManager mProjectionManager;
+
+
+    private MediaProjectionManager mMediaProjectionManager;
+    private static final int REQUEST_CODE_CAPTURE_PERM = 1234;
+    private static final String VIDEO_MIME_TYPE = "video/avc";
+    private static final int VIDEO_WIDTH = 1080;
+    private static final int VIDEO_HEIGHT = 1794;
+    private DisplayMetrics metrics;
+    private int screenDensity;
+    private int screenWidth;
+    private int screenHeight;
+    // …
+    private boolean mMuxerStarted = false;
+    private Surface mInputSurface;
+    private MediaCodec mVideoEncoder;
+    private MediaCodec.BufferInfo mVideoBufferInfo;
+    private int mTrackIndex = -1;
+    private SurfaceView mSurfaceView;
+
+
+    private boolean recording = false;
+    private MediaMuxer mMuxer;
+    //END
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1467,6 +1514,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 break;
             case DRAW:
                 Bitmap bitmap = Util.getBitmapFromAppDir(getApplicationContext(), annotFileDirectory, annotation.getDrawFileName());
+//                Log.e("bitcount", );
 
                 player.setPlayWhenReady(false);
                 drawView.setVisibility(View.VISIBLE);
@@ -1528,6 +1576,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //PERMISSION ENREGISTREMENT ECRAN
+        if (CAST_PERMISSION_CODE == requestCode) {
+            if (resultCode == RESULT_OK) {
+                mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
+                startRecording();
+            } else {
+            }
+        }
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
 
@@ -1730,5 +1786,172 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
        setAnnotButtonStatus(bouton);
    }
 
+//EXPORT VIDEO
+   public void exporterVideo(){
+       mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
+       if(recording){
+           recording=false;
+           releaseEncoders();
+       }
+       else {
+           recording=true;
+           Intent permissionIntent = mProjectionManager.createScreenCaptureIntent();
+           startActivityForResult(permissionIntent, CAST_PERMISSION_CODE);
+       }
+   }
+
+
+    private void startRecording() {
+        DisplayManager dm = (DisplayManager)getSystemService(Context.DISPLAY_SERVICE);
+        Display defaultDisplay = dm.getDisplay(Display.DEFAULT_DISPLAY);
+        if (defaultDisplay == null) {
+            throw new RuntimeException("No display found.");
+        }
+        prepareVideoEncoder();
+
+        try {
+            Log.e(Environment.getExternalStorageDirectory() + "/Android/data"+ File.separator, "on est là");
+            mMuxer = new MediaMuxer(Environment.getExternalStorageDirectory()+ File.separator +  "video18.mp4", MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+        } catch (IOException ioe) {
+            throw new RuntimeException("MediaMuxer creation failed", ioe);
+        }
+
+        // Get the display size and density.
+        metrics = getResources().getDisplayMetrics();
+        screenDensity = metrics.densityDpi;
+        screenHeight = metrics.heightPixels;
+        screenWidth = metrics.widthPixels;
+
+        // Start the video input.
+        mMediaProjection.createVirtualDisplay("Recording Display", screenWidth,
+                screenHeight, screenDensity, DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY, mInputSurface,
+                //.VIRTUAL_DISPLAY_FLAG_PRESENTATION, mInputSurface,
+                null /* callback */, null /* handler */);
+
+        // Start the encoders
+        drainEncoder();
+    }
+
+
+
+    private final Handler mDrainHandler = new Handler(Looper.getMainLooper());
+    private Runnable mDrainEncoderRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.e("run", "on y passe");
+            drainEncoder();
+        }
+    };
+
+
+    private void prepareVideoEncoder() {
+        Log.e("prepareVideoEncoder", "on y passe");
+        mVideoBufferInfo = new MediaCodec.BufferInfo();
+        MediaFormat format = MediaFormat.createVideoFormat(VIDEO_MIME_TYPE, VIDEO_WIDTH, VIDEO_HEIGHT);
+        int frameRate = 30; // 30 fps
+
+
+        // Set some required properties. The media codec may fail if these aren't defined.
+        format.setInteger(MediaFormat.KEY_COLOR_FORMAT,
+                MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
+        format.setInteger(MediaFormat.KEY_BIT_RATE, 6000000); // 6Mbps
+        format.setInteger(MediaFormat.KEY_FRAME_RATE, frameRate);
+        format.setInteger(MediaFormat.KEY_CAPTURE_RATE, frameRate);
+        format.setInteger(MediaFormat.KEY_REPEAT_PREVIOUS_FRAME_AFTER, 1000000 / frameRate);
+        format.setInteger(MediaFormat.KEY_CHANNEL_COUNT, 1);
+        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1); // 1 seconds between I-frames
+        format.setInteger("rotation-degres", 90);
+
+
+        try {
+            mVideoEncoder = MediaCodec.createEncoderByType(VIDEO_MIME_TYPE);
+            mVideoEncoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+            mInputSurface = mVideoEncoder.createInputSurface();
+            mVideoEncoder.start();
+        } catch (IOException e) {
+            releaseEncoders();
+        }
+    }
+
+    private boolean drainEncoder() {
+        mDrainHandler.removeCallbacks(mDrainEncoderRunnable);
+        while (true) {
+            int bufferIndex = mVideoEncoder.dequeueOutputBuffer(mVideoBufferInfo, 0);
+            if (bufferIndex == MediaCodec.INFO_TRY_AGAIN_LATER) {
+                // nothing available yet
+                break;
+            } else if (bufferIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
+                // should happen before receiving buffers, and should only happen once
+                if (mTrackIndex >= 0) {
+                    throw new RuntimeException("format changed twice");
+                }
+                mTrackIndex = mMuxer.addTrack(mVideoEncoder.getOutputFormat());
+                if (!mMuxerStarted && mTrackIndex >= 0) {
+                    mMuxer.start();
+                    mMuxerStarted = true;
+                }
+            } else if (bufferIndex < 0) {
+                // not sure what's going on, ignore it
+            } else {
+                ByteBuffer encodedData = mVideoEncoder.getOutputBuffer(bufferIndex);
+                if (encodedData == null) {
+                    throw new RuntimeException("couldn't fetch buffer at index " + bufferIndex);
+                }
+
+                if ((mVideoBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
+                    mVideoBufferInfo.size = 0;
+                }
+
+                if (mVideoBufferInfo.size != 0) {
+                    if (mMuxerStarted) {
+                        encodedData.position(mVideoBufferInfo.offset);
+                        encodedData.limit(mVideoBufferInfo.offset + mVideoBufferInfo.size);
+                        mMuxer.writeSampleData(mTrackIndex, encodedData, mVideoBufferInfo);
+                    } else {
+                        // muxer not started
+                    }
+                }
+
+                mVideoEncoder.releaseOutputBuffer(bufferIndex, false);
+
+                if ((mVideoBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
+                    break;
+                }
+            }
+        }
+
+        mDrainHandler.postDelayed(mDrainEncoderRunnable, 10);
+        return false;
+    }
+
+    private void releaseEncoders() {
+        mDrainHandler.removeCallbacks(mDrainEncoderRunnable);
+        if (mMuxer != null) {
+            if (mMuxerStarted) {
+                mMuxer.stop();
+            }
+            mMuxer.release();
+            mMuxer = null;
+            mMuxerStarted = false;
+        }
+        if (mVideoEncoder != null) {
+            mVideoEncoder.stop();
+            mVideoEncoder.release();
+            mVideoEncoder = null;
+        }
+        if (mInputSurface != null) {
+            mInputSurface.release();
+            mInputSurface = null;
+        }
+        if (mMediaProjection != null) {
+            mMediaProjection.stop();
+            mMediaProjection = null;
+        }
+        mVideoBufferInfo = null;
+        mDrainEncoderRunnable = null;
+        mTrackIndex = -1;
+    }
+
+//END RECORDER
 }
