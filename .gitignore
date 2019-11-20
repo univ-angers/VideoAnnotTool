@@ -9,25 +9,8 @@
 /build
 /captures
 .externalNativeBuild
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
 .idea/caches/
 .idea/
-
-build.gradle
-
 .idea/caches/
-
 gradle/wrapper/gradle-wrapper.properties
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
-
 .idea/caches/
->>>>>>> groupe_video
