@@ -21,6 +21,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -115,7 +116,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
     private Button annotPredefBtn;
-    private LinearLayout btnLayout;
+    private RelativeLayout btnLayout;
 
     // Attribut en lien avec exoplayer
     // le player et son mediaSource
@@ -310,7 +311,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         //annotPredefBtn.setEnabled(false);
         annotPredefBtn.setOnClickListener(btnClickListener);
 
-        btnLayout = findViewById(R.id.layout_button);
+        btnLayout = findViewById(R.id.btn_layout_id);
         drawBimapIv = findViewById(R.id.draw_bitmap_iv);
         annotCommentTv = findViewById(R.id.annot_comment_tv);
 
@@ -682,6 +683,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
         FullScreenDialog.addContentView(exoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        ((ViewGroup) drawBimapIv.getParent()).removeView(drawBimapIv);
+        FullScreenDialog.addContentView(drawBimapIv, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        ((ViewGroup) annotCommentTv.getParent()).removeView(annotCommentTv);
+        FrameLayout.LayoutParams VG_LParam = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        VG_LParam.gravity = Gravity.CENTER;
+        FullScreenDialog.addContentView(annotCommentTv, VG_LParam);
         FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_skrink));
         ExoPlayerFullscreen = true;
         FullScreenDialog.show();
@@ -1333,7 +1340,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      */
     protected void onAnnotationLauched(Annotation annotation) {
 
-        if(!ExoPlayerFullscreen) {
+       // if(!ExoPlayerFullscreen) {
             setAnnotButtonStatus(false);
             player.seekTo(annotation.getAnnotationStartTime());
             player.setPlayWhenReady(false);
@@ -1403,7 +1410,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                         drawBimapIv.setVisibility(View.GONE);
                     }
             }
-        }
+       // }
 
     }
 

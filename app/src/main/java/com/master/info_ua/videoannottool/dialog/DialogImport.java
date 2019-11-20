@@ -88,8 +88,11 @@ public class DialogImport {
                     dialogCallback.updateImportVideoTextView(videoImportTextView);
                     break;
                 case R.id.btnImport:
-                    dialogCallback.saveImportVideo((Categorie) spinnerSubCategorie.getSelectedItem());
-                    dialog.cancel();
+                    if(!currentCategorie.getSubCategories().isEmpty()) {
+                        dialogCallback.saveImportVideo((Categorie) spinnerSubCategorie.getSelectedItem());
+                        dialog.cancel();
+                    }else
+                        Toast.makeText(v.getContext(),"Impossible d'importer la vidéo, pas de sous-catégorie existante",Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.btnCancelImport:
                     dialog.cancel();

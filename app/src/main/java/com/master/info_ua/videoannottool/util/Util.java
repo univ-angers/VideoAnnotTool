@@ -220,11 +220,13 @@ public class Util {
         if (Util.appDirExist(context)) {
             //Pour chacune des catégories et sous-catégories
             for (File catDir : Dir.listFiles()) {
-                newCat = new Categorie(catDir.getName(),null,catDir.getName());
-                for (File subCatDir: catDir.listFiles()){
-                    newCat.getSubCategories().add(new Categorie(subCatDir.getName(),newCat.getName(),newCat.getName()+"/"+subCatDir.getName()));
+                if ( !catDir.getName().matches("annotations")) {
+                    newCat = new Categorie(catDir.getName(), null, catDir.getName());
+                    for (File subCatDir : catDir.listFiles()) {
+                        newCat.getSubCategories().add(new Categorie(subCatDir.getName(), newCat.getName(), newCat.getName() + "/" + subCatDir.getName()));
+                    }
+                    categorieList.add(newCat);
                 }
-                categorieList.add(newCat);
             }
         }
         return categorieList;
