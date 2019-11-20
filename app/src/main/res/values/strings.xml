@@ -70,5 +70,8 @@
     <string name="supprimer_video">Supprimer la vidéo</string>
     <string name="ModifDialogText">Modifier Annotation Texte</string>
 
+    <string name="btn_AP">AP</string>
+    <string name="btn_export_video">EXP</string>
+
 
 </resources>

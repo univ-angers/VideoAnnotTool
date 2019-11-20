@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.C;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
@@ -77,8 +78,13 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
     protected View.OnClickListener btn_Listener=new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            list_categorie.add(new Categorie(ed_cat_title.getText().toString(),null, ed_cat_title.getText().toString()));
-            spinnerAdapter.add(new Categorie(ed_cat_title.getText().toString(),null, ed_cat_title.getText().toString()));
+            System.out.println("                           ------- "+ed_cat_title.getText().toString());
+            if (ed_cat_title.getText().toString().matches("[a,A][n,N][n,N][o,O][t,T][a,A][t,T][i,I][o,O][n,N][s,S]"+"\\s*") ) {
+                Toast.makeText(v.getContext(),"Nom de catégorie non autorisé",Toast.LENGTH_LONG).show();
+            }else {
+                list_categorie.add(new Categorie(ed_cat_title.getText().toString(), null, ed_cat_title.getText().toString()));
+                spinnerAdapter.add(new Categorie(ed_cat_title.getText().toString(), null, ed_cat_title.getText().toString()));
+            }
             ed_cat_title.setText("");
         }
     };

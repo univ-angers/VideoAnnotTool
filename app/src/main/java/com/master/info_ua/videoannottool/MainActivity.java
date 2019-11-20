@@ -130,6 +130,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
+    private Button exportVideoBtn;
     private Button annotPredefBtn;
     private RelativeLayout btnLayout;
 
@@ -357,6 +358,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         annotPredefBtn = findViewById(R.id.annot_predef_btn);
         //annotPredefBtn.setEnabled(false);
         annotPredefBtn.setOnClickListener(btnClickListener);
+
+        exportVideoBtn = findViewById(R.id.export_video_btn);
+        exportVideoBtn.setOnClickListener(btnClickListener);
 
         btnLayout = findViewById(R.id.btn_layout_id);
         drawBimapIv = findViewById(R.id.draw_bitmap_iv);
@@ -669,6 +673,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public void initExoPlayer() {
 
         //SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
+
         ZoomableExoPlayerView playerView = findViewById(R.id.exo_player_view);
 
         // 1 creating an ExoPlayer
@@ -989,6 +994,15 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                         ft2.commit();
                     }
 
+                    break;
+
+                case R.id.export_video_btn:
+                    openFullscreenDialog();
+                    //player.setPlayWhenReady(true);
+                    exoPlayerView.setUseController(false);
+                    exporterVideo();
+                    if (player.getDuration() == player.getCurrentPosition() )
+                        exporterVideo();
                     break;
             }
         }
@@ -1398,7 +1412,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      */
     protected void onAnnotationLauched(Annotation annotation) {
 
-       // if(!ExoPlayerFullscreen) {
+        if(ExoPlayerFullscreen) {
+
+        }
             setAnnotButtonStatus(false);
             player.seekTo(annotation.getAnnotationStartTime());
             player.setPlayWhenReady(false);

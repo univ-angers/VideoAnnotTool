@@ -115,13 +115,13 @@
             android:id="@+id/btn_layout_id"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="center"
             android:background="@color/colorBottomBar"
             android:visibility="gone">
 
             <LinearLayout
-                android:id="@+id/layout_button"
+                android:id="@+id/layout_button_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -142,10 +142,11 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_button_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_toRightOf="@id/layout_button"
+                android:layout_toRightOf="@id/layout_button_1"
                 android:orientation="vertical">
 
                 <ImageButton android:id="@+id/text_annot_btn"
@@ -158,9 +159,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/text_annot_btn"
-                    android:text="AP"/>
+                    android:text="@string/btn_AP"/>
+
+                <Button
+                    android:id="@+id/export_video_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_export_video"/>
 
             </LinearLayout>
+
+
 
         </RelativeLayout>
 
