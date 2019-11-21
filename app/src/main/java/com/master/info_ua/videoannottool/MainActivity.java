@@ -27,6 +27,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -428,7 +429,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             i++;
             recupAnnot = Util.parseJSON_Annot(MainActivity.this,i);
         }
-
     }
 
     @Override
@@ -1235,9 +1235,17 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     //Ne devrait plus exister???
     @Override
     public void onSaveDrawAnnotation(Annotation annotation, int position) {
-        this.currentVAnnot.getAnnotationList().remove(position);
+        //If editing only
+        if(drawFragment.isEditing())
+            this.currentVAnnot.getAnnotationList().remove(position);
         onSaveDrawAnnotation(annotation, false); //True ou false???
         closeDrawFragment();
+    }
+
+    @Override
+    public void onSaveTextAnnotation(Annotation annotation, boolean isPredef, int position){
+        this.currentVAnnot.getAnnotationList().remove(position);
+        onSaveAnnotation(annotation, isPredef);
     }
 
 
@@ -1271,7 +1279,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 annotPredefFragment.getListAnnotationsPredef().add(annotation);
                 System.out.println("                            NOM DU DRAW "+MainActivity.this.getExternalFilesDir("")+" "+annotation.getDrawFileName());
                 // Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, "annotations", videoName);
-                Util.saveAnnotation(MainActivity.this, annotation,annotPredefFragment.getListAnnotationsPredef().size());
+                Util.saveAnnotation(MainActivity.this, annotation, annotPredefFragment.getListAnnotationsPredef().size());
 
                 if (annotation.getAnnotationType() == DRAW){
                     File ImageAnnotation = new File(MainActivity.this.getExternalFilesDir(directory),annotation.getDrawFileName());
@@ -1311,7 +1319,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     @Override
     public void closeAnnotationFrame() {
-
         drawView.resetCanvas();
         FragmentTransaction ft = fragmentManager.beginTransaction();
         annotFragment = (Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
@@ -1520,18 +1527,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         switch (annotation.getAnnotationType()) {
             case TEXT:
                 annotFragment.updateAnnotationList(currentVAnnot);
-//                Log.i("edit annot text",annotation.getAnnotationTitle());
                 player.setPlayWhenReady(false);
                 DialogText dialogtext = new DialogText(MainActivity.this, 1);
-                dialogtext.showDialogBoxModif(annotation, MainActivity.this);
-                String directory = currentSubCategorie.getPath() + File.separator + videoName;
-                Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, directory, videoName);
-                annotFragment.updateAnnotationList(currentVAnnot);
+                dialogtext.showDialogBoxModif(annotation, MainActivity.this, position);
                 break;
             case DRAW:
                 Bitmap bitmap = Util.getBitmapFromAppDir(getApplicationContext(), annotFileDirectory, annotation.getDrawFileName());
-//                Log.e("bitcount", );
-
                 player.setPlayWhenReady(false);
                 drawView.setVisibility(View.VISIBLE);
                 drawView.setOnTouchEnable(true);
@@ -1555,6 +1556,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     ft.show(drawFragment);
                     ft.commit();
                 }
+                drawView.invalidate();
                 drawView.setmBitmap(bitmap);
                 break;
             default:

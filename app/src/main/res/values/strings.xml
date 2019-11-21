@@ -68,8 +68,7 @@
 
     <string name="modifier_video">Modifier la vidéo</string>
     <string name="supprimer_video">Supprimer la vidéo</string>
-    <string name="ModifDialogText">Modifier Annotation Texte</string>
-    <string name="rechercher_video">Rechercher video</string>
+    <string name="ModifDialogText">Modifier le texte</string>
 
 
     <string-array name="difficultes_import">

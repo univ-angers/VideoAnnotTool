@@ -17,5 +17,7 @@ public interface DialogCallback {
 
     void CopyFileAnnotPredef (Annotation annotation);
 
+    void onSaveTextAnnotation(Annotation annotation, boolean isPredef, int position);
+
     void OnOffBoutons(boolean bonton);
 }

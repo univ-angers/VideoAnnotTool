@@ -68,6 +68,7 @@ public class DrawView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        System.out.println("ON MEASURE");
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
         //Largeur de l'écran
         int screenWidth = displayMetrics.widthPixels;
@@ -85,24 +86,33 @@ public class DrawView extends View {
         setMeasuredDimension(currentWidth, currentHeignt);
     }
 
-    //Méthode appelée lorsque la taille de l'écran change (plein écran ?)
+    //Méthode appelée lorsque la taille de l'écran change
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(mBitmap);
+        System.out.println("ON SIZE CHANGED");
+        if(mBitmap == null) {
+            mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            mCanvas = new Canvas(mBitmap);
+        }
     }
 
     //Méthode permettant de dessiner
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
+        System.out.println("ON DRAW");
+        if(mCanvas == null)
+            mCanvas = new Canvas(mBitmap);
+        mCanvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         mCanvas.drawPath(mPath, mPaint);
+        canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         canvas.drawPath(mPath, mPaint);
+        if(!mPath.isEmpty()) {
+            canvas.drawPath(mPath, mPaint);
+        }
     }
 
-    //
     private void touch_start(float x, float y) {
         mPath.reset();
         mPath.moveTo(x, y);
@@ -157,7 +167,8 @@ public class DrawView extends View {
 
     //Réinitialise la toile
     public void resetCanvas() {
-        mBitmap.eraseColor(android.graphics.Color.TRANSPARENT);
+        System.out.println("RESET CANVAS");
+        //mBitmap.eraseColor(android.graphics.Color.TRANSPARENT);
         mPath.reset();
         mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     }
@@ -196,6 +207,7 @@ public class DrawView extends View {
     }
 
     public void setmBitmap(Bitmap bitmap) {
-        mCanvas.drawBitmap(bitmap, 0, 0, mBitmapPaint);
+        mBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        mCanvas = new Canvas(mBitmap);
     }
 }
