@@ -133,6 +133,12 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/draw_pencil_32"/>
 
+                <Button android:id="@+id/vignette_btn"
+                    android:text="screen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/text_annot_btn"/>
+
                 <ImageButton android:id="@+id/audio_annot_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

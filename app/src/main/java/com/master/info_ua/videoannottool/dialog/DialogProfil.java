@@ -24,6 +24,7 @@ public class DialogProfil {
         final ImageButton audioAnnotBtn = main.findViewById(R.id.audio_annot_btn);
         final ImageButton textAnnotBtn = main.findViewById(R.id.text_annot_btn);
         final ImageButton graphAnnotBtn = main.findViewById(R.id.graphic_annot_btn);
+        final Button vignetteBtn = main.findViewById(R.id.vignette_btn);
         dialog.setContentView(R.layout.boite_dialog_profil);
         dialog.setTitle(R.string.profil);
         final EditText editTextModeCoach = dialog.findViewById(R.id.editTextModeCoach);
@@ -40,6 +41,7 @@ public class DialogProfil {
                     audioAnnotBtn.setEnabled(true);
                     textAnnotBtn.setEnabled(true);
                     graphAnnotBtn.setEnabled(true);
+                    vignetteBtn.setEnabled(true);
                     main.setStatutProfil(COACH);
                     fragment_annotation.setStatut_profil(COACH);
                     item.setTitle("Mode consultation");

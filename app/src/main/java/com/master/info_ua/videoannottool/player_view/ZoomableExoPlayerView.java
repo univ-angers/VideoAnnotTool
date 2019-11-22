@@ -599,6 +599,10 @@ public class ZoomableExoPlayerView extends FrameLayout {
                 || keyCode == KeyEvent.KEYCODE_DPAD_CENTER;
     }
 
+    public int getControllerShowTimeoutMs() {
+        return controllerShowTimeoutMs;
+    }
+
     private final class ComponentListener extends Player.DefaultEventListener
             implements TextOutput, VideoListener, OnLayoutChangeListener {
 

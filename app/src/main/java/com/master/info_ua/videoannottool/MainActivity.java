@@ -77,6 +77,7 @@ import com.master.info_ua.videoannottool.dialog.DialogEditVideo;
 import com.master.info_ua.videoannottool.dialog.DialogImport;
 import com.master.info_ua.videoannottool.dialog.DialogProfil;
 import com.master.info_ua.videoannottool.dialog.DialogText;
+import com.master.info_ua.videoannottool.dialog.DialogVignette;
 import com.master.info_ua.videoannottool.fragment.Fragment_AnnotPredef;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
@@ -90,7 +91,11 @@ import com.master.info_ua.videoannottool.util.Util;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -101,7 +106,7 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
 
 
-public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
+public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener, DialogVignette.EditVignetteDialogListener {
 
     private static final int READ_REQUEST_CODE = 42;
     static final int READ_CATEGORY_CODE = 1;
@@ -115,6 +120,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
+    private Button vignetteBtn;
     private Button annotPredefBtn;
     private RelativeLayout btnLayout;
 
@@ -288,6 +294,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         List<Categorie> spinnerList2 = new ArrayList<>();
         spinnerList2.add(new Categorie("Sous-categorie", null, "/"));
 
+        vignetteBtn = findViewById(R.id.vignette_btn);
+        vignetteBtn.setEnabled(false);
+        vignetteBtn.setOnClickListener(btnClickListener);
 
         spinnerAdapter2 = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, spinnerList2);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -489,7 +498,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 return true;
             case R.id.delete_item_video:
                 video = videosAdapter.getItem(info.position);
-                String subCatDir= currentCategorie + "/" +video.getPath();
+                String subCatDir= video.getPath();
                 File subDirContent = this.getExternalFilesDir(subCatDir);
                 System.out.println(subDirContent.isDirectory()+"     "+ subCatDir + "     "+ subDirContent.getName() +"     "+ video.getPath());
                 if (subDirContent.isDirectory())
@@ -848,7 +857,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
                         if (video.getFileName() != null && !video.getFileName().isEmpty()) {
                             System.out.println("2) Nom de la vidéo: "+videoFileDir.getName());
-                            video.setPath(currentSubCategorie + File.separator + videoFileDir.getName());
+                            video.setPath(currentCategorie + File.separator+ currentSubCategorie + File.separator + videoFileDir.getName());
                             videoList.add(video);
                         }
                     }
@@ -943,6 +952,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     }
 
                     break;
+
+                case R.id.vignette_btn:
+                    player.setPlayWhenReady(false);
+                    DialogVignette dialogVignette = new DialogVignette(MainActivity.this);
+                    dialogVignette.showDialogVignette();
             }
         }
     };
@@ -1617,6 +1631,22 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         Util.saveImportVideoFile(this,categorie,fileVideoImport);
         videosAdapter.clear();
         videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
+        //Création de la vignette
+        System.out.println(categorie.getName()+"/"+categorie.getParentName()+"/"+fileVideoImport.getName());
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(fileVideoImport.getAbsolutePath());
+        int time = 1;
+        Bitmap bitmap =retriever.getFrameAtTime(time,MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+        try {
+            FileOutputStream fos = new FileOutputStream(new File(getExternalFilesDir(categorie.getParentName()+"/"+categorie.getName()+"/"+fileVideoImport.getName().replace(".mp4","")), "vignette" + ".png"));
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         videosAdapter.notifyDataSetChanged();
     }
 
@@ -1668,17 +1698,19 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         graphAnnotBtn.setEnabled(status);
         textAnnotBtn.setEnabled(status);
         annotPredefBtn.setEnabled(status);
+        vignetteBtn.setEnabled(status);
     }
 
     //Edition des infos de la video via context menu
     //Modification du nom du repertoire et de la video
     @Override
     public void onSaveEditVideo(Video video, String title) {
-        String subCatDir= currentCategorie + "/" +video.getPath();
+        String subCatDir= video.getPath();
         File subDirContent = this.getExternalFilesDir(subCatDir);
         File renamed = new File(this.getExternalFilesDir(currentCategorie + "/" + currentSubCategorie),title);
         subDirContent.renameTo(renamed);
         subDirContent=this.getExternalFilesDir(currentCategorie + "/" + currentSubCategorie+"/"+title);
+        System.out.println("TOMATO" + subDirContent.getAbsolutePath());
         if (subDirContent.listFiles().length > 0) {
             for (File videoFileDir : subDirContent.listFiles()) {
                 Log.e("SUB_CONT_FILE", videoFileDir.getAbsolutePath());
@@ -1699,6 +1731,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         } else {
             Log.e("SUB_CAT", "No content in " + subCatDir);
         }
+        video.setPath(currentCategorie + File.separator+ currentSubCategorie + File.separator + title);
         video.setFileName(title);
         video.setName(title);
         videosAdapter.notifyDataSetInvalidated();
@@ -1730,5 +1763,30 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
        setAnnotButtonStatus(bouton);
    }
 
+    @Override
+    public void onSaveEditVignette() {
+        File videoFile= getExternalFilesDir(currentVideo.getPath()+"/"+currentVideo.getName()+".mp4");
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+
+        retriever.setDataSource(videoFile.getAbsolutePath());
+//        int time = 4000*1000;
+        long time = player.getCurrentPosition()*1000;
+        System.out.println(videoFile.getAbsolutePath() + "      " + videoFile.exists() + "      " + (int) (player.getCurrentPosition())/1000);
+        Bitmap bitmap =retriever.getFrameAtTime(time,MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+        try {
+//            File file = new File(getExternalFilesDir(currentVideo.getPath()).getAbsolutePath(), "vignette" + ".png");
+//            Util.deleteRecursiveDirectory(file);
+
+            FileOutputStream fos = new FileOutputStream(new File(getExternalFilesDir(currentVideo.getPath()).getAbsolutePath(), "vignette" + ".png"));
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+            videosAdapter.notifyDataSetChanged();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
