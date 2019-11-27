@@ -1763,20 +1763,18 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
        setAnnotButtonStatus(bouton);
    }
 
+
+   //Changement de vignette
     @Override
     public void onSaveEditVignette() {
         File videoFile= getExternalFilesDir(currentVideo.getPath()+"/"+currentVideo.getName()+".mp4");
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-
         retriever.setDataSource(videoFile.getAbsolutePath());
-//        int time = 4000*1000;
+        //Récupère le temps en ms converti en µs
         long time = player.getCurrentPosition()*1000;
         System.out.println(videoFile.getAbsolutePath() + "      " + videoFile.exists() + "      " + (int) (player.getCurrentPosition())/1000);
         Bitmap bitmap =retriever.getFrameAtTime(time,MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
         try {
-//            File file = new File(getExternalFilesDir(currentVideo.getPath()).getAbsolutePath(), "vignette" + ".png");
-//            Util.deleteRecursiveDirectory(file);
-
             FileOutputStream fos = new FileOutputStream(new File(getExternalFilesDir(currentVideo.getPath()).getAbsolutePath(), "vignette" + ".png"));
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
