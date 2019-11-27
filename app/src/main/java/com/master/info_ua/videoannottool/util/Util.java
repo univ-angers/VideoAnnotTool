@@ -94,7 +94,7 @@ public class Util {
     }
 
     //Sauvegarde l'objet Annotation dans un fichier Json dans le dossier des annotations prédéfinis
-    public static void saveAnnotation(Context context,Annotation AnnotPredef, int annotNum) {
+    public static void saveAnnotation(Context context, Annotation AnnotPredef, int annotNum) {
         Writer writer;
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("dd-MM-yyyy HH:mm:ss");

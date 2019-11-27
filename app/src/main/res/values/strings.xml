@@ -68,10 +68,23 @@
 
     <string name="modifier_video">Modifier la vidéo</string>
     <string name="supprimer_video">Supprimer la vidéo</string>
-    <string name="ModifDialogText">Modifier Annotation Texte</string>
+    <string name="ModifDialogText">Modifier le texte</string>
     <string name="TextBtnAnnuler">Annuler</string>
     <string name="validateVignette">Vignette modifiée</string>
     <string name="ChangeVignette">Changement de vignette</string>
+
+
+    <string-array name="difficultes_import">
+        <item>Niveau 1</item>
+        <item>Niveau 2</item>
+        <item>Niveau 3</item>
+    </string-array>
+
+    <string-array name="difficultes">
+        <item>Niv.1</item>
+        <item>Niv.2</item>
+        <item>Niv.3</item>
+    </string-array>
 
 
 </resources>

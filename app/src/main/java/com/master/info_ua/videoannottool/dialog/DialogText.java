@@ -75,7 +75,7 @@ public class DialogText {
     }
     
      //Ouvre la boite de dialogue pour la modification d'annotation textuelles
-    public void showDialogBoxModif(final Annotation annotation, final MainActivity main) {
+    public void showDialogBoxModif(final Annotation annotation, final MainActivity main, final int position) {
         Log.i("showDialogBoxModif",annotation.getAnnotationTitle());
         final Dialog dialogBox = new Dialog(main);
         dialogBox.setContentView(R.layout.boite_dialog_text);
@@ -105,7 +105,7 @@ public class DialogText {
                     annotation.setTextComment(texte);
 //                    annotation.setAnnotationTitle(ed_texte_titre.getText().toString());
 //                    //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
-//                    textAnnotDialogCallback.onSaveAnnotation(annotation,checkAnnotPredef.isChecked());
+                    textAnnotDialogCallback.onSaveTextAnnotation(annotation,checkAnnotPredef.isChecked(), position);
                     Log.i("TEXT_DIALOG-BOX", "Validation :" + texte);
                     Toast.makeText(main, "Annotation Enregistrée", Toast.LENGTH_LONG).show();
                 } else {

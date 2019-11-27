@@ -148,32 +148,7 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
         }
     }
 
-//    @Override
-//    public boolean onContextItemSelected(MenuItem item) {
-//        System.out.println("OKKOOKO");
-//        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-//        Annotation annotation = annotationsAdapter.getItem(info.position);
-//        System.out.println(item.getItemId());
-//        switch (item.getItemId()) {
-//            case R.id.edit_item:
-//                System.out.println("Modifier l'annotation");
-//                fragmentListener.onEditAnnotation(annotation, info.position);
-//            case R.id.edit_item_annot:
-//                System.out.println("Modifier l'item");
-//                DialogEditAnnot dialog = new DialogEditAnnot(this, annotation);
-//                dialog.showDialogEdit();
-//                return true;
-//            case R.id.delete_item:
-//                fragmentListener.onDeleteAnnotation(annotation);
-//                annotationsAdapter.notifyDataSetChanged();
-//                return true;
-//            default:
-//                return super.onContextItemSelected(item);
-//        }
-//    }
-
     public void setStatut_profil(boolean profil){ statut_profil = profil; }
-
 
     @Override
     public void onSaveEditAnnot(Annotation annotation, String title, int duree) {
