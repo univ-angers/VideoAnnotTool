@@ -23,6 +23,7 @@ import com.master.info_ua.videoannottool.dialog.DialogEditSubCategorie;
 import com.master.info_ua.videoannottool.util.Categorie;
 import com.master.info_ua.videoannottool.util.Util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,6 +134,8 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
                 categorie = spinnerAdapter.getItem(info.position);
                 list_categorie.remove(categorie);
                 spinnerAdapter.remove(categorie);
+                File file = getExternalFilesDir(categorie.getName());
+                Util.deleteRecursiveDirectory(file);
                 return true;
             case R.id.add_sub_cat:
                 DialogAddSubCategorie addSubCategorie = new DialogAddSubCategorie(this,categorie);
@@ -151,6 +154,8 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
                     {
                         System.out.println("Removed "+cat.getName()+"    "+categorie.getParentName());
                         cat.removeSubCategorie(categorie);
+                        File file2 = getExternalFilesDir(cat.getName() +File.separator+ categorie.getName());
+                        Util.deleteRecursiveDirectory(file2);
                     }
                 }
                 spinnerAdapter2.remove(categorie);

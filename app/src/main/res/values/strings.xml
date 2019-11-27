@@ -72,6 +72,7 @@
     <string name="TextBtnAnnuler">Annuler</string>
     <string name="validateVignette">Vignette modifiée</string>
     <string name="ChangeVignette">Changement de vignette</string>
+    <string name="rechercher_video">Rechercher vidéo</string>
 
 
     <string-array name="difficultes_import">

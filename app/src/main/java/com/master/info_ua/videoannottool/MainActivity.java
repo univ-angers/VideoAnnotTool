@@ -493,7 +493,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     dialogProfil.showDialogProfil(MainActivity.this,item,annotFragment);
                 } else if (statut_profil == COACH) {
                     btnLayout.setVisibility(View.GONE);
-                    item.setTitle("Mode consultation");
+                    item.setTitle("Mode annotation");
                     statut_profil = ELEVE;
                     annotFragment.setStatut_profil(ELEVE);
                 }
@@ -1044,46 +1044,56 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 //        }
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
             // Here you get the current item that is selected by its position
-            currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
-//            System.out.println(categorieList.get(position).getPath()+"      "+categorieList.get(position).getSubCategories().get(0)+"    "+categorieList.get(position).getParentName() +"      "+ categorieList.get(position-1).getName());
-            currentSubCategorie = currentCategorie.getSubCategories().get(0);
-            searchVideo.setText("");
-            spinnerAdapter2.clear();
-//            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
-            spinnerAdapter2.add(new Categorie("Sous-catégorie", null, "/"));
-            spinnerAdapter2.addAll(categorieList.get(position).getSubCategories());
-            spinnerAdapter2.notifyDataSetChanged();
-            spinnerSubCategorie.setSelection(1);
-            Log.e("SELECT_CAT", currentCategorie.getPath());
-            annotFragment.updateAnnotationList(null);
-            if(videosAdapter.getCount()> 0 ){
-                //currentVideo = videosAdapter.getItem(0);
+            Categorie cat = (Categorie) adapterView.getItemAtPosition(position);
+            if (!cat.getSubCategories().isEmpty()){
+                currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
+                //            System.out.println(categorieList.get(position).getPath()+"      "+categorieList.get(position).getSubCategories().get(0)+"    "+categorieList.get(position).getParentName() +"      "+ categorieList.get(position-1).getName());
+                currentSubCategorie = currentCategorie.getSubCategories().get(0);
+                searchVideo.setText("");
+                spinnerAdapter2.clear();
+                //            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
+                spinnerAdapter2.add(new Categorie("Sous-catégorie", null, "/"));
+                spinnerAdapter2.addAll(categorieList.get(position).getSubCategories());
+                spinnerAdapter2.notifyDataSetChanged();
+                spinnerSubCategorie.setSelection(1);
+                Log.e("SELECT_CAT", currentCategorie.getPath());
+                annotFragment.updateAnnotationList(null);
+                if (videosAdapter.getCount() > 0) {
+                    //currentVideo = videosAdapter.getItem(0);
 
-                currentVideo = (Video) listViewVideos.getItemAtPosition(0);
-                setCurrentVAnnot();
-                if (currentVAnnot == null) {
-                    currentVAnnot = Util.createNewVideoAnnotation();
-                }
-                annotFragment.updateAnnotationList(currentVAnnot);
-                videoName = currentVideo.getFileName();
+                    currentVideo = (Video) listViewVideos.getItemAtPosition(0);
+                    setCurrentVAnnot();
+                    if (currentVAnnot == null) {
+                        currentVAnnot = Util.createNewVideoAnnotation();
+                    }
+                    annotFragment.updateAnnotationList(currentVAnnot);
+                    videoName = currentVideo.getFileName();
 
-                if (player != null){
-                    player.stop();
-                }
+                    if (player != null) {
+                        player.stop();
+                    }
 
 
-                initExoPlayer();
+                    initExoPlayer();
 
-                if (currentVideo != null) {
-                    controlerAnnotation = new ControllerAnnotation( MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+                    if (currentVideo != null) {
+                        controlerAnnotation = new ControllerAnnotation(MainActivity.this, currentVideo.getVideoAnnotation(), mainHandler);
+                    } else {
+                        controlerAnnotation = new ControllerAnnotation(MainActivity.this, null, mainHandler);
+                    }
                 } else {
-                    controlerAnnotation = new ControllerAnnotation(MainActivity.this, null, mainHandler);
+                    playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
+                    exoplayerPlay = false;
+                    initPlayButton();
+                    initExoPlayer();
                 }
-            }else {
-                playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
-                exoplayerPlay = false;
-                initPlayButton();
+            }
+            else {
+                videosAdapter.clear();
+                spinnerAdapter2.clear();
+                spinnerAdapter2.add(new Categorie("Pas de sous-catégories",null));
                 initExoPlayer();
+                Toast.makeText(view.getContext(), "La catégorie ne possède pas de sous-catégories", Toast.LENGTH_SHORT).show();
             }
         }
 

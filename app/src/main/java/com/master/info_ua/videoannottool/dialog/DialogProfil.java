@@ -3,6 +3,7 @@ package com.master.info_ua.videoannottool.dialog;
 import android.app.Dialog;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -55,6 +56,9 @@ public class DialogProfil {
             @Override
             public void onClick(View view) {
                 dialog.cancel();
+                //Cache le clavier de la tablette
+                final InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(view.getContext().INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
             }
         });
         dialog.show();
