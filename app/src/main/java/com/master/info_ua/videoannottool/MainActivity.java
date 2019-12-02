@@ -411,29 +411,67 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         }
     }
 
-    @Override
+@Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Video video = videosAdapter.getItem(info.position);
-        Annotation annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
+        Video video;
+        Annotation annotation;
         switch (item.getItemId()) {
-            case R.id.edit_item:
+            case R.id.edit_item_video:
+                video = videosAdapter.getItem(info.position);
                 DialogEditVideo dialog = new DialogEditVideo(this, video);
                 dialog.showDialogEdit();
                 return true;
-            case R.id.delete_item:
+            case R.id.delete_item_video:
+                video = videosAdapter.getItem(info.position);
+                String subCatDir= currentCategorie + "/" +video.getPath();
+                Log.i("SubCat", subCatDir);
+                File subDirContent = this.getExternalFilesDir(subCatDir);
+                System.out.println(subDirContent.isDirectory()+"     "+ subCatDir + "     "+ subDirContent.getName() +"     "+ video.getPath());
+                if (subDirContent.isDirectory())
+                {
+                    Util.deleteRecursiveDirectory(subDirContent);
+                }
                 videosAdapter.remove(video);
                 videosAdapter.notifyDataSetChanged();
+                initExoPlayer();
+                Util.deleteRecursiveDirectory(subDirContent);
+                return true;
+            case R.id.edit_item_infos_annot:
+                annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
+                DialogEditAnnot dialogEditAnnot = new DialogEditAnnot(annotFragment, annotation);
+                dialogEditAnnot.showDialogEdit();
                 return true;
             case R.id.edit_item_annot:
-                DialogEditAnnot dialog2 = new DialogEditAnnot(this.annotFragment, annotation);
-                dialog2.showDialogEdit();
+                System.out.println("Annotation modifiée!!!");
+                annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
+                annotFragment.getFragmentListener().onEditAnnotation(annotation, info.position); //Inutile de repasser par le fragment pour revenir dans l'activité??
+                annotFragment.getAnnotationsAdapter().notifyDataSetChanged();
                 return true;
             case R.id.delete_item_annot:
+                annotation = annotFragment.getAnnotationsAdapter().getItem(info.position);
                 annotFragment.getFragmentListener().onDeleteAnnotation(annotation);
                 annotFragment.getAnnotationsAdapter().notifyDataSetChanged();
                 return true;
-            default:
+            case R.id.renommer_annot_predef:
+                Log.i("Menu", "Renommer");
+                annotation = annotPredefFragment.getAnnotationsAdapter().getItem(info.position);
+                annotPredefFragment.getFragmentListener().onRenommerAnnotationPredef(annotation, info.position);
+                Log.i("Menu", ""+info.position);
+                return true;
+            case R.id.modifier_annot_predef:
+                Log.i("Menu", "modifier");
+                annotation = annotPredefFragment.getAnnotationsAdapter().getItem(info.position);
+                annotPredefFragment.getFragmentListener().onUpdateAnnotationPredef(annotation, info.position);
+                Log.i("Menu", ""+info.position);
+                return true;
+            case R.id.supprimer_annot_predef:
+                Log.i("Menu", "supprimer");
+                annotation = annotPredefFragment.getAnnotationsAdapter().getItem(info.position);
+                annotPredefFragment.getFragmentListener().onDeleteAnnotationPredef(annotation, info.position);
+                return true;
+
+                default:
                 return super.onContextItemSelected(item);
         }
     }
@@ -950,6 +988,39 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         onSaveAnnotation(annotation,check);
         closeDrawFragment();
     }
+    
+    @Override
+    public void onSaveTextAnnotation(Annotation annotation, boolean isPredef, int position) {
+        this.currentVAnnot.getAnnotationList().remove(position);
+        onSaveAnnotation(annotation, false);
+    }
+
+    @Override
+    public void onSaveTextAnnotationPredef(Annotation annotation, boolean isPredef, int position) {
+
+        onSaveAnnotationPredef(annotation, true, position);
+
+    }
+
+
+    public void onSaveAnnotationPredef(Annotation annotation, boolean checkAnnotPredef, int position) {
+        if (annotPredefFragment == null) {
+            annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef, MainActivity.this);
+        }
+
+//        for(int i = 0; i < ListAnnotationsPredef.size(); i++) {
+            File file12 = new File(MainActivity.this.getExternalFilesDir("annotations"), "AnnotPredef_num_" + position + ".json");
+            System.out.println("Suppression "+file12.getAbsolutePath() +"    "+ file12.delete());
+//        }
+
+//        Util.deleteRecursiveDirectory(AnnotPredefDirectory);
+        Util.saveAnnotation(MainActivity.this, ListAnnotationsPredef.get(position), position);
+
+//        annotPredefFragment.getListAnnotationsPredef().remove(annotation);
+
+//        Util.saveAnnotation(MainActivity.this, annotation,annotPredefFragment.getListAnnotationsPredef().size());
+        annotPredefFragment.getAnnotationsAdapter().notifyDataSetChanged();
+    }
 
 
     /**
@@ -1201,6 +1272,61 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     }
 
+	 // Renommer une annotation prédéfinie
+    public void onRenommerAnnotationPredef(Annotation annotation, int position) {
+        switch (annotation.getAnnotationType()) {
+            case TEXT:
+                Log.i("onRenommerAnnotPredef","TEXT");
+                player.setPlayWhenReady(false);
+                DialogRenameAnnotPredef dialogRenameAnnotPredefText = new DialogRenameAnnotPredef(MainActivity.this, 1);
+                dialogRenameAnnotPredefText.showDialogBoxRenommer(annotation, MainActivity.this, position);
+                break;
+
+            case DRAW:
+                Log.i("onRenommerAnnotPredef","draw");
+                player.setPlayWhenReady(false);
+                DialogRenameAnnotPredef dialogRenameAnnotPredefDraw = new DialogRenameAnnotPredef(MainActivity.this, 1);
+                dialogRenameAnnotPredefDraw.showDialogBoxRenommer(annotation, MainActivity.this, position);
+                break;
+
+            case AUDIO:
+                Log.i("onRenommerAnnotPredef","AUDIO");
+                player.setPlayWhenReady(false);
+                DialogRenameAnnotPredef dialogRenameAnnotPredefAudio = new DialogRenameAnnotPredef(MainActivity.this, 1);
+                dialogRenameAnnotPredefAudio.showDialogBoxRenommer(annotation, MainActivity.this, position);
+                break;
+        }
+    }
+
+    // Modifier une annotation prédéfinie
+    public void onUpdateAnnotationPredef(Annotation annotation, int position) {
+        switch (annotation.getAnnotationType()) {
+            case TEXT:
+                Log.i("onUpdateAnnotPredef","TEXT");
+                player.setPlayWhenReady(false);
+                DialogAnnotPredefModification dialogAnnotPredefModificationText = new DialogAnnotPredefModification(MainActivity.this, 1);
+                dialogAnnotPredefModificationText.showDialogBoxModifPredef(annotation, MainActivity.this, position);
+                break;
+
+            case DRAW:
+                Log.i("onUpdateAnnotPredef","draw");
+                player.setPlayWhenReady(false);
+                // à developper
+                break;
+
+
+            case AUDIO:
+                Log.i("onUpdateAnnotPredef","AUDIO");
+                player.setPlayWhenReady(false);
+                // à developper
+                String directoryPath = currentSubCategorie.getPath() + File.separator + videoName;
+                DialogAudio dialog = new DialogAudio(MainActivity.this, directoryPath, player.getContentPosition());
+                Annotation auDdioAnnotation = new Annotation(AUDIO);
+                dialog.showDialogRecord(auDdioAnnotation, videoName);
+                break;
+        }
+    }
+    
     @Override
     public void onEditAnnotation(Annotation annotation) {
         final String annotFileDirectory = currentSubCategorie.getPath() + "/" + currentVideo.getFileName();
@@ -1233,6 +1359,37 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 break;
             default:
                 break;
+        }
+    }
+    
+    @Override
+    public void onDeleteAnnotationPredef(Annotation annot, int position) {
+        if(annotPredefFragment == null) {
+            annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef, MainActivity.this);
+        }
+
+        // Supprimer tous les annotations Prédéfinies
+        for(int i = 0; i < ListAnnotationsPredef.size(); i++) {
+            File file12 = new File(MainActivity.this.getExternalFilesDir("annotations"), "AnnotPredef_num_" + i + ".json");
+            System.out.println("Suppression "+file12.getAbsolutePath() +"    "+ file12.delete());
+        }
+
+        // Retitrer l'annotaion de la liste des annotaions
+        boolean isRemove = annotPredefFragment.getListAnnotationsPredef().remove(annot);
+
+        // Si ça marche pas pour toi décommenter ce ligne, remarque  tous le contenu de annotaions sera supprimer
+        // Util.deleteRecursiveDirectory(AnnotPredefDirectory);
+
+        // Recreeèr tous les annotations Prédéfinies à partir de la liste des annotations
+        for(int i = 0; i < ListAnnotationsPredef.size(); i++){
+                Log.i("Create Predef", ListAnnotationsPredef.get(i).getAnnotationTitle());
+                Util.saveAnnotation(MainActivity.this, ListAnnotationsPredef.get(i), i);
+        }
+
+        // Refraîchir la listView si l'element est bien supprimer
+        if (isRemove){
+            Log.i("delete","delete predef inside");
+            annotPredefFragment.updateAnnotationList();
         }
     }
 

@@ -2,20 +2,17 @@ package com.master.info_ua.videoannottool.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.MainActivity;
+import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
-import com.master.info_ua.videoannottool.fragment.Fragment_AnnotPredef;
 
 //Classe permettant l'affichage d'une boite de dialogue pour acquérir les annotations textuelles
 public class DialogText {

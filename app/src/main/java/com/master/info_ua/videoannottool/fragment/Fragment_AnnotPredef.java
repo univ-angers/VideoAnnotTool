@@ -48,12 +48,44 @@ public class Fragment_AnnotPredef extends Fragment implements DialogEditAnnotPre
         }
 
     }
+    
+    public void updateAnnotationList(){
+
+        annotationsAdapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        lv_Annotations_predef.setAdapter(annotationsAdapter);
+        lv_Annotations_predef.setClickable(true);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		annotationsAdapter = new AnnotationsAdapter(getActivity(), new ArrayList<Annotation>()); //Initilisatisation de la liste d'annotations (vide)
 
-
+    }
+    
+    // Crée le contextmenu pour les annotations qui utilisera le listener dans le MainActivity
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        //super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.lv_annotations_predef) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.context_menu, menu);
+            menu.findItem(R.id.edit_item_annot).setVisible(false);
+            menu.findItem(R.id.delete_item_annot).setVisible(false);
+            menu.findItem(R.id.edit_item_infos_annot).setVisible(false);
+            menu.findItem(R.id.edit_item_video).setVisible(false);
+            menu.findItem(R.id.delete_item_video).setVisible(false);
+            menu.findItem(R.id.renommer_annot_predef).setVisible(true);
+            menu.findItem(R.id.modifier_annot_predef).setVisible(true);
+            menu.findItem(R.id.supprimer_annot_predef).setVisible(true);
+        }
     }
 
     @Override
@@ -146,6 +178,14 @@ public class Fragment_AnnotPredef extends Fragment implements DialogEditAnnotPre
 
         void onAnnotPredefItemClick(Annotation annotation);
 
+        // Supprime une annotaion prédéfinie
+        void onDeleteAnnotationPredef(Annotation annotation, int position);
+
+        // Renommer une annotation prédéfinie
+        void onRenommerAnnotationPredef(Annotation annotation, int position);
+
+        // Modifier une annotation prédéfinie
+        void onUpdateAnnotationPredef(Annotation annotation, int position);
         void closeAnnotPredef();
 
     }

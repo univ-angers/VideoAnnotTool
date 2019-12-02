@@ -14,6 +14,10 @@ public interface DialogCallback {
     void updateImportVideoTextView(TextView videoImportTextView);
     //Appelée lors de la sauvegarde de la vidéo
     void saveImportVideo(Categorie selectedSousCategorie);
+    
+    void onSaveTextAnnotation(Annotation annotation, boolean isPredef, int position);
+
+    void onSaveTextAnnotationPredef(Annotation annotation, boolean isPredef, int position);
 
     void CopyFileAnnotPredef (Annotation annotation);
 
