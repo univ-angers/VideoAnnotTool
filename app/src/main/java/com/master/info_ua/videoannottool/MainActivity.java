@@ -1847,6 +1847,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
 
     private void startRecording() {
+        playButton.callOnClick();
         DisplayManager dm = (DisplayManager)getSystemService(Context.DISPLAY_SERVICE);
         Display defaultDisplay = dm.getDisplay(Display.DEFAULT_DISPLAY);
         if (defaultDisplay == null) {
