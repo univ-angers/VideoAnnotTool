@@ -1768,6 +1768,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         graphAnnotBtn.setEnabled(status);
         textAnnotBtn.setEnabled(status);
         annotPredefBtn.setEnabled(status);
+        exportVideoBtn.setEnabled(status);
     }
 
     //Edition des infos de la video via context menu
