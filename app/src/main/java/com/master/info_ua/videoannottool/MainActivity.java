@@ -253,6 +253,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
 
     private boolean recording = false;
+   // private boolean btn_recording = false;
     private MediaMuxer mMuxer;
     //END
 
@@ -674,7 +675,19 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         //SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
 
+
         ZoomableExoPlayerView playerView = findViewById(R.id.exo_player_view);
+
+        if (recording){
+           // View PV = new View(exoPlayerView.getContext());
+            //exoPlayerView.addView(PV,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            ((ViewGroup) annotCommentTv.getParent()).removeView(annotCommentTv);
+            ((ViewGroup) drawBimapIv.getParent()).removeView(drawBimapIv);
+            exoPlayerView.addView(drawBimapIv);
+            exoPlayerView.addView(annotCommentTv);
+            exoPlayerView.setPlayer(player);
+            playerView = exoPlayerView;
+        }
 
         // 1 creating an ExoPlayer
         DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
@@ -733,6 +746,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     private void openFullscreenDialog() {
 
+
         ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
         FullScreenDialog.addContentView(exoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         ((ViewGroup) drawBimapIv.getParent()).removeView(drawBimapIv);
@@ -743,7 +757,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         FullScreenDialog.addContentView(annotCommentTv, VG_LParam);
         FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_skrink));
         ExoPlayerFullscreen = true;
+        if (recording) {
+            exoplayerPlay = true;
+            exoPlayerView.getPlayer().setPlayWhenReady(true);
+        }
         FullScreenDialog.show();
+
     }
 
     private void initRepeatButton() {
@@ -799,6 +818,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             public void onClick(View v) {
                 if (currentVideo != null) {
                     if (exoplayerPlay == false) {
+
                         // lance la video
                         playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
                         exoplayerPlay = true;
@@ -808,6 +828,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
                         player.setPlayWhenReady(true);
                         new Thread(controlerAnnotation).start();
+
+                        if (recording) {
+                            exoPlayerView.setUseController(false);
+                            //exporterVideo();
+                           // exoPlayerView.setControllerShowTimeoutMs(1);
+
+
+                        }
                     } else {
                         // augmente la vitesse
                         playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
@@ -997,12 +1025,13 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     break;
 
                 case R.id.export_video_btn:
+
                     openFullscreenDialog();
-                    //player.setPlayWhenReady(true);
-                    exoPlayerView.setUseController(false);
+
                     exporterVideo();
-                    if (player.getDuration() == player.getCurrentPosition() )
-                        exporterVideo();
+                    //btn_recording = true;
+
+                    setAnnotButtonStatus(true);
                     break;
             }
         }
@@ -1484,7 +1513,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                         drawBimapIv.setVisibility(View.GONE);
                     }
             }
-       // }
 
     }
 
@@ -1855,8 +1883,15 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private Runnable mDrainEncoderRunnable = new Runnable() {
         @Override
         public void run() {
+
             Log.e("run", "on y passe");
             drainEncoder();
+            if(recording && player.getDuration() >=0 && player.getCurrentPosition() >= player.getDuration()) {
+                exporterVideo();
+                System.out.println("                    -------CONDITION ?"+player.getCurrentPosition() +"  "+ player.getDuration());
+                closeFullscreenDialog();
+                exoPlayerView.setUseController(true);
+            }
         }
     };
 
@@ -1864,7 +1899,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private void prepareVideoEncoder() {
         Log.e("prepareVideoEncoder", "on y passe");
         mVideoBufferInfo = new MediaCodec.BufferInfo();
-        MediaFormat format = MediaFormat.createVideoFormat(VIDEO_MIME_TYPE, VIDEO_WIDTH, VIDEO_HEIGHT);
+        MediaFormat format = MediaFormat.createVideoFormat(VIDEO_MIME_TYPE, getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
         int frameRate = 30; // 30 fps
 
 
