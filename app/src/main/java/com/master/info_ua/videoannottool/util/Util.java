@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
+import com.master.info_ua.videoannottool.custom.Difficulte;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -93,6 +94,23 @@ public class Util {
         return null;
     }
 
+    public static Difficulte parseJSON_Difficulte(Context context) {
+        String filePath = context.getExternalFilesDir("difficulte").getAbsolutePath() + File.separator + "videodifficulte.json";
+        try {
+            FileInputStream fis = new FileInputStream( new File(filePath));
+            Reader reader = new InputStreamReader(fis);
+            Gson gson = new GsonBuilder().setDateFormat("dd-MM-yy HH:mm:ss").create();
+            Difficulte difficulte = gson.fromJson(reader, Difficulte.class);
+            fis.close();
+            return difficulte;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ERR_JSON", "ERREUR Lecture JSON ");
+
+        }
+        return null;
+    }
+
     //Sauvegarde l'objet Annotation dans un fichier Json dans le dossier des annotations prédéfinis
     public static void saveAnnotation(Context context,Annotation AnnotPredef, int annotNum) {
         Writer writer;
@@ -113,8 +131,96 @@ public class Util {
         }
     }
 
+    //Sauvegarde de l'objet d'association video difficulte en JSON
+    public static void saveNewVideoDifficulte(Context context, String videoName, String difficulte) {
+        Writer writer;
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson=gsonBuilder.create();
+        try {
+            File file = new File(context.getExternalFilesDir("difficulte"), "videodifficulte.json");
+            writer = new FileWriter(file);
+            Difficulte d = parseJSON_Difficulte(context);
+            d.add(videoName, difficulte);
+            String jsonStr = gson.toJson(d);
+            writer.write(jsonStr);
+            writer.close();
 
-    //Sauvegarde l'objet videoAnnotation dans un fichier Json
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ERR_SAVEDIFF", "Unable to save Difficulte");
+        }
+    }
+
+
+    //Sauvegarde de la modification du nom d'une vidéo
+    public static void saveEditVideoName(Context context, final String videoName, String newVideoName) {
+        Writer writer;
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson =gsonBuilder.create();
+        try {
+            File file = new File(context.getExternalFilesDir("difficulte"), "videodifficulte.json");
+            writer = new FileWriter(file);
+            Difficulte d = parseJSON_Difficulte(context);
+            d.editVideoName(videoName,newVideoName);
+            String jsonStr = gson.toJson(d);
+            writer.write(jsonStr);
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ERR_EDITNAME", "Unable to save edit video name");
+        }
+    }
+
+
+    //Sauvegarde de la modification du niveau de difficulte d'une vidéo
+    public static void saveEditDifficulte(Context context, final String videoName, int difficulte) {
+        Writer writer;
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson =gsonBuilder.create();
+        try {
+            File file = new File(context.getExternalFilesDir("difficulte"), "videodifficulte.json");
+            writer = new FileWriter(file);
+            Difficulte d = parseJSON_Difficulte(context);
+            String difficulteString = "" + difficulte;
+            d.editDifficulte(videoName,difficulteString);
+            String jsonStr = gson.toJson(d);
+            writer.write(jsonStr);
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ERR_EDITNAME", "Unable to save edit video difficulte");
+        }
+    }
+
+
+    //Sauvegarde de la suppression d'une vidéo
+    public static void saveRemoveVideo(Context context, final String videoName) {
+        Writer writer;
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson =gsonBuilder.create();
+        try {
+            File file = new File(context.getExternalFilesDir("difficulte"), "videodifficulte.json");
+            writer = new FileWriter(file);
+            Difficulte d = parseJSON_Difficulte(context);
+            d.remove(videoName);
+            String jsonStr = gson.toJson(d);
+            writer.write(jsonStr);
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("ERR_REMOVE", "Unable to save remove video difficulte");
+        }
+    }
+
+    public static int getDifficulteFromJSON(Context context, String videoName) {
+        Difficulte d = parseJSON_Difficulte(context);
+        return d.getDifficulte(videoName);
+    }
+
+        //Sauvegarde l'objet videoAnnotation dans un fichier Json
     public static void saveVideoAnnotation(Context context, VideoAnnotation videoAnnotation, String dirPath, String videoName) {
         Writer writer;
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -220,7 +326,7 @@ public class Util {
         if (Util.appDirExist(context)) {
             //Pour chacune des catégories et sous-catégories
             for (File catDir : Dir.listFiles()) {
-                if ( !catDir.getName().matches("annotations")) {
+                if ( ( !catDir.getName().matches("annotations") ) && ( !catDir.getName().matches("difficulte") ) ) {
                     newCat = new Categorie(catDir.getName(), null, catDir.getName());
                     for (File subCatDir : catDir.listFiles()) {
                         newCat.getSubCategories().add(new Categorie(subCatDir.getName(), newCat.getName(), newCat.getName() + "/" + subCatDir.getName()));
@@ -414,6 +520,5 @@ public class Util {
             e.printStackTrace();
         }
     }
-
 
 }

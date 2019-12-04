@@ -13,7 +13,7 @@ public interface DialogCallback {
     //Appelée lors d'un clic sur l'import d'une vidéo
     void updateImportVideoTextView(TextView videoImportTextView);
     //Appelée lors de la sauvegarde de la vidéo
-    void saveImportVideo(Categorie selectedSousCategorie);
+    void saveImportVideo(Categorie selectedSousCategorie, int difficulte);
 
     void CopyFileAnnotPredef (Annotation annotation);
 

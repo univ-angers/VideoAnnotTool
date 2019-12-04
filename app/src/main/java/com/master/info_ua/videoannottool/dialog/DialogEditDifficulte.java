@@ -2,6 +2,8 @@ package com.master.info_ua.videoannottool.dialog;
 
 import android.app.Dialog;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -19,22 +21,56 @@ public class DialogEditDifficulte {
     private Spinner spinner;
     private Button btnValid;
 
-    public DialogEditDifficulte(MainActivity context, Video video) {
+    public DialogEditDifficulte(final MainActivity context, Video video) {
         this.context = context;
         this.video = video;
         dialog = new Dialog(this.context);
-        dialogListener = new EditDifficulteDialogListener() {
-            @Override
-            public void onSaveEditDifficulte(Video video, String title) {
-
-            }
-        };
         dialog.setContentView(R.layout.boite_dialog_edit_difficulte);
         dialog.setCancelable(true);
         dialog.setTitle("Modifier la difficulté");
         spinner = dialog.findViewById(R.id.spinnerEditDifficulte);
         btnValid = dialog.findViewById(R.id.btnValidEditDiff);
+        if (context instanceof EditDifficulteDialogListener) {
+            dialogListener = context;
+        }
+        //Initialisation du spinner de difficulté
+        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(context, R.array.difficultes_import, android.R.layout.simple_spinner_item);
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapterSpinner);
+        spinner.setOnItemSelectedListener(difficulteSelectedListener);
+
     }
+
+
+    public AdapterView.OnItemSelectedListener difficulteSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            switch(adapterView.getItemAtPosition(i).toString()) {
+                case "Niveau 1" : difficulte = 1; break;
+                case "Niveau 2" : difficulte = 2; break;
+                case "Niveau 3" : difficulte = 3; break;
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
+
+
+    protected View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int btnId = v.getId();
+            if (btnId == R.id.btnValidEditDiff) {
+                dialogListener.onSaveEditDifficulte(video, difficulte);
+                dialog.dismiss();
+                Toast.makeText(context, R.string.editValidateToast, Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
 
     public void showDialogEditDiff() {
@@ -42,21 +78,9 @@ public class DialogEditDifficulte {
         btnValid.setOnClickListener(clickListener);
     }
 
-    protected View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int btnId = v.getId();
-            if (btnId == R.id.btnValidEditDiff) {
-                String title = video.getFileName() + difficulte;
-                dialogListener.onSaveEditDifficulte(video, title);
-                dialog.dismiss();
-                Toast.makeText(context, R.string.editValidateToast, Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
 
     public interface EditDifficulteDialogListener {
-        void onSaveEditDifficulte(Video video, String title);
+        void onSaveEditDifficulte(Video video, int d);
     }
 
 }

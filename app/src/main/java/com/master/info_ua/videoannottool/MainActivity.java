@@ -76,6 +76,9 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
@@ -103,8 +106,11 @@ import com.master.info_ua.videoannottool.util.Ecouteur;
 import com.master.info_ua.videoannottool.util.Util;
 
 import org.apache.commons.io.FileUtils;
+import org.json.JSONArray;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -117,7 +123,7 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 
 
-public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener{
+public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener, DialogEditDifficulte.EditDifficulteDialogListener{
 
     private static final int READ_REQUEST_CODE = 42;
     static final int READ_CATEGORY_CODE = 1;
@@ -169,6 +175,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     private Spinner spinnerCategorie;
     private Spinner spinnerSubCategorie;
+    private Spinner spinnerDifficulte;
 
     private List<Video> listvideo;
     private VideosAdapter videosAdapter;
@@ -254,6 +261,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     private boolean recording = false;
     private MediaMuxer mMuxer;
+
+    //Fichier JSON pour la relation entre difficulté et vidéo
+    private File fileVideoDifficulte;
+    private int currentDifficulte = 1;
     //END
 
     @Override
@@ -394,9 +405,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 searchText = charSequence.toString();
                 videosAdapter.clear();
-                if ((i == 0) && (i2 == 0)) {
+                if ((i == 0) && (i2 == 0)) { // Si le texte de recherche est vide, on ne charge dans la liste de vidéo que les vidéos de la catégorie courante
                     videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
-                } else {
+                } else { // Sinon, on parcours la liste des catégories et on charge les vidéos de chaque catégorie, et dont le nom correspond au texte de recherche
                     for (Categorie cat : categorieList) {
                         for (Categorie subCat : cat.getSubCategories()) {
                             videosAdapter.addAll(setVideoList(subCat.getPath()));
@@ -428,6 +439,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             i++;
             recupAnnot = Util.parseJSON_Annot(MainActivity.this,i);
         }
+
+
+        spinnerDifficulte=findViewById(R.id.spinner_difficulte);
+        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this, R.array.difficultes, android.R.layout.simple_spinner_item);
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerDifficulte.setAdapter(adapterSpinner);
+        spinnerDifficulte.setOnItemSelectedListener(difficulteSelectedListener);
 
     }
 
@@ -554,6 +573,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 {
                     Util.deleteRecursiveDirectory(subDirContent);
                 }
+                Util.saveRemoveVideo(this, video.getName());
                 videosAdapter.remove(video);
                 videosAdapter.notifyDataSetChanged();
                 initExoPlayer();
@@ -681,6 +701,36 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         }
     };
 
+    /**
+     * Listener pour le filtrage par niveau de difficulté
+     */
+    public AdapterView.OnItemSelectedListener difficulteSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            switch(adapterView.getItemAtPosition(i).toString()) {
+                case "Niv.1" :
+                    currentDifficulte = 1;
+                    Log.i("LISTENERDIFFICULTE", "currentDifficulte = " + currentDifficulte);
+                    setVideoList(currentSubCategorie.getPath());
+                    break;
+                case "Niv.2" :
+                    currentDifficulte = 2;
+                    Log.i("LISTENERDIFFICULTE", "currentDifficulte = " + currentDifficulte);
+                    setVideoList(currentSubCategorie.getPath());
+                    break;
+                case "Niv.3" :
+                    currentDifficulte = 3;
+                    Log.i("LISTENERDIFFICULTE", "currentDifficulte = " + currentDifficulte);
+                    setVideoList(currentSubCategorie.getPath());
+                    break;
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
 
     public void initExoPlayer() {
 
@@ -876,7 +926,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      * Construit la liste de vidéo (+annotations associées) contenues dans la sous-catégorie spécifiée en paramètre
      *
      * @param subCatDir
-     * @return
+     * @return videoList
      */
     protected List<Video> setVideoList(String subCatDir) {
 
@@ -922,8 +972,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             Log.e("SUB_CAT", "No content in " + subCatDir);
         }
         /**
-         * Sébastien VIOT
-         * On filtre la liste de vidéos, avec le texte de la recherche
+         * On filtre la liste de vidéos, avec le texte de la recherche et la difficulte courante
          */
 
         return filter(videoList, searchText);
@@ -933,15 +982,16 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private List<Video> filter(List<Video> vl, String toSearch) {
         List<Video> ret = new ArrayList<>();
         for (Video inlist : vl) {
-            /**
-             * Sébastien VIOT.
-             * La recherche est insensible à la casse
-             */
-            String videoNameIgnoreCase = inlist.getFileName().toLowerCase();
-            String toSearchIgnoreCase = toSearch.toLowerCase();
-            if (videoNameIgnoreCase.contains(toSearchIgnoreCase)){
-                ret.add(inlist);
-            }
+            //if (Util.getDifficulteFromJSON(this,inlist.getName()) == currentDifficulte ) {
+                /**
+                 * La recherche est insensible à la casse
+                 */
+                String videoNameIgnoreCase = inlist.getFileName().toLowerCase();
+                String toSearchIgnoreCase = toSearch.toLowerCase();
+                if (videoNameIgnoreCase.contains(toSearchIgnoreCase)) {
+                    ret.add(inlist);
+                }
+            //}
         }
         return ret;
     }
@@ -1685,8 +1735,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
     @Override
-    public void saveImportVideo(Categorie categorie) {
+    public void saveImportVideo(Categorie categorie, int difficulte) {
         Util.saveImportVideoFile(this,categorie,fileVideoImport);
+        String difficulteString = "" + difficulte;
+        Util.saveNewVideoDifficulte(this, fileVideoImport.getName(), difficulteString);
         videosAdapter.clear();
         videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
         videosAdapter.notifyDataSetChanged();
@@ -1746,6 +1798,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     //Modification du nom du repertoire et de la video
     @Override
     public void onSaveEditVideo(Video video, String title) {
+        Util.saveEditVideoName(this, video.getName(), title);
         String subCatDir= currentCategorie + "/" +video.getPath();
         File subDirContent = this.getExternalFilesDir(subCatDir);
         File renamed = new File(this.getExternalFilesDir(currentCategorie + "/" + currentSubCategorie),title);
@@ -1771,9 +1824,17 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         } else {
             Log.e("SUB_CAT", "No content in " + subCatDir);
         }
+        //Modification dans le fichier JSON difficulte
+        editVideoNameIntoJSON(video.getFileName(),title);
+
         video.setFileName(title);
         video.setName(title);
         videosAdapter.notifyDataSetInvalidated();
+    }
+
+    @Override
+    public void onSaveEditDifficulte(Video video, int d) {
+        Util.saveEditDifficulte(this, video.getName(), d);
     }
 
     // Copie les fichiers (images, fichiers mp4) du dossier d'annotations prédéfini vers le dossier de la vidéo courante
@@ -1967,6 +2028,230 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         mVideoBufferInfo = null;
         mDrainEncoderRunnable = null;
         mTrackIndex = -1;
+    }
+
+
+    public void writeDifficulteVideoIntoJSON(String newVideoName, int newDifficulte) {
+        try {
+            //Reader et Writer pour modifier le fichier
+            FileReader reader = new FileReader(fileVideoDifficulte);
+
+            //Il y aura un traitement légèremnt different si c'est le premier couple (vidéo, difficulte) que l'on ajoute, donc si le fichier est vide.
+            boolean vide;
+
+            //Variable pour le nouveau contenu du fichier
+            String newcontent = "" ;
+
+            //Variable pour l'ancien contenu du fichier
+            String content = "";
+
+            //La longueur du fichier est le nombre de caractères présents dans le fichiers JSON.
+            char[] a = new char[(int)fileVideoDifficulte.length()];
+            //On lit le fichier caractère par caratère.;
+            reader.read(a);
+            for (char c : a) {
+                //On ajoute caractère par caractère le contenu du fichier dans un string
+                content += c;
+            }
+
+            reader.close();
+            // On supprime le fichier...
+            fileVideoDifficulte.delete();
+            // ... pour recréer un fichier vide ...
+            fileVideoDifficulte.createNewFile();
+
+            // ... dans lequel on va réécrire nos anciennes données ...
+            FileWriter writer = new FileWriter(fileVideoDifficulte);
+            if (content=="") {
+                /**
+                 * Si le fichier est vide, il faut donc créer la liste de couple (nom de video, difficulte)
+                 * On commence donc par le nom du tableau (pour récupération)
+                 * puis par l'accolade ouvrante
+                 */
+                content += "videodifficulte:[";
+                vide = true;
+            }
+            else {
+                /**
+                 * Si le fichier n'est pas vide, il contient l'accolade fermante de la fin de la liste,
+                 * or, on veut écrire juste avant la fin de la liste.
+                 * On supprime les deux derniers caractères ('\n' et ']' )
+                 */
+                newcontent = content.substring(0,content.length()-2);
+                vide = false;
+            }
+
+            // ... et les nouvelles données.
+            if (vide) {
+                /**
+                 * Si le fichier est vide, il ne doit pas y avoir de virgule entre l'accolade ouvrante et le premier couple (nomvideo, difficulte)
+                 */
+                newcontent = content + "\n{\"name\": \"" + newVideoName + "\n\"difficulte\": \"" + newDifficulte + "\"}\n]";
+            } else {
+                /**
+                 * Sinon, on ajoute à la fin de la liste le couple (nouvelle video, nouvelle difficulte, et on ferme la liste
+                 */
+                newcontent = content + ",\n{\"name\": \"" + newVideoName + "\n\"difficulte\": \"" + newDifficulte + "\"}\n]";
+            }
+            writer.write(newcontent);
+            Log.i("writejson", newcontent);
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public void editDifficulteIntoJSON(final String videoName, int new_difficulte){
+        JsonParser parser = new JsonParser();
+        JsonElement couples;
+        try {
+            FileReader reader = new FileReader(fileVideoDifficulte);
+            couples = parser.parse(reader);
+            JsonArray videoDifficulte = couples.getAsJsonArray();
+            int iter=0;
+            boolean trouve = false;
+            do {
+                JsonElement couple = videoDifficulte.get(iter);
+                String nom = couple.getAsJsonObject().get("name").toString();
+                if (nom == videoName) {
+                    trouve = true;
+                    videoDifficulte.remove(iter);
+                }
+                iter++;
+            } while ( (iter < videoDifficulte.size()) && (!trouve) );
+
+            char[] a = new char[(int)fileVideoDifficulte.length()];
+            reader.read(a);
+            String content = "";
+            for (char c : a) {
+                content += c;
+            }
+            content.substring(0,content.length()-1);
+            content += "\"name\":\"" + videoName + "\", \"difficulte\":\"" + new_difficulte + "\"\n]";
+
+            FileWriter writer = new FileWriter(fileVideoDifficulte);
+            // On supprime le fichier...
+            fileVideoDifficulte.delete();
+            // ... pour recréer un fichier vide ...
+            fileVideoDifficulte.createNewFile();
+            // ... dans lequel on va réécrire nos données ...
+            writer.write(content);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void editVideoNameIntoJSON(final String videoName, String new_videoName) {
+        JsonParser parser = new JsonParser();
+        JsonElement couples;
+        try {
+            FileReader reader = new FileReader(fileVideoDifficulte);
+            couples = parser.parse(reader);
+            JsonArray videoDifficulte = couples.getAsJsonArray();
+            int iter=0;
+            String difficulte = "";
+            boolean trouve = false;
+            do {
+                JsonElement couple = videoDifficulte.get(iter);
+                String nom = couple.getAsJsonObject().get("name").toString();
+                if (nom == videoName) {
+                    trouve = true;
+                    videoDifficulte.remove(iter);
+                    difficulte = couple.getAsJsonObject().get("difficulte").toString();
+                }
+                iter++;
+            } while ( (iter < videoDifficulte.size()) && (!trouve) );
+
+            char[] a = new char[(int)fileVideoDifficulte.length()];
+            reader.read(a);
+            String content = "";
+            for (char c : a) {
+                content += c;
+            }
+            content.substring(0,content.length()-1);
+            content += "\"name\":\"" + new_videoName + "\", \"difficulte\":\"" + difficulte + "\"\n]";
+
+            FileWriter writer = new FileWriter(fileVideoDifficulte);
+            // On supprime le fichier...
+            fileVideoDifficulte.delete();
+            // ... pour recréer un fichier vide ...
+            fileVideoDifficulte.createNewFile();
+            // ... dans lequel on va réécrire nos données ...
+            writer.write(content);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public int getDifficulte(final String videoName) {
+
+        JsonParser parser = new JsonParser();
+        JsonElement jsonObject;
+        try {
+            jsonObject = parser.parse(new FileReader(fileVideoDifficulte));
+            JsonArray videoDifficulte = jsonObject.getAsJsonArray();
+            for (int iter = 0; iter < videoDifficulte.size(); iter++) {
+                JsonElement couple = videoDifficulte.get(iter);
+                String nom = couple.getAsJsonObject().get("name").toString();
+                String findDifficulte = couple.getAsJsonObject().get("difficulte").toString();
+                if (nom == videoName) {
+                    switch (findDifficulte) {
+                        case "1":
+                            return 1;
+                        case "2":
+                            return 2;
+                        case "3":
+                            return 3;
+                    } //ENDSWITCH
+                } //ENDIF
+            } //ENDFOR
+        } catch (Exception e) {
+            e.printStackTrace();
+        } //ENDTRYCATCH
+        return 0;
+    } //ENDMETHODE
+
+    public void deleteVideoIntoJSON(final String videoName) {
+        JsonParser parser = new JsonParser();
+        JsonElement jsonObject;
+        try {
+            FileReader reader = new FileReader(fileVideoDifficulte);
+            jsonObject = parser.parse(reader);
+            JsonArray videoDifficulte = jsonObject.getAsJsonArray();
+            int iter=0;
+            String difficulte = "";
+            boolean trouve = false;
+            do {
+                JsonElement couple = videoDifficulte.get(iter);
+                String nom = couple.getAsJsonObject().get("name").toString();
+                if (nom == videoName) {
+                    trouve = true;
+                    videoDifficulte.remove(iter);
+                }
+                iter++;
+            } while ( (iter < videoDifficulte.size()) && (!trouve) );
+
+            char[] a = new char[(int)fileVideoDifficulte.length()];
+            reader.read(a);
+            String content = "";
+            for (char c : a) {
+                content += c;
+            }
+
+            FileWriter writer = new FileWriter(fileVideoDifficulte);
+            // On supprime le fichier...
+            fileVideoDifficulte.delete();
+            // ... pour recréer un fichier vide ...
+            fileVideoDifficulte.createNewFile();
+            // ... dans lequel on va réécrire nos données ...
+            writer.write(content);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
 //END RECORDER
