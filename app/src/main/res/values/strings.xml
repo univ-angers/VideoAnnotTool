@@ -15,12 +15,13 @@
     <string name="TextBtnAnnulerRecord">Annuler</string>
     <string name="BtnValiderDialogText">Valider</string>
     <string name="TitleDialogText">Entrez le texte à afficher</string>
-    <string name="TitleDialogTextModif">Modifier l\'annotaion</string>
+    <string name="TitleDialogTextModif">Modifier l\'annotation</string>
 
     <string name="TextDialogDraw">Enregistrement Graphique</string>
     <string name="invalidPassword">Mot de passe invalide</string>
     <string name="title_audio_error">Préciser le titre de l\'annotation</string>
     <string name="title_texte_error">Préciser le titre de l\'annotation</string>
+    <string name="ModifDialogText">Modifier l\'annotation</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="TextBtnImport">Sauvegarder la vidéo</string>
