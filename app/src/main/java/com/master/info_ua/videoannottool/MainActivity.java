@@ -10,13 +10,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.display.DisplayManager;
-import android.hardware.display.VirtualDisplay;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaMuxer;
-import android.media.MediaRecorder;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
@@ -40,7 +38,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Surface;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -224,38 +221,28 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private File AnnotPredefDirectory;
 
 
-
-    // RECORDER EXPORT
+    //variables utilisees pour l'enregistrement de l'ecran
     private static final int CAST_PERMISSION_CODE = 22;
-    private DisplayMetrics mDisplayMetrics;
     private MediaProjection mMediaProjection;
-    private VirtualDisplay mVirtualDisplay;
-    private MediaRecorder mMediaRecorder;
     private MediaProjectionManager mProjectionManager;
 
 
-    private MediaProjectionManager mMediaProjectionManager;
     private static final int REQUEST_CODE_CAPTURE_PERM = 1234;
     private static final String VIDEO_MIME_TYPE = "video/avc";
-    private static final int VIDEO_WIDTH = 1080;
-    private static final int VIDEO_HEIGHT = 1794;
     private DisplayMetrics metrics;
     private int screenDensity;
     private int screenWidth;
     private int screenHeight;
-    // …
+
     private boolean mMuxerStarted = false;
     private Surface mInputSurface;
     private MediaCodec mVideoEncoder;
     private MediaCodec.BufferInfo mVideoBufferInfo;
     private int mTrackIndex = -1;
-    private SurfaceView mSurfaceView;
 
 
     private boolean recording = false;
-   // private boolean btn_recording = false;
     private MediaMuxer mMuxer;
-    //END
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -745,8 +732,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
     private void openFullscreenDialog() {
-
-
+        //replacer les elements d'interface dans le fullScreenDialog
         ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
         FullScreenDialog.addContentView(exoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         ((ViewGroup) drawBimapIv.getParent()).removeView(drawBimapIv);
@@ -851,6 +837,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     private void closeFullscreenDialog() {
 
+        //on replace les elements dans l'interface de l'application
         ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
         ((FrameLayout) findViewById(R.id.main_media_frame)).addView(exoPlayerView);
 //        exoPlayerView.showController();
@@ -1029,7 +1016,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     openFullscreenDialog();
 
                     exporterVideo();
-                    //btn_recording = true;
 
                     setAnnotButtonStatus(true);
                     break;
@@ -1557,8 +1543,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 annotFragment.updateAnnotationList(currentVAnnot);
                 break;
             case DRAW:
+                //recupere le dessin de l'annotation a modifier
                 Bitmap bitmap = Util.getBitmapFromAppDir(getApplicationContext(), annotFileDirectory, annotation.getDrawFileName());
-//                Log.e("bitcount", );
 
                 player.setPlayWhenReady(false);
                 drawView.setVisibility(View.VISIBLE);
@@ -1583,6 +1569,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     ft.show(drawFragment);
                     ft.commit();
                 }
+                //ajout du dessin a editer a DrawView
                 drawView.setmBitmap(bitmap);
                 break;
             default:
@@ -1841,6 +1828,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
        }
        else {
            recording=true;
+           //demande de permission d'enregistrer l'ecran
            Intent permissionIntent = mProjectionManager.createScreenCaptureIntent();
            startActivityForResult(permissionIntent, CAST_PERMISSION_CODE);
        }
@@ -1848,6 +1836,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
 
     private void startRecording() {
+        //lancement de la video au debut de l'enregistrement
         playButton.callOnClick();
         DisplayManager dm = (DisplayManager)getSystemService(Context.DISPLAY_SERVICE);
         Display defaultDisplay = dm.getDisplay(Display.DEFAULT_DISPLAY);
@@ -1858,6 +1847,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         try {
             Log.e(Environment.getExternalStorageDirectory() + "/Android/data"+ File.separator, "on est là");
+            //emplacement de stockage de la vidéo
             mMuxer = new MediaMuxer(Environment.getExternalStorageDirectory()+ File.separator +  "video18.mp4", MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
         } catch (IOException ioe) {
             throw new RuntimeException("MediaMuxer creation failed", ioe);
@@ -1885,7 +1875,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private Runnable mDrainEncoderRunnable = new Runnable() {
         @Override
         public void run() {
-
             Log.e("run", "on y passe");
             drainEncoder();
             if(recording && player.getDuration() >=0 && player.getCurrentPosition() >= player.getDuration()) {
@@ -2005,6 +1994,5 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         mDrainEncoderRunnable = null;
         mTrackIndex = -1;
     }
-
-//END RECORDER
+    //END EXPORT VIDEO
 }

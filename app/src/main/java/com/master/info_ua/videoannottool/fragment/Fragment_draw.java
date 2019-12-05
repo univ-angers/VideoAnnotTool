@@ -40,6 +40,7 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
     private Button b_green;
     private Button b_white;
 
+    //true si il s'agit d'une modification d'annotation
     private boolean isEditing = false;
 
     private DrawFragmentCallback fragmentCallback;
