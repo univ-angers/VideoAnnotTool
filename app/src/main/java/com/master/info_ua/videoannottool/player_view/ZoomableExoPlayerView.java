@@ -44,6 +44,7 @@ import com.google.android.exoplayer2.video.VideoListener;
 
 import java.util.List;
 
+import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 
 public class ZoomableExoPlayerView extends FrameLayout {
@@ -87,6 +88,10 @@ public class ZoomableExoPlayerView extends FrameLayout {
     private int surfaceType;
     private int resizeMode;
     private int defaultArtworkId;
+
+    //Exporter vidéo
+    public boolean recording ;
+    public MainActivity main;
 
     public ZoomableExoPlayerView(Context context) {
         this(context, null);
@@ -340,6 +345,9 @@ public class ZoomableExoPlayerView extends FrameLayout {
             overlayFrameLayout.requestFocus();
             return super.dispatchKeyEvent(event);
         }
+
+        main.exporterVideo();
+
         boolean isDpadWhenControlHidden =
                 isDpadKey(event.getKeyCode()) && useController && !controller.isVisible();
         maybeShowController(true);

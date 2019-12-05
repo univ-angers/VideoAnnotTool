@@ -184,7 +184,7 @@ public class DrawView extends View {
         mPaint.setColor(color);
     }
 
-    //Permet de desiner avec un gomme pour effacer
+    //Permet de desiner avec une gomme pour effacer
     public void setErase(){
         mPaint.setColor(Color.TRANSPARENT);
         mPaint.setAlpha(0);

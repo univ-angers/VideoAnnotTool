@@ -10,13 +10,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.display.DisplayManager;
-import android.hardware.display.VirtualDisplay;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaMuxer;
-import android.media.MediaRecorder;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
@@ -41,7 +39,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Surface;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -144,6 +141,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
     private Button vignetteBtn;
+    private Button exportVideoBtn;
     private Button annotPredefBtn;
     private RelativeLayout btnLayout;
 
@@ -238,32 +236,24 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private File AnnotPredefDirectory;
 
 
-
-    // RECORDER EXPORT
+    //variables utilisees pour l'enregistrement de l'ecran
     private static final int CAST_PERMISSION_CODE = 22;
-    private DisplayMetrics mDisplayMetrics;
     private MediaProjection mMediaProjection;
-    private VirtualDisplay mVirtualDisplay;
-    private MediaRecorder mMediaRecorder;
     private MediaProjectionManager mProjectionManager;
 
 
-    private MediaProjectionManager mMediaProjectionManager;
     private static final int REQUEST_CODE_CAPTURE_PERM = 1234;
     private static final String VIDEO_MIME_TYPE = "video/avc";
-    private static final int VIDEO_WIDTH = 1080;
-    private static final int VIDEO_HEIGHT = 1794;
     private DisplayMetrics metrics;
     private int screenDensity;
     private int screenWidth;
     private int screenHeight;
-    // …
+
     private boolean mMuxerStarted = false;
     private Surface mInputSurface;
     private MediaCodec mVideoEncoder;
     private MediaCodec.BufferInfo mVideoBufferInfo;
     private int mTrackIndex = -1;
-    private SurfaceView mSurfaceView;
 
 
     private boolean recording = false;
@@ -380,6 +370,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         annotPredefBtn = findViewById(R.id.annot_predef_btn);
         //annotPredefBtn.setEnabled(false);
         annotPredefBtn.setOnClickListener(btnClickListener);
+
+        exportVideoBtn = findViewById(R.id.export_video_btn);
+        exportVideoBtn.setOnClickListener(btnClickListener);
 
         btnLayout = findViewById(R.id.btn_layout_id);
         drawBimapIv = findViewById(R.id.draw_bitmap_iv);
@@ -748,7 +741,20 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public void initExoPlayer() {
 
         //SimpleExoPlayerView exoPlayerView = findViewById(R.id.player_view);
+
+
         ZoomableExoPlayerView playerView = findViewById(R.id.exo_player_view);
+
+        if (recording){
+           // View PV = new View(exoPlayerView.getContext());
+            //exoPlayerView.addView(PV,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            ((ViewGroup) annotCommentTv.getParent()).removeView(annotCommentTv);
+            ((ViewGroup) drawBimapIv.getParent()).removeView(drawBimapIv);
+            exoPlayerView.addView(drawBimapIv);
+            exoPlayerView.addView(annotCommentTv);
+            exoPlayerView.setPlayer(player);
+            playerView = exoPlayerView;
+        }
 
         // 1 creating an ExoPlayer
         DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
@@ -806,7 +812,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
     private void openFullscreenDialog() {
-
+        //replacer les elements d'interface dans le fullScreenDialog
         ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
         FullScreenDialog.addContentView(exoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         ((ViewGroup) drawBimapIv.getParent()).removeView(drawBimapIv);
@@ -817,7 +823,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         FullScreenDialog.addContentView(annotCommentTv, VG_LParam);
         FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_skrink));
         ExoPlayerFullscreen = true;
+        if (recording) {
+            exoplayerPlay = true;
+            exoPlayerView.getPlayer().setPlayWhenReady(true);
+        }
         FullScreenDialog.show();
+
     }
 
     private void initRepeatButton() {
@@ -873,6 +884,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             public void onClick(View v) {
                 if (currentVideo != null) {
                     if (exoplayerPlay == false) {
+
                         // lance la video
                         playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_pause));
                         exoplayerPlay = true;
@@ -882,6 +894,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
                         player.setPlayWhenReady(true);
                         new Thread(controlerAnnotation).start();
+
+                        if (recording) {
+                            exoPlayerView.setUseController(false);
+                            //exporterVideo();
+                           // exoPlayerView.setControllerShowTimeoutMs(1);
+
+
+                        }
                     } else {
                         // augmente la vitesse
                         playIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.exo_controls_play));
@@ -897,6 +917,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     private void closeFullscreenDialog() {
 
+        //on replace les elements dans l'interface de l'application
         ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
         ((FrameLayout) findViewById(R.id.main_media_frame)).addView(exoPlayerView);
 //        exoPlayerView.showController();
@@ -1074,6 +1095,15 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     player.setPlayWhenReady(false);
                     DialogVignette dialogVignette = new DialogVignette(MainActivity.this);
                     dialogVignette.showDialogVignette();
+
+                case R.id.export_video_btn:
+
+                    openFullscreenDialog();
+
+                    exporterVideo();
+
+                    setAnnotButtonStatus(true);
+                    break;
             }
         }
     };
@@ -1499,7 +1529,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      */
     protected void onAnnotationLauched(Annotation annotation) {
 
-       // if(!ExoPlayerFullscreen) {
+        if(ExoPlayerFullscreen) {
+
+        }
             setAnnotButtonStatus(false);
             player.seekTo(annotation.getAnnotationStartTime());
             player.setPlayWhenReady(false);
@@ -1569,7 +1601,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                         drawBimapIv.setVisibility(View.GONE);
                     }
             }
-       // }
 
     }
 
@@ -1610,6 +1641,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 dialogtext.showDialogBoxModif(annotation, MainActivity.this, position);
                 break;
             case DRAW:
+                //recupere le dessin de l'annotation a modifier
                 Bitmap bitmap = Util.getBitmapFromAppDir(getApplicationContext(), annotFileDirectory, annotation.getDrawFileName());
                 player.setPlayWhenReady(false);
                 drawView.setVisibility(View.VISIBLE);
@@ -1635,6 +1667,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     ft.commit();
                 }
                 drawView.invalidate();
+                //ajout du dessin a editer a DrawView
                 drawView.setmBitmap(bitmap);
                 break;
             default:
@@ -1839,6 +1872,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         textAnnotBtn.setEnabled(status);
         annotPredefBtn.setEnabled(status);
         vignetteBtn.setEnabled(status);
+        exportVideoBtn.setEnabled(status);
     }
 
     //Edition des infos de la video via context menu
@@ -1925,6 +1959,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
        }
        else {
            recording=true;
+           //demande de permission d'enregistrer l'ecran
            Intent permissionIntent = mProjectionManager.createScreenCaptureIntent();
            startActivityForResult(permissionIntent, CAST_PERMISSION_CODE);
        }
@@ -1932,6 +1967,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
 
     private void startRecording() {
+        //lancement de la video au debut de l'enregistrement
+        playButton.callOnClick();
         DisplayManager dm = (DisplayManager)getSystemService(Context.DISPLAY_SERVICE);
         Display defaultDisplay = dm.getDisplay(Display.DEFAULT_DISPLAY);
         if (defaultDisplay == null) {
@@ -1941,6 +1978,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         try {
             Log.e(Environment.getExternalStorageDirectory() + "/Android/data"+ File.separator, "on est là");
+            //emplacement de stockage de la vidéo
             mMuxer = new MediaMuxer(Environment.getExternalStorageDirectory()+ File.separator +  "video18.mp4", MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
         } catch (IOException ioe) {
             throw new RuntimeException("MediaMuxer creation failed", ioe);
@@ -1970,6 +2008,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         public void run() {
             Log.e("run", "on y passe");
             drainEncoder();
+            if(recording && player.getDuration() >=0 && player.getCurrentPosition() >= player.getDuration()) {
+                exporterVideo();
+                System.out.println("                    -------CONDITION ?"+player.getCurrentPosition() +"  "+ player.getDuration());
+                closeFullscreenDialog();
+                exoPlayerView.setUseController(true);
+            }
         }
     };
 
@@ -1977,7 +2021,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private void prepareVideoEncoder() {
         Log.e("prepareVideoEncoder", "on y passe");
         mVideoBufferInfo = new MediaCodec.BufferInfo();
-        MediaFormat format = MediaFormat.createVideoFormat(VIDEO_MIME_TYPE, VIDEO_WIDTH, VIDEO_HEIGHT);
+        MediaFormat format = MediaFormat.createVideoFormat(VIDEO_MIME_TYPE, getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
         int frameRate = 30; // 30 fps
 
 
@@ -2081,6 +2125,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         mDrainEncoderRunnable = null;
         mTrackIndex = -1;
     }
+    //END EXPORT VIDEO
 
 /*
     public void writeDifficulteVideoIntoJSON(String newVideoName, int newDifficulte) {

@@ -87,5 +87,8 @@
         <item>Niv.3</item>
     </string-array>
 
+    <string name="btn_AP">AP</string>
+    <string name="btn_export_video">EXP</string>
+
 
 </resources>
