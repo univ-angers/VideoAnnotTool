@@ -1095,7 +1095,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     player.setPlayWhenReady(false);
                     DialogVignette dialogVignette = new DialogVignette(MainActivity.this);
                     dialogVignette.showDialogVignette();
-
+                    break;
                 case R.id.export_video_btn:
 
                     openFullscreenDialog();
@@ -1600,6 +1600,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                         drawBimapIv.setImageBitmap(null);
                         drawBimapIv.setVisibility(View.GONE);
                     }
+                    break;
             }
 
     }
