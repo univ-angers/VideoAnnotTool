@@ -31,6 +31,8 @@ public class DialogImport {
     private ArrayAdapter<Categorie> spinnerAdapter;
     private Spinner spinnerCategorie;
     private Spinner spinnerSubCategorie;
+    private Spinner spinnerDifficulte;
+    private int difficulte;
     private Dialog dialog;
     private DialogCallback dialogCallback;
     private List<Categorie> categorieList;
@@ -61,6 +63,16 @@ public class DialogImport {
         spinnerSubCategorie.setAdapter(spinnerAdapter2);
         spinnerCategorie.setOnItemSelectedListener(catItemSelectedListener);
         spinnerCategorie.setSelection(1);
+
+        //Initialisation du spinner de difficulté
+        spinnerDifficulte = dialog.findViewById(R.id.spinner_import_difficulte);
+        ArrayAdapter<CharSequence> adapterSpinnerDifficulte = ArrayAdapter.createFromResource(context, R.array.difficultes_import, android.R.layout.simple_spinner_item);
+        adapterSpinnerDifficulte.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerDifficulte.setAdapter(adapterSpinnerDifficulte);
+        spinnerDifficulte.setOnItemSelectedListener(difficulteSelectedListener);
+
+
         if (context instanceof DialogCallback) {
             dialogCallback = (DialogCallback) context;
         }
@@ -72,6 +84,7 @@ public class DialogImport {
         btnImporter.setOnClickListener(btnClickListener);
         btnAnnuler = dialog.findViewById(R.id.btnCancelImport);
         btnAnnuler.setOnClickListener(btnClickListener);
+
         //Affichage de la boîte de dialogue
         dialog.show();
     }
@@ -89,7 +102,7 @@ public class DialogImport {
                     break;
                 case R.id.btnImport:
                     if(!currentCategorie.getSubCategories().isEmpty()) {
-                        dialogCallback.saveImportVideo((Categorie) spinnerSubCategorie.getSelectedItem());
+                        dialogCallback.saveImportVideo((Categorie) spinnerSubCategorie.getSelectedItem(), difficulte);
                         dialog.cancel();
                     }else
                         Toast.makeText(v.getContext(),"Impossible d'importer la vidéo, pas de sous-catégorie existante",Toast.LENGTH_SHORT).show();
@@ -120,4 +133,25 @@ public class DialogImport {
             //???
         }
     };
+
+    public AdapterView.OnItemSelectedListener difficulteSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            switch(adapterView.getItemAtPosition(i).toString()) {
+                case "Niveau 1" : difficulte = 1; break;
+                case "Niveau 2" : difficulte = 2; break;
+                case "Niveau 3" : difficulte = 3; break;
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
+
+    public int getDifficulte() {
+        return difficulte;
+    }
+
 }
