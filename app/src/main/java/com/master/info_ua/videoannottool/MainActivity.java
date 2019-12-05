@@ -129,8 +129,7 @@ import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
 
 
-public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener, DialogVignette.EditVignetteDialogListener {
-public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener, DialogEditDifficulte.EditDifficulteDialogListener{
+public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener, DialogVignette.EditVignetteDialogListener, DialogEditDifficulte.EditDifficulteDialogListener{
 
     private static final int READ_REQUEST_CODE = 42;
     static final int READ_CATEGORY_CODE = 1;
@@ -1846,9 +1845,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     //Modification du nom du repertoire et de la video
     @Override
     public void onSaveEditVideo(Video video, String title) {
+
         Util.saveEditVideoName(this, video.getName(), title);
-        String subCatDir= currentCategorie + "/" +video.getPath();
+        // A voir, de Sebastien,   String subCatDir= currentCategorie + "/" +video.getPath();
         String subCatDir= video.getPath();
+
         File subDirContent = this.getExternalFilesDir(subCatDir);
         File renamed = new File(this.getExternalFilesDir(currentCategorie + "/" + currentSubCategorie),title);
         subDirContent.renameTo(renamed);
@@ -1874,6 +1875,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         } else {
             Log.e("SUB_CAT", "No content in " + subCatDir);
         }
+
         video.setPath(currentCategorie + File.separator+ currentSubCategorie + File.separator + title);
         //Modification dans le fichier JSON difficulte
 
