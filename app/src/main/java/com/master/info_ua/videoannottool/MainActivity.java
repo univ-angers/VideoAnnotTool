@@ -263,7 +263,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private MediaMuxer mMuxer;
 
     //Fichier JSON pour la relation entre difficulté et vidéo
-    private File fileVideoDifficulte;
+    private File fileVideoDifficulteDirectory;
+    public File fileVideoDifficulte;
     private int currentDifficulte = 1;
     //END
 
@@ -407,7 +408,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 videosAdapter.clear();
                 if ((i == 0) && (i2 == 0)) { // Si le texte de recherche est vide, on ne charge dans la liste de vidéo que les vidéos de la catégorie courante
                     videosAdapter.addAll(setVideoList(currentSubCategorie.getPath()));
-                } else { // Sinon, on parcours la liste des catégories et on charge les vidéos de chaque catégorie, et dont le nom correspond au texte de recherche
+                } else { // Sinon, on parcourt la liste des catégories et on charge les vidéos de chaque catégorie, et dont le nom correspond au texte de recherche
                     for (Categorie cat : categorieList) {
                         for (Categorie subCat : cat.getSubCategories()) {
                             videosAdapter.addAll(setVideoList(subCat.getPath()));
@@ -432,6 +433,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         AnnotPredefDirectory.mkdirs();
 
 
+
+
         int i = 1;
         Annotation recupAnnot = Util.parseJSON_Annot(MainActivity.this,i);
         while( recupAnnot != null){
@@ -440,7 +443,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             recupAnnot = Util.parseJSON_Annot(MainActivity.this,i);
         }
 
-
         spinnerDifficulte=findViewById(R.id.spinner_difficulte);
         ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this, R.array.difficultes, android.R.layout.simple_spinner_item);
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -448,6 +450,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         spinnerDifficulte.setAdapter(adapterSpinner);
         spinnerDifficulte.setOnItemSelectedListener(difficulteSelectedListener);
 
+        fileVideoDifficulte = new File(MainActivity.this.getExternalFilesDir("difficulte"), "videodifficulte.json");
     }
 
     @Override
@@ -1825,7 +1828,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             Log.e("SUB_CAT", "No content in " + subCatDir);
         }
         //Modification dans le fichier JSON difficulte
-        editVideoNameIntoJSON(video.getFileName(),title);
 
         video.setFileName(title);
         video.setName(title);
@@ -2030,7 +2032,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         mTrackIndex = -1;
     }
 
-
+/*
     public void writeDifficulteVideoIntoJSON(String newVideoName, int newDifficulte) {
         try {
             //Reader et Writer pour modifier le fichier
@@ -2067,7 +2069,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                  * Si le fichier est vide, il faut donc créer la liste de couple (nom de video, difficulte)
                  * On commence donc par le nom du tableau (pour récupération)
                  * puis par l'accolade ouvrante
-                 */
+                 *//*
                 content += "videodifficulte:[";
                 vide = true;
             }
@@ -2076,7 +2078,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                  * Si le fichier n'est pas vide, il contient l'accolade fermante de la fin de la liste,
                  * or, on veut écrire juste avant la fin de la liste.
                  * On supprime les deux derniers caractères ('\n' et ']' )
-                 */
+                 *//*
                 newcontent = content.substring(0,content.length()-2);
                 vide = false;
             }
@@ -2085,12 +2087,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             if (vide) {
                 /**
                  * Si le fichier est vide, il ne doit pas y avoir de virgule entre l'accolade ouvrante et le premier couple (nomvideo, difficulte)
-                 */
+                 *//*
                 newcontent = content + "\n{\"name\": \"" + newVideoName + "\n\"difficulte\": \"" + newDifficulte + "\"}\n]";
             } else {
                 /**
                  * Sinon, on ajoute à la fin de la liste le couple (nouvelle video, nouvelle difficulte, et on ferme la liste
-                 */
+                 *//*
                 newcontent = content + ",\n{\"name\": \"" + newVideoName + "\n\"difficulte\": \"" + newDifficulte + "\"}\n]";
             }
             writer.write(newcontent);
@@ -2252,7 +2254,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         } catch(Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 //END RECORDER
 }

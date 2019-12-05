@@ -22,6 +22,7 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,6 +65,7 @@ public class Util {
             //Parsing du fichier
             Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
             VideoAnnotation videoAnnotation = gson.fromJson(reader, VideoAnnotation.class);
+            reader.close();
             fis.close();
             return videoAnnotation;
         } catch (IOException e) {
@@ -97,16 +99,23 @@ public class Util {
     public static Difficulte parseJSON_Difficulte(Context context) {
         String filePath = context.getExternalFilesDir("difficulte").getAbsolutePath() + File.separator + "videodifficulte.json";
         try {
-            FileInputStream fis = new FileInputStream( new File(filePath));
-            Reader reader = new InputStreamReader(fis);
-            Gson gson = new GsonBuilder().setDateFormat("dd-MM-yy HH:mm:ss").create();
-            Difficulte difficulte = gson.fromJson(reader, Difficulte.class);
-            fis.close();
+            File file = new File(filePath);
+            Reader reader = new FileReader(file);
+            //Le fichier à le même nombre de caractère que sa taille
+            char[] a = new char[(int)file.length()];
+            reader.read(a);
+            String content = "";
+            //On sauvegarde les données caractère par caractère
+            for (char c : a) {
+                content += c;
+            }
+            System.out.println("Contenu du fichier JSON " + content) ;
+            Difficulte difficulte = new Difficulte(content);
+            reader.close();
             return difficulte;
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("ERR_JSON", "ERREUR Lecture JSON ");
-
         }
         return null;
     }
@@ -134,17 +143,19 @@ public class Util {
     //Sauvegarde de l'objet d'association video difficulte en JSON
     public static void saveNewVideoDifficulte(Context context, String videoName, String difficulte) {
         Writer writer;
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        Gson gson=gsonBuilder.create();
         try {
             File file = new File(context.getExternalFilesDir("difficulte"), "videodifficulte.json");
             writer = new FileWriter(file);
             Difficulte d = parseJSON_Difficulte(context);
+
+            for (Difficulte.Association a : d.getAssociations()) {
+                System.out.println("name = " + a.getVideoName() + " difficulte = " + a.getDifficulte());
+            }
+
             d.add(videoName, difficulte);
-            String jsonStr = gson.toJson(d);
+            String jsonStr = d.toJson();
             writer.write(jsonStr);
             writer.close();
-
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("ERR_SAVEDIFF", "Unable to save Difficulte");
