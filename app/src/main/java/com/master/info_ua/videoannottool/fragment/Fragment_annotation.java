@@ -145,6 +145,10 @@ public class Fragment_annotation extends Fragment  implements DialogEditAnnot.Ed
             menu.findItem(R.id.edit_item_infos_annot).setVisible(true);
             menu.findItem(R.id.edit_item_video).setVisible(false);
             menu.findItem(R.id.delete_item_video).setVisible(false);
+            menu.findItem(R.id.renommer_annot_predef).setVisible(false);
+            menu.findItem(R.id.modifier_annot_predef).setVisible(false);
+            menu.findItem(R.id.supprimer_annot_predef).setVisible(false);
+            menu.findItem(R.id.edit_difficulte).setVisible(false);
         }
     }
 

@@ -95,6 +95,7 @@ public class Fragment_AnnotPredef extends Fragment implements DialogEditAnnotPre
             menu.findItem(R.id.renommer_annot_predef).setVisible(true);
             menu.findItem(R.id.modifier_annot_predef).setVisible(true);
             menu.findItem(R.id.supprimer_annot_predef).setVisible(true);
+            menu.findItem(R.id.edit_difficulte).setVisible(false);
         }
     }
 
