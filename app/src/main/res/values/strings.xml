@@ -90,5 +90,12 @@
     <string name="btn_AP">AP</string>
     <string name="btn_export_video">EXP</string>
 
+    <string name="renommer_annot_predef">Renommer</string>
+    <string name="modifier_annot_predef">Modifier</string>
+    <string name="supprimer_annot_predef">Supprimer</string>
+
+    <string name="RenommerDialogText">Renommer l\'annotation Prédefinie</string>
+    <string name="ModifierDialogText">Modifier l\'annotaion Prédéfinie</string>
+
 
 </resources>

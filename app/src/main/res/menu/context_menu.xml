@@ -20,7 +20,19 @@
     <item android:id="@+id/delete_item_annot"
         android:title="@string/supprimer_annot"
         />
+	
+	<item android:id="@+id/renommer_annot_predef"
+        android:title="@string/renommer_annot_predef"
+        />
 
+    <item android:id="@+id/modifier_annot_predef"
+        android:title="@string/modifier_annot_predef"
+        />
+
+    <item android:id="@+id/supprimer_annot_predef"
+        android:title="@string/supprimer_annot_predef"
+        />
+        
     <item android:id="@+id/edit_difficulte"
         android:title="Modifier la difficulté"
         />

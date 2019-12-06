@@ -5,7 +5,9 @@ package com.master.info_ua.videoannottool.fragment;
         import android.net.Uri;
         import android.os.Bundle;
         import android.app.Fragment;
+        import android.view.ContextMenu;
         import android.view.LayoutInflater;
+        import android.view.MenuInflater;
         import android.view.View;
         import android.view.ViewGroup;
         import android.widget.AdapterView;
@@ -37,6 +39,14 @@ public class Fragment_AnnotPredef extends Fragment implements DialogEditAnnotPre
     // Listes de toutes les annotations prédéfinies
     private ArrayList<Annotation> ListAnnotationsPredef;
 
+    public AnnotationsAdapter getAnnotationsAdapter() {
+        return annotationsAdapter;
+    }
+
+    public Fragment_AnnotPredef.AnnotFragmentListener getFragmentListener() {
+        return mListener;
+    }
+
     private DialogCallback ContextMain;
 
     //A modifier : utiliser setArguments(bundle)
@@ -49,35 +59,67 @@ public class Fragment_AnnotPredef extends Fragment implements DialogEditAnnotPre
 
     }
 
+    public void updateAnnotationList() {
+
+        annotationsAdapter.notifyDataSetChanged();
+    }
+
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onStart() {
+        super.onStart();
 
-
+        lv_Annotations_predef.setAdapter(annotationsAdapter);
+        lv_Annotations_predef.setClickable(true);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_annot_predef, container, false);
-        lv_Annotations_predef = (ListView)view.findViewById(R.id.lv_annotations_predef);
-        Cancel_btn = (Button)view.findViewById(R.id.button_annot_fragment);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        annotationsAdapter = new AnnotationsAdapter(getActivity(), new ArrayList<Annotation>()); //Initilisatisation de la liste d'annotations (vide)
 
-        annotationsAdapter = new AnnotationsAdapter(getActivity(),ListAnnotationsPredef);
+    }
 
+    // Crée le contextmenu pour les annotations qui utilisera le listener dans le MainActivity
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        //super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.lv_annotations_predef) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.context_menu, menu);
+            menu.findItem(R.id.edit_item_annot).setVisible(false);
+            menu.findItem(R.id.delete_item_annot).setVisible(false);
+            menu.findItem(R.id.edit_item_infos_annot).setVisible(false);
+            menu.findItem(R.id.edit_item_video).setVisible(false);
+            menu.findItem(R.id.delete_item_video).setVisible(false);
+            menu.findItem(R.id.renommer_annot_predef).setVisible(true);
+            menu.findItem(R.id.modifier_annot_predef).setVisible(true);
+            menu.findItem(R.id.supprimer_annot_predef).setVisible(true);
+        }
+    }
+
+    /**
+     * Listener pour le clic sur la liste d'annotations
+     */
+    protected AdapterView.OnItemClickListener annotationItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            Annotation annotation = (Annotation) lv_Annotations_predef.getItemAtPosition(position);
+            mListener.onAnnotPredefItemClick(annotation);
+        }
+    };
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_annot_predef, container, false);
+        lv_Annotations_predef = (ListView) view.findViewById(R.id.lv_annotations_predef);
+        Cancel_btn = (Button) view.findViewById(R.id.button_annot_fragment);
+        annotationsAdapter = new AnnotationsAdapter(getActivity(), ListAnnotationsPredef);
         lv_Annotations_predef.setAdapter(annotationsAdapter);
-
-
-        lv_Annotations_predef.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Annotation annotation = (Annotation) lv_Annotations_predef.getItemAtPosition(position);
-                mListener.onAnnotPredefItemClick(annotation);
-                onShowAnnotDialog(annotation);
-
-            }
-        });
+//        lv_Annotations_predef = (ListView)view.findViewById(R.id.lv_annotations_predef);
+        lv_Annotations_predef.setOnItemClickListener(annotationItemClickListener);
+        registerForContextMenu(lv_Annotations_predef);
 
         Cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,10 +133,45 @@ public class Fragment_AnnotPredef extends Fragment implements DialogEditAnnotPre
         return view;
     }
 
-    protected void onShowAnnotDialog(Annotation annot){
-        DialogEditAnnotPredef mon_dialogue = new DialogEditAnnotPredef(this,annot);
-        mon_dialogue.showDialogEdit();
-    }
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//        // Inflate the layout for this fragment
+//        View view =  inflater.inflate(R.layout.fragment_annot_predef, container, false);
+//        lv_Annotations_predef = (ListView)view.findViewById(R.id.lv_annotations_predef);
+//        Cancel_btn = (Button)view.findViewById(R.id.button_annot_fragment);
+//
+//        annotationsAdapter = new AnnotationsAdapter(getActivity(),ListAnnotationsPredef);
+//
+//        lv_Annotations_predef.setAdapter(annotationsAdapter);
+//
+//
+//        lv_Annotations_predef.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Annotation annotation = (Annotation) lv_Annotations_predef.getItemAtPosition(position);
+//                mListener.onAnnotPredefItemClick(annotation);
+//                onShowAnnotDialog(annotation);
+//
+//            }
+//        });
+
+//        Cancel_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                mListener.closeAnnotPredef();
+//                System.out.println("                    CLICK");
+//            }
+//        });
+//
+//        return view;
+//    }
+
+//    protected void onShowAnnotDialog(Annotation annot){
+//        DialogEditAnnotPredef mon_dialogue = new DialogEditAnnotPredef(this,annot);
+//        mon_dialogue.showDialogEdit();
+//    }
 
     @Override
     public void onAttach(Context context) {
@@ -145,6 +222,16 @@ public class Fragment_AnnotPredef extends Fragment implements DialogEditAnnotPre
     public interface AnnotFragmentListener {
 
         void onAnnotPredefItemClick(Annotation annotation);
+
+        // Supprime une annotaion prédéfinie
+        void onDeleteAnnotationPredef(Annotation annotation, int position);
+
+        // Renommer une annotation prédéfinie
+        void onRenommerAnnotationPredef(Annotation annotation, int position);
+
+        // Modifier une annotation prédéfinie
+        void onUpdateAnnotationPredef(Annotation annotation, int position);
+
 
         void closeAnnotPredef();
 

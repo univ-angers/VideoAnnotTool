@@ -19,5 +19,7 @@ public interface DialogCallback {
 
     void onSaveTextAnnotation(Annotation annotation, boolean isPredef, int position);
 
+    void onSaveTextAnnotationPredef(Annotation annotation, boolean isPredef, int position);
+
     void OnOffBoutons(boolean bonton);
 }
