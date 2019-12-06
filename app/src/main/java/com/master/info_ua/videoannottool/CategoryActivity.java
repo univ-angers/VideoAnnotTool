@@ -80,6 +80,8 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
         @Override
         public void onClick(View v) {
             System.out.println("                           ------- "+ed_cat_title.getText().toString());
+
+            // Vérifie que le dossier créer par l'utilisateur ne s'appelle pas "annotations" qu'importe la caste
             if (ed_cat_title.getText().toString().matches("[a,A][n,N][n,N][o,O][t,T][a,A][t,T][i,I][o,O][n,N][s,S]"+"\\s*") ) {
                 Toast.makeText(v.getContext(),"Nom de catégorie non autorisé",Toast.LENGTH_LONG).show();
             }else {

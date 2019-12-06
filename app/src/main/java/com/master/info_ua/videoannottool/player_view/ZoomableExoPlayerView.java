@@ -89,10 +89,6 @@ public class ZoomableExoPlayerView extends FrameLayout {
     private int resizeMode;
     private int defaultArtworkId;
 
-    //Exporter vidéo
-    public boolean recording ;
-    public MainActivity main;
-
     public ZoomableExoPlayerView(Context context) {
         this(context, null);
     }
@@ -345,9 +341,6 @@ public class ZoomableExoPlayerView extends FrameLayout {
             overlayFrameLayout.requestFocus();
             return super.dispatchKeyEvent(event);
         }
-
-        main.exporterVideo();
-
         boolean isDpadWhenControlHidden =
                 isDpadKey(event.getKeyCode()) && useController && !controller.isVisible();
         maybeShowController(true);

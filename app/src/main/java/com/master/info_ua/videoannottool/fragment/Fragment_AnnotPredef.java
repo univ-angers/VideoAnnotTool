@@ -27,7 +27,7 @@ package com.master.info_ua.videoannottool.fragment;
 
         import java.util.ArrayList;
 
-
+// Class qui gère le fragment des annotations prédéfnies
 public class Fragment_AnnotPredef extends Fragment implements DialogEditAnnotPredef.EditAnnotDialogListener {
 
     private AnnotationsAdapter annotationsAdapter;
@@ -107,31 +107,38 @@ public class Fragment_AnnotPredef extends Fragment implements DialogEditAnnotPre
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             Annotation annotation = (Annotation) lv_Annotations_predef.getItemAtPosition(position);
-            mListener.onAnnotPredefItemClick(annotation);
-        }
+            onShowAnnotDialog(annotation);
+
+            }
     };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_annot_predef, container, false);
         lv_Annotations_predef = (ListView) view.findViewById(R.id.lv_annotations_predef);
         Cancel_btn = (Button) view.findViewById(R.id.button_annot_fragment);
         annotationsAdapter = new AnnotationsAdapter(getActivity(), ListAnnotationsPredef);
         lv_Annotations_predef.setAdapter(annotationsAdapter);
-//        lv_Annotations_predef = (ListView)view.findViewById(R.id.lv_annotations_predef);
         lv_Annotations_predef.setOnItemClickListener(annotationItemClickListener);
         registerForContextMenu(lv_Annotations_predef);
 
+        //Ferme le fragment
         Cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 mListener.closeAnnotPredef();
-                System.out.println("                    CLICK");
             }
         });
 
         return view;
+    }
+
+    // Affiche la boite de dialog qui permet de valider ou non le choix de l'annotation
+    protected void onShowAnnotDialog(Annotation annot){
+        DialogEditAnnotPredef mon_dialogue = new DialogEditAnnotPredef(this,annot);
+        mon_dialogue.showDialogEdit();
     }
 
 //    @Override
@@ -221,8 +228,6 @@ public class Fragment_AnnotPredef extends Fragment implements DialogEditAnnotPre
 
 
     public interface AnnotFragmentListener {
-
-        void onAnnotPredefItemClick(Annotation annotation);
 
         // Supprime une annotaion prédéfinie
         void onDeleteAnnotationPredef(Annotation annotation, int position);

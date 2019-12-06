@@ -54,10 +54,12 @@ public class DialogEditAnnotPredef {
         public void onClick(View v) {
             int btnId = v.getId();
             switch (btnId) {
+                //
                 case R.id.btnValiderEdit:
                     String title = titre.getText().toString();
                     String duration = duree.getText().toString();
                     if (title != null && !title.isEmpty() && duration != null && !duration.isEmpty()) {
+                        //sauvegarde l'annotation prédefinie dans la liste des annotations de la vidéo courante
                         dialogListener.onSaveEditAnnot(annotation, title, Integer.parseInt(duration)*1000);
                     }
                     dialog.dismiss();

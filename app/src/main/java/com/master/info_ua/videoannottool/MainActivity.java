@@ -141,6 +141,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private final String STATE_RESUME_POSITION = "resumePosition";
     private final String STATE_PLAYER_FULLSCREEN = "playerFullscreen";
 
+    //Attributs en liens avec les boutons
     private ImageButton audioAnnotBtn;
     private ImageButton textAnnotBtn;
     private ImageButton graphAnnotBtn;
@@ -259,7 +260,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private MediaCodec.BufferInfo mVideoBufferInfo;
     private int mTrackIndex = -1;
 
-
     private boolean recording = false;
     private MediaMuxer mMuxer;
 
@@ -353,7 +353,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         graphAnnotBtn.setOnClickListener(btnClickListener);
 
         annotPredefBtn = findViewById(R.id.annot_predef_btn);
-        //annotPredefBtn.setEnabled(false);
         annotPredefBtn.setOnClickListener(btnClickListener);
 
         exportVideoBtn = findViewById(R.id.export_video_btn);
@@ -416,13 +415,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         searchText = new String();
         searchVideo = (EditText)findViewById(R.id.editText_search_video);
 
-
+        // Créer le dossier "annotations" qui servira à stocker les annotations prédéfinies
         AnnotPredefDirectory = new File(MainActivity.this.getExternalFilesDir(""),"annotations");
         AnnotPredefDirectory.mkdirs();
 
-
-
-
+        // Récupère les annotations prédéfines stocker en JSON pour les inserer dans la Liste
         int i = 1;
         Annotation recupAnnot = Util.parseJSON_Annot(MainActivity.this,i);
         while( recupAnnot != null){
@@ -750,9 +747,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         ZoomableExoPlayerView playerView = findViewById(R.id.exo_player_view);
 
+        // Lors de l'exportation de la video on récupère les vues pour les inserer dans le playerView
         if (recording){
-           // View PV = new View(exoPlayerView.getContext());
-            //exoPlayerView.addView(PV,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             ((ViewGroup) annotCommentTv.getParent()).removeView(annotCommentTv);
             ((ViewGroup) drawBimapIv.getParent()).removeView(drawBimapIv);
             exoPlayerView.addView(drawBimapIv);
@@ -828,10 +824,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         FullScreenDialog.addContentView(annotCommentTv, VG_LParam);
         FullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_skrink));
         ExoPlayerFullscreen = true;
-        if (recording) {
-            exoplayerPlay = true;
-            exoPlayerView.getPlayer().setPlayWhenReady(true);
-        }
         FullScreenDialog.show();
 
     }
@@ -900,12 +892,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                         player.setPlayWhenReady(true);
                         new Thread(controlerAnnotation).start();
 
+                        //Cache le player de la video lors de l'export
                         if (recording) {
                             exoPlayerView.setUseController(false);
-                            //exporterVideo();
-                           // exoPlayerView.setControllerShowTimeoutMs(1);
-
-
                         }
                     } else {
                         // augmente la vitesse
@@ -925,7 +914,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         //on replace les elements dans l'interface de l'application
         ((ViewGroup) exoPlayerView.getParent()).removeView(exoPlayerView);
         ((FrameLayout) findViewById(R.id.main_media_frame)).addView(exoPlayerView);
-//        exoPlayerView.showController();
 
         ((ViewGroup) drawBimapIv.getParent()).removeView(drawBimapIv);
         ((FrameLayout) findViewById(R.id.main_media_frame)).addView(drawBimapIv);
@@ -1078,17 +1066,21 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     dialogtext.showDialogBox(textAnnotation, MainActivity.this);
                     break;
 
+                    // Lancement du fragment des annotations prédéfinies
                 case R.id.annot_predef_btn:
                     player.setPlayWhenReady(false);
                     FragmentTransaction ft2 = fragmentManager.beginTransaction();
                     annotPredefFragment = (Fragment_AnnotPredef)fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_PREDEF_TAG);
                     if (annotPredefFragment == null) {
+                        //Si le fragment est null on le créer
                         annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef,MainActivity.this);
                         ft2.add(R.id.annotation_menu, annotPredefFragment, FRAGMENT_ANNOT_PREDEF_TAG);
+                        //on cache le fragment des annotations et on affiche celui des annotations prédéfines
                         ft2.hide(annotFragment);
                         ft2.show(annotPredefFragment);
                         ft2.commit();
                     } else {
+                        //on cache le fragment des annotations et on affiche celui des annotations prédéfines
                         ft2.hide(annotFragment);
                         ft2.show(annotPredefFragment);
                         ft2.commit();
@@ -1101,8 +1093,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     DialogVignette dialogVignette = new DialogVignette(MainActivity.this);
                     dialogVignette.showDialogVignette();
                     break;
-                case R.id.export_video_btn:
 
+                case R.id.export_video_btn:
+                    //A l'appuie du bouton, on lance le plein écran et l'enregistrement de la vidéo commence
                     openFullscreenDialog();
 
                     exporterVideo();
@@ -1523,13 +1516,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public void onAnnotItemClick(final Annotation annotation) {
 
         onAnnotationLauched(annotation);
-
-    }
-
-//    @Override
-    public void onAnnotPredefItemClick(final Annotation annotation) {
-
-        //onAnnotationLauched(annotation);
 
     }
 
@@ -2041,6 +2027,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     // Copie les fichiers (images, fichiers mp4) du dossier d'annotations prédéfini vers le dossier de la vidéo courante
     public void CopyFileAnnotPredef (Annotation annotation){
+        // Copie d'un fichier image
         if (annotation.getAnnotationType() == DRAW){
             File ImageAnnotation = new File(MainActivity.this.getExternalFilesDir("annotations"),annotation.getDrawFileName());
             File DossierCurrentVideo = new File(MainActivity.this.getExternalFilesDir(currentSubCategorie.getPath()),currentVideo.getFileName());
@@ -2050,6 +2037,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 e.printStackTrace();
             }
         }
+        // Copie d'un fichier audio
         if (annotation.getAnnotationType() == AUDIO){
             File AudioAnnotation = new File(MainActivity.this.getExternalFilesDir("annotations"),annotation.getAudioFileName());
             File DossierCurrentVideo = new File(MainActivity.this.getExternalFilesDir(currentSubCategorie.getPath()),currentVideo.getFileName());
@@ -2061,6 +2049,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         }
     }
 
+    //Active/Désactive les boutons
    public void OnOffBoutons(boolean bouton){
        setAnnotButtonStatus(bouton);
    }
@@ -2124,10 +2113,13 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         public void run() {
             Log.e("run", "on y passe");
             drainEncoder();
+            // Lorsqu'on arrive à la fin de la vidéo :
             if(recording && player.getDuration() >=0 && player.getCurrentPosition() >= player.getDuration()) {
+                //- on l'enregistre
                 exporterVideo();
-                System.out.println("                    -------CONDITION ?"+player.getCurrentPosition() +"  "+ player.getDuration());
+                //- on quitte le plein écran
                 closeFullscreenDialog();
+                //- on réaffiche le player de la vidéo
                 exoPlayerView.setUseController(true);
             }
         }
