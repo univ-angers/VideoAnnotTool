@@ -96,7 +96,6 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
             Categorie c = (Categorie) parent.getItemAtPosition(position);
             c.setSubCategories(findCat(c.getName()).getSubCategories());
             List<Categorie> subCategorieList=new ArrayList<>();
-//            System.out.println(c.getPath()+"       "+c.getSubCategories().size()+ "     "+ c.getSubCategories().get(0));
             subCategorieList.add(new Categorie("Sous-catégorie",null,"/"));
             subCategorieList.addAll(c.getSubCategories());
             spinnerAdapter2 = new SpinnerAdapter(view.getContext(), android.R.layout.simple_spinner_item, subCategorieList);
@@ -193,10 +192,7 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
 
     @Override
     public void onSaveAddSubCategory(Categorie categorie,String title) {
-//        list_categorie.get(list_categorie.size()-1, findCat(categorie.getName()).getSubCategories().add(new Categorie(title, categorie.getName(),categorie.getPath()+"/"+title)));
-//        list_categorie.get(list_categorie.size()-1).getSubCategories().add(new Categorie(title, categorie.getName(),categorie.getPath()+"/"+title));
         findCat(categorie.getName()).getSubCategories().add(new Categorie(title, categorie.getName(),categorie.getPath()+"/"+title));
-//        System.out.println(findCat(categorie.getName()).getSubCategories().get(0).getName() + findCat(categorie.getName()).getSubCategories().get(0).getParentName() + list_categorie.get(list_categorie.size()-1).getSubCategories().size()) ;
         spinnerAdapter2.add(new Categorie(title,categorie.getName(),categorie.getPath()+"/"+title));
         spinnerAdapter.notifyDataSetChanged();
     }
@@ -208,7 +204,6 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
         for(int i = 0; i<findCat(categorie.getParentName()).getSubCategories().size();i++)
         {
             if (findCat(categorie.getParentName()).getSubCategories().get(i).getName().matches(categorie.getName())) {
-//                findCat(categorie.getParentName()).getSubCategories().set(i, item);
                 findCat(categorie.getParentName()).getSubCategories().get(i).setName(title);
             }
         }

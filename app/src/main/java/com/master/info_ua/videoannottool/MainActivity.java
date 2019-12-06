@@ -124,6 +124,7 @@ import java.util.List;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.AUDIO;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.DRAW;
 import static com.master.info_ua.videoannottool.annotation.AnnotationType.TEXT;
+import static java.lang.Math.round;
 
 
 public class MainActivity extends Activity implements Ecouteur, DialogCallback, Fragment_draw.DrawFragmentCallback, Fragment_annotation.AnnotFragmentListener, Fragment_AnnotPredef.AnnotFragmentListener, DialogEditVideo.EditVideoDialogListener , DialogEditAnnot.EditAnnotDialogListener, DialogVignette.EditVignetteDialogListener, DialogEditDifficulte.EditDifficulteDialogListener{
@@ -313,25 +314,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         //Spinner catégorie
         categorieList = new ArrayList<>();
         categorieList.add(new Categorie("Categorie", null, "/"));
-//        categorieList.addAll(Util.setCatSpinnerList(this));
-
-//        List<Categorie> CATEGORIE1_SUB=new ArrayList<>();
-//        CATEGORIE1_SUB.add(new Categorie("Souplesse", "solo", "solo/souplesse"));
-//        CATEGORIE1_SUB.add(new Categorie("Maintien", "solo", "solo/maintien"));
-//        CATEGORIE1_SUB.add(new Categorie("Agilité", "solo", "solo/agilite"));
-//        CATEGORIE1_SUB.add(new Categorie("Dynamique", "solo", "solo/sdynamique"));
-//        CATEGORIE1_SUB.add(new Categorie("Molo", "solo", "solo/molo"));
-//        List<Categorie> CATEGORIE2_SUB=new ArrayList<>();
-//        CATEGORIE2_SUB.add(new Categorie("Statiques positions variées", "duo", "duo/statiques-variees"));
-//        CATEGORIE2_SUB.add(new Categorie("Statiques ATR", "duo", "duo/statiques-atr"));
-//        CATEGORIE2_SUB.add(new Categorie("Dynamiques rattrapes", "duo", "duo/dynamiques-rattrapes"));
-//        CATEGORIE2_SUB.add(new Categorie("Dynamiques sorties", "duo", "duo/dynamique-sorties"));
-
-//        categorieList.get(1).setSubCategories(CATEGORIE1_SUB);
-
-//        for (int i=2; i<categorieList.size();i++){
-//            categorieList.get(i).setSubCategories(CATEGORIE2_SUB);
-//        }
 
         categorieList.addAll(Util.initCatList(this));
 
@@ -2360,8 +2342,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(videoFile.getAbsolutePath());
         //Récupère le temps en ms converti en µs
-        long time = player.getCurrentPosition()*1000;
-        System.out.println(videoFile.getAbsolutePath() + "      " + videoFile.exists() + "      " + (int) (player.getCurrentPosition())/1000);
+        long time = round(player.getCurrentPosition())*1000;
+        System.out.println(videoFile.getAbsolutePath() + "      " + videoFile.exists() + "      " + (player.getCurrentPosition()));
         Bitmap bitmap =retriever.getFrameAtTime(time,MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
         try {
             FileOutputStream fos = new FileOutputStream(new File(getExternalFilesDir(currentVideo.getPath()).getAbsolutePath(), "vignette" + ".png"));
