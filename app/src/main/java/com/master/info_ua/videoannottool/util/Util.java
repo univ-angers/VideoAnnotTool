@@ -19,6 +19,7 @@ import com.master.info_ua.videoannottool.custom.Difficulte;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -100,15 +101,21 @@ public class Util {
         String filePath = context.getExternalFilesDir("difficulte").getAbsolutePath() + File.separator + "videodifficulte.json";
         try {
             File file = new File(filePath);
-            Reader reader = new FileReader(file);
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+//            Reader reader = new FileReader(file);
             //Le fichier à le même nombre de caractère que sa taille
-            char[] a = new char[(int)file.length()];
-            reader.read(a);
             String content = "";
-            //On sauvegarde les données caractère par caractère
-            for (char c : a) {
-                content += c;
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content += line;
             }
+
+//                char[] a = new char[(int)file.length()];
+//            reader.read(a);
+            //On sauvegarde les données caractère par caractère
+//            for (char c : a) {
+//                content += c;
+//            }
             System.out.println("Contenu du fichier JSON " + content) ;
             Difficulte difficulte = new Difficulte(content);
             reader.close();
@@ -145,7 +152,7 @@ public class Util {
         Writer writer;
         try {
             File file = new File(context.getExternalFilesDir("difficulte"), "videodifficulte.json");
-            writer = new FileWriter(file);
+            writer = new FileWriter(file, true);
             Difficulte d = parseJSON_Difficulte(context);
 
             for (Difficulte.Association a : d.getAssociations()) {
