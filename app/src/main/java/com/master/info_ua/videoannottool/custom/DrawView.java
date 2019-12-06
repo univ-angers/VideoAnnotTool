@@ -91,10 +91,10 @@ public class DrawView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         System.out.println("ON SIZE CHANGED");
-        if(mBitmap == null) {
+//        if(mBitmap == null) {
             mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
             mCanvas = new Canvas(mBitmap);
-        }
+//        }
     }
 
     //Méthode permettant de dessiner

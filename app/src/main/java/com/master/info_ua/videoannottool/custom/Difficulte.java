@@ -20,9 +20,9 @@ public class Difficulte {
                 //Les autres sont les accolades ouvrantes et fermantes de notre liste
                 String[] parties = association.split(",");
                 //parties[1] est de la forme  : { "name":"videoName"
-                new_video_name = parties[1].substring(9,parties[1].length()-1);
+                new_video_name = parties[0].substring(9,parties[1].length()-1);
                 //parties[2] est de la forme : "difficulte":"niveau"}
-                new_difficulte = parties[2].substring(14,parties[2].length()-1);
+                new_difficulte = parties[1].substring(14,parties[2].length()-1);
                 this.add(new_video_name,new_difficulte);
             }
         }
@@ -76,8 +76,8 @@ public class Difficulte {
     }
 
     public String toJson() {
-        String res = "[\n";
         int iter=0;
+        String res = "";
         for (Association a : associations) {
 
             res += "{\"name\":\"" + a.getVideoName() + "\",\"difficulte\":\""+a.getDifficulte() +"\"}";
@@ -91,7 +91,6 @@ public class Difficulte {
             }
             iter++;
         }
-        res += "]";
         return res;
     }
 

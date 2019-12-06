@@ -39,7 +39,7 @@ public class DialogEditAnnotPredef {
         }
 
         titre.setText(this.annotation.getAnnotationTitle());
-        duree.setText(String.valueOf(this.annotation.getAnnotationDuration()));
+        duree.setText(String.valueOf(this.annotation.getAnnotationDuration()/1000));
     }
 
     //Affiche la boîte de dialogue
