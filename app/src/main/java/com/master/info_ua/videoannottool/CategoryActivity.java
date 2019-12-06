@@ -114,13 +114,21 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
             menu.findItem(R.id.add_sub_cat).setVisible(true);
             menu.findItem(R.id.edit_sub_cat).setVisible(false);
             menu.findItem(R.id.delete_sub_cat).setVisible(false);
+            menu.findItem(R.id.renommer_annot_predef).setVisible(false);
+            menu.findItem(R.id.modifier_annot_predef).setVisible(false);
+            menu.findItem(R.id.supprimer_annot_predef).setVisible(false);
+            menu.findItem(R.id.edit_difficulte).setVisible(false);
         }
         if (v.getId() == R.id.lv_sub_category) {
-            menu.findItem(R.id.edit_categorie).setVisible(false);
+			menu.findItem(R.id.edit_categorie).setVisible(false);
             menu.findItem(R.id.delete_categorie).setVisible(false);
             menu.findItem(R.id.add_sub_cat).setVisible(false);
             menu.findItem(R.id.edit_sub_cat).setVisible(true);
             menu.findItem(R.id.delete_sub_cat).setVisible(true);
+            menu.findItem(R.id.renommer_annot_predef).setVisible(false);
+            menu.findItem(R.id.modifier_annot_predef).setVisible(false);
+            menu.findItem(R.id.supprimer_annot_predef).setVisible(false);
+            menu.findItem(R.id.edit_difficulte).setVisible(false);
         }
 
     }

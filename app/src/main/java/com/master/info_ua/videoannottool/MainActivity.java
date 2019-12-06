@@ -539,6 +539,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             menu.findItem(R.id.edit_item_annot).setVisible(false);
             menu.findItem(R.id.delete_item_annot).setVisible(false);
             menu.findItem(R.id.edit_item_infos_annot).setVisible(false);
+            menu.findItem(R.id.renommer_annot_predef).setVisible(false);
+            menu.findItem(R.id.modifier_annot_predef).setVisible(false);
+            menu.findItem(R.id.supprimer_annot_predef).setVisible(false);
             menu.findItem(R.id.edit_difficulte).setVisible(true);
         }
     }
