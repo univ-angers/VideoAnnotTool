@@ -2063,6 +2063,23 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
            releaseEncoders();
        }
        else {
+           //Il y a besoin de recréer le mDrainEncodeRunnable à chaque enregistrement.
+           mDrainEncoderRunnable = new Runnable() {
+               @Override
+               public void run() {
+                   drainEncoder();
+                   // Lorsqu'on arrive à la fin de la vidéo :
+                   if(recording && player.getDuration() >=0 && player.getCurrentPosition() >= player.getDuration()) {
+                       Log.e("testest", "Test fin vidéo.");
+                       //- on l'enregistre
+                       exporterVideo();
+                       //- on quitte le plein écran
+                       closeFullscreenDialog();
+                       //- on réaffiche le player de la vidéo
+                       exoPlayerView.setUseController(true);
+                   }
+               }
+           };
            recording=true;
            //demande de permission d'enregistrer l'ecran
            Intent permissionIntent = mProjectionManager.createScreenCaptureIntent();
