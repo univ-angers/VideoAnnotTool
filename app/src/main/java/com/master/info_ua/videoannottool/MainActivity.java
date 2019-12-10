@@ -2075,6 +2075,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                        exporterVideo();
                        //- on quitte le plein écran
                        closeFullscreenDialog();
+                       playButton.callOnClick();
                        //- on réaffiche le player de la vidéo
                        exoPlayerView.setUseController(true);
                    }
@@ -2090,7 +2091,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
     private void startRecording() {
         //lancement de la video au debut de l'enregistrement
-        playButton.callOnClick();
+//        playButton.callOnClick();
+
         DisplayManager dm = (DisplayManager)getSystemService(Context.DISPLAY_SERVICE);
         Display defaultDisplay = dm.getDisplay(Display.DEFAULT_DISPLAY);
         if (defaultDisplay == null) {
