@@ -31,5 +31,8 @@ PHASE 2 :
  - Fermeture du clavier après saisie du mot de passe pour entrer dans le mode Annotation
  - Interdire l'accès aux boutons d'ajout d'annotations lorsque la liste d'annotations prédéfinies est affichée
  - Modification de la durée d'annotation instable
+ - Lors d'un clic sur une annotation, on l'affiche avant de revenir à son emplacement dans la vidéo.
+ - Deux annotations à la même seconde provoquent une erreur
+    ° Lorsque la première se termine, la lecture de la vidéo redémarre alors qu'elle devrait rester en pause jusqu'à la fin de la dernière annotation 
 
 
