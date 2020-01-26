@@ -38,5 +38,6 @@ PHASE 2 :
     ° Lorsque la première se termine, la lecture de la vidéo redémarre alors qu'elle devrait rester en pause jusqu'à la fin de la dernière annotation 
  - Répertoires contenant les informations des vidéos non supprimés lorsque la vidéo est supprimée
  - Images dessinées non supprimées en cas d'annulation de sauvegarde (peut-être même en cas de suppression de l'annotation)
+ - Ajouter un contrôle sur le nom d'une annotation prédéfinie car on ne peut pas avoir d'homonymes
 
 
