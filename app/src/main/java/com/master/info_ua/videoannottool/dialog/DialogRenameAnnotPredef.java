@@ -52,9 +52,11 @@ public class DialogRenameAnnotPredef {
                 if(!ed_texte_titre_predef.getText().toString().isEmpty() && !etDuration.getText().toString().isEmpty()){
 
                     dialogBox.cancel();
+                    String oldTitle = annotation.getAnnotationTitle();
+                    long oldDuration = annotation.getAnnotationDuration();
                     annotation.setAnnotationTitle(ed_texte_titre_predef.getText().toString());
                     annotation.setAnnotationDuration(Integer.parseInt(etDuration.getText().toString())*1000);
-                    textAnnotDialogCallback.onSaveTextAnnotationPredef(annotation,true, position);
+                    textAnnotDialogCallback.onRenameAnnotationPredef(annotation, oldTitle);
                     Log.i("TEXT_DIALOG-BOX", "Validation :" + annotation.getAnnotationTitle());
                     Toast.makeText(main, "Annotation Prédéfinie Renommer", Toast.LENGTH_LONG).show();
                 } //else {

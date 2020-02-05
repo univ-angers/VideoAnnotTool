@@ -15,6 +15,7 @@ import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.AnnotationType;
 import com.master.info_ua.videoannottool.dialog.DialogDraw;
 
+import java.io.File;
 import java.util.Date;
 
 
@@ -43,9 +44,20 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
     //true si il s'agit d'une modification d'annotation
     private boolean isEditing = false;
 
+    public void setPredef(boolean predef) {
+        isPredef = predef;
+    }
+
+    //True s'il s'agit d'une annotation prédéfinie que l'on souhaite modifier
+    private boolean isPredef = false;
+
     private DrawFragmentCallback fragmentCallback;
 
-    private Annotation drawAnnotation;
+    public void setDrawAnnotation(Annotation drawAnnotation) {
+        this.drawAnnotation = drawAnnotation;
+    }
+
+    private Annotation drawAnnotation = null;
 
     private int position;
 
@@ -155,13 +167,33 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
                     break;
                 case R.id.b_draw_cancel:
                     fragmentCallback.setOnTouchEnable(false);
-                    fragmentCallback.closeAnnotationFrame();
+                    fragmentCallback.closeDrawFrame();
                     break;
                 case R.id.b_draw_save:
                     fragmentCallback.setOnTouchEnable(false);
-                    String drawFileName = fragmentCallback.saveDrawImage();
-                    setDrawAnnotation(drawFileName);
-                    onShowDrawAnnotDialog();
+                    if(!isPredef){
+                        //Cas où l'on crée une annotation graphique
+                        if(!isEditing){
+                            String drawFileName = fragmentCallback.saveDrawImage(null, false, false);
+                            setDrawAnnotation(drawFileName);
+                            onShowDrawAnnotDialog();
+                        //Cas où l'on modifie une annotation graphique non-prédéfinie
+                        } else {
+                            //sauvegarde la nouvelle dans l'objet Annotation
+                            drawAnnotation.setDrawFileName(fragmentCallback.saveDrawImage(drawAnnotation, true, false));
+                            //sauvegarde de l'annotation dans le fichier json
+                            fragmentCallback.onSaveDrawAnnotation(drawAnnotation, position);
+                            //Fermeture du fragment draw
+                            fragmentCallback.closeDrawFrame();
+                        }
+                    //Cas où l'on modifie une annotation prédéfinie graphique
+                    } else {
+                        //sauvegarde de l'image
+                        drawAnnotation.setDrawFileName(fragmentCallback.saveDrawImage(drawAnnotation, true, true));
+                        //Fermeture du fragment draw
+                        fragmentCallback.closeDrawFrame();
+                    }
+
 
                     break;
                 case R.id.b_draw_blue:
@@ -239,11 +271,11 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         void setErase();
         void resetCanvas();
         void setOnTouchEnable(boolean bool);
-        String saveDrawImage();
+        String saveDrawImage(Annotation annotation, boolean isEditing, boolean isPredef);
         void onSaveDrawAnnotation(Annotation annotation, boolean check);
         void onSaveDrawAnnotation(Annotation annotation, int position);
         void setColor(int color);
-        void closeAnnotationFrame();
+        void closeDrawFrame();
     }
 
 }

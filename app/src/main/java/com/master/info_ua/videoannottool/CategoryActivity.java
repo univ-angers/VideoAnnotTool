@@ -3,8 +3,6 @@ package com.master.info_ua.videoannottool;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.exoplayer2.C;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.dialog.DialogAddSubCategorie;
 import com.master.info_ua.videoannottool.dialog.DialogEditCategorie;
@@ -56,16 +53,21 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
         btn_valider.setOnClickListener(btn_Listener);
         Intent intent = getIntent();
         List<Categorie> categorieList = new ArrayList<>();
-        categorieList.add(new Categorie("Catégorie", null, "/"));
         categorieList = intent.getParcelableArrayListExtra("categorieList");
+        categorieList.remove(0);
         for(Categorie categorie : categorieList){
             list_categorie.add(categorie);
         }
-        spinnerAdapter = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
+
+        spinnerAdapter = new SpinnerAdapter(this, R.layout.item_category, categorieList){
+            @Override
+            public boolean isEnabled(int position) {
+                return true;
+            }
+        };
 
         List<Categorie> subCategorieList = new ArrayList<>();
-        subCategorieList.add(new Categorie("Sous-catégorie", null, "/"));
-        spinnerAdapter2 = new SpinnerAdapter(this, android.R.layout.simple_spinner_item, subCategorieList);
+        spinnerAdapter2 = new SpinnerAdapter(this, R.layout.item_category, subCategorieList);
 
         lv_category.setAdapter(spinnerAdapter);
         lv_sub_category.setAdapter(spinnerAdapter2);
@@ -80,11 +82,21 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
         @Override
         public void onClick(View v) {
             System.out.println("                           ------- "+ed_cat_title.getText().toString());
-
-            // Vérifie que le dossier créer par l'utilisateur ne s'appelle pas "annotations" qu'importe la caste
-            if (ed_cat_title.getText().toString().matches("[a,A][n,N][n,N][o,O][t,T][a,A][t,T][i,I][o,O][n,N][s,S]"+"\\s*") ) {
+            boolean isValid = true;
+            for(Categorie cat : list_categorie){
+                if(cat.getName().toUpperCase().equals(ed_cat_title.getText().toString().toUpperCase())) {
+                    Toast.makeText(v.getContext(), "Cette catégorie existe déjà", Toast.LENGTH_LONG).show();
+                    isValid = false;
+                    break;
+                }
+            }
+            // Vérifie que le dossier créer par l'utilisateur ne s'appelle pas "annotations" qu'importe la casse
+            if (ed_cat_title.getText().toString().matches("[a,A][n,N][n,N][o,O][t,T][a,A][t,T][i,I][o,O][n,N][s,S]"+"\\s*")
+                    || ed_cat_title.getText().toString().isEmpty()) {
                 Toast.makeText(v.getContext(),"Nom de catégorie non autorisé",Toast.LENGTH_LONG).show();
-            }else {
+                isValid = false;
+            }
+            if(isValid) {
                 list_categorie.add(new Categorie(ed_cat_title.getText().toString(), null, ed_cat_title.getText().toString()));
                 spinnerAdapter.add(new Categorie(ed_cat_title.getText().toString(), null, ed_cat_title.getText().toString()));
             }
@@ -98,9 +110,13 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
             Categorie c = (Categorie) parent.getItemAtPosition(position);
             c.setSubCategories(findCat(c.getName()).getSubCategories());
             List<Categorie> subCategorieList=new ArrayList<>();
-            subCategorieList.add(new Categorie("Sous-catégorie",null,"/"));
             subCategorieList.addAll(c.getSubCategories());
-            spinnerAdapter2 = new SpinnerAdapter(view.getContext(), android.R.layout.simple_spinner_item, subCategorieList);
+            spinnerAdapter2 = new SpinnerAdapter(view.getContext(), R.layout.item_category, subCategorieList){
+                @Override
+                public boolean isEnabled(int position) {
+                    return true;
+                }
+            };
             lv_sub_category.setAdapter(spinnerAdapter2);
         }
     };
@@ -116,10 +132,6 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
             menu.findItem(R.id.add_sub_cat).setVisible(true);
             menu.findItem(R.id.edit_sub_cat).setVisible(false);
             menu.findItem(R.id.delete_sub_cat).setVisible(false);
-//            menu.findItem(R.id.renommer_annot_predef).setVisible(false);
-//            menu.findItem(R.id.modifier_annot_predef).setVisible(false);
-//            menu.findItem(R.id.supprimer_annot_predef).setVisible(false);
-//            menu.findItem(R.id.edit_difficulte).setVisible(false);
         }
         if (v.getId() == R.id.lv_sub_category) {
 			menu.findItem(R.id.edit_categorie).setVisible(false);
@@ -127,10 +139,6 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
             menu.findItem(R.id.add_sub_cat).setVisible(false);
             menu.findItem(R.id.edit_sub_cat).setVisible(true);
             menu.findItem(R.id.delete_sub_cat).setVisible(true);
-//            menu.findItem(R.id.renommer_annot_predef).setVisible(false);
-//            menu.findItem(R.id.modifier_annot_predef).setVisible(false);
-//            menu.findItem(R.id.supprimer_annot_predef).setVisible(false);
-//            menu.findItem(R.id.edit_difficulte).setVisible(false);
         }
 
     }
@@ -188,7 +196,7 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
             if (list_categorie.get(i).getName().matches(categorie.getName()))
             {
                 list_categorie.get(i).setName(title);
-//       On change le parent également
+                //On change le parent également
                 for (int j=0; j < list_categorie.get(i).getSubCategories().size();j++) {
                     list_categorie.get(i).getSubCategories().get(j).setParentName(title);
                     list_categorie.get(i).getSubCategories().get(j).setPath(title + "/" + list_categorie.get(i).getSubCategories().get(j).getName());
@@ -241,7 +249,10 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
 
     public void CategoryResult(View view) {
         Intent returnintent = new Intent();
-        returnintent.putParcelableArrayListExtra("Categorie", list_categorie);
+        ArrayList<Categorie> tmpListCategorie = new ArrayList<Categorie>();
+        tmpListCategorie.add(new Categorie("Catégorie", null, "/"));
+        tmpListCategorie.addAll(list_categorie);
+        returnintent.putParcelableArrayListExtra("Categorie", tmpListCategorie);
         setResult(READ_CATEGORY_CODE, returnintent);
         finish();
     }

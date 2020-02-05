@@ -46,6 +46,7 @@ public class DialogProfil {
                     main.setStatutProfil(COACH);
                     fragment_annotation.setStatut_profil(COACH);
                     item.setTitle("Mode consultation");
+                    main.invalidateOptionsMenu();
                     dialog.cancel();
                 } else {
                     invalidPassword.setVisibility(View.VISIBLE);

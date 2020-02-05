@@ -212,11 +212,9 @@ public class Fragment_AnnotPredef extends Fragment implements DialogEditAnnotPre
     @Override
     public void onSaveEditAnnot(Annotation annot, String title, int duree) {
         Annotation annotCourant = new Annotation(title, annot.getAnnotationStartTime(),duree, annot.getAnnotationType(), annot.getAudioFileName(), annot.getDrawFileName(), annot.getTextComment());
-        this.ContextMain.onSaveAnnotation(annotCourant,false);
+        this.ContextMain.onSaveAnnotation(annotCourant,false, false);
         this.ContextMain.CopyFileAnnotPredef(annot);
-
     }
-
 
     public ArrayList<Annotation> getListAnnotationsPredef() {
         return ListAnnotationsPredef;

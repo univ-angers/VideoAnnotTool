@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,6 +33,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -78,23 +80,34 @@ public class Util {
 
 
     //Récupère un fichier dans le répertoire indiqué de l'application et fait le parsing en objet Java
-    public static Annotation parseJSON_Annot(Context context,int annotNum) {
-        //Récupère le chemin absolu du fichier
-        String filePath = context.getExternalFilesDir("annotations").getAbsolutePath() + File.separator + "AnnotPredef_num_"+annotNum+".json";
-        try {
-            //Lecture du fichier
-            FileInputStream fis = new FileInputStream(new File(filePath));
-            Reader reader = new InputStreamReader(fis);
-            //Parsing du fichier
-            Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
-            Annotation AnnotPredef = gson.fromJson(reader, Annotation.class);
-            fis.close();
-            return AnnotPredef;
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("ERR_JSON", "ERREUR Lecture JSON ");
+    public static List<Annotation> parseJSON_Annot(Context context) {
+//        //Récupère le chemin absolu du fichier
+//        String filePath = context.getExternalFilesDir("annotations").getAbsolutePath() + File.separator + "AnnotPredef_num_"+annotNum+".json";
+        //Permet de sélectionner uniquement les fichiers JSON (chacun d'entre eux correspond à une annotation prédéfinie)
+        FilenameFilter filter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().endsWith(".json");
+            }
+        };
+        List<Annotation> annotList = new ArrayList<>();
+        List<File> annotFileList = Arrays.asList(context.getExternalFilesDir("annotations").listFiles(filter));
+        for (File file : annotFileList) {
+            try {
+                //Lecture du fichier
+                FileInputStream fis = new FileInputStream(new File(file.getPath()));
+                Reader reader = new InputStreamReader(fis);
+                //Parsing du fichier
+                Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
+                Annotation annotPredef = gson.fromJson(reader, Annotation.class);
+                fis.close();
+                annotList.add(annotPredef);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("ERR_JSON", "ERREUR Lecture JSON ");
+            }
         }
-        return null;
+        return annotList;
     }
 
     public static Difficulte parseJSON_Difficulte(Context context) {
@@ -128,17 +141,18 @@ public class Util {
     }
 
     //Sauvegarde l'objet Annotation dans un fichier Json dans le dossier des annotations prédéfinis
-    public static void saveAnnotation(Context context, Annotation AnnotPredef, int annotNum) {
+    public static void saveAnnotationPredef(Context context, Annotation annotPredef) {
         Writer writer;
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("dd-MM-yyyy HH:mm:ss");
         gsonBuilder.serializeNulls(); //Ne pas ignorer les attributs avec valeur null
         gsonBuilder.setPrettyPrinting();
         Gson gson = gsonBuilder.create();
+        annotPredef.setDrawFileName(annotPredef.getAnnotationTitle()+".png");
         try {
-            File file = new File(context.getExternalFilesDir("annotations"), "AnnotPredef_num_"+annotNum+ ".json");
+            File file = new File(context.getExternalFilesDir("annotations"),annotPredef.getAnnotationTitle() + ".json");
             writer = new FileWriter(file);
-            String jsonStr = gson.toJson(AnnotPredef);
+            String jsonStr = gson.toJson(annotPredef);
             writer.write(jsonStr);
             writer.close();
         } catch (IOException e) {
@@ -238,7 +252,7 @@ public class Util {
         return d.getDifficulte(videoName);
     }
 
-        //Sauvegarde l'objet videoAnnotation dans un fichier Json
+    //Sauvegarde l'objet videoAnnotation dans un fichier Json
     public static void saveVideoAnnotation(Context context, VideoAnnotation videoAnnotation, String dirPath, String videoName) {
         Writer writer;
         GsonBuilder gsonBuilder = new GsonBuilder();

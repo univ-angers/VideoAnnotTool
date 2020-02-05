@@ -124,7 +124,7 @@ public class DialogAudio {
                     if(!ed_audio_titre.getText().toString().isEmpty()){
                         audioAnnot.setAnnotationTitle(ed_audio_titre.getText().toString());
                         //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
-                        recordCallback.onSaveAnnotation(audioAnnot,checkAnnotPredef.isChecked());
+                        recordCallback.onSaveAnnotation(audioAnnot,checkAnnotPredef.isChecked(), false);
                         Toast.makeText(mainActivity, "Annotation Enregistrée", Toast.LENGTH_LONG).show();
                         Log.i("AUDIO_DIALOG-BOX", "Validation " + audioName);
                         dialogBox.cancel();

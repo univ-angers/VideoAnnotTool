@@ -56,7 +56,7 @@ public class DialogText {
                     annotation.setAnnotationTitle(ed_texte_titre.getText().toString());
                     annotation.setAnnotationTitle(ed_texte_titre.getText().toString());
                     //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
-                    textAnnotDialogCallback.onSaveAnnotation(annotation,checkAnnotPredef.isChecked());
+                    textAnnotDialogCallback.onSaveAnnotation(annotation,checkAnnotPredef.isChecked(), false);
                     Log.i("TEXT_DIALOG-BOX", "Validation :" + texte);
                     Toast.makeText(main, "Annotation Enregistrée", Toast.LENGTH_LONG).show();
                 } else {

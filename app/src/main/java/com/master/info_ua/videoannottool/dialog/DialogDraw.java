@@ -77,7 +77,8 @@ public class DialogDraw {
 
     public interface DrawAnnotDialogListener {
         //Appelée lors de la sauvegarde d'une annotation de type dessin
-        void onSaveDrawImage(String title, int duration, boolean check);        //Appelée lors de la réinitialisation de la toile
+        void onSaveDrawImage(String title, int duration, boolean check);
+        //Appelée lors de la réinitialisation de la toile
         void onResetCanvas();
     }
 }

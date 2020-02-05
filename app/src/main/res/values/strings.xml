@@ -49,6 +49,8 @@
     <string name="quitter">Quitter</string>
     <string name="sous_categorie">Sous-catégorie</string>
     <string name="categorie">Catégorie</string>
+    <string name="categories">Catégories</string>
+    <string name="sousCategories">Sous-catégories</string>
     <string name="nom_de_la_categorie">Nom de la catégorie</string>
     <string name="nom_de_la_sous_categorie">Nom de la sous-catégorie</string>
     <string name="TextDialogEditSubCategorie">Modification de la sous-catégorie</string>
@@ -96,6 +98,7 @@
 
     <string name="RenommerDialogText">Renommer l\'annotation Prédefinie</string>
     <string name="ModifierDialogText">Modifier l\'annotaion Prédéfinie</string>
+    <string name="NewCategory">Nouvelle catégorie</string>
 
 
 </resources>

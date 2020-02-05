@@ -57,8 +57,8 @@ public class DialogAnnotModification {
                     this.texte = etAnnot.getText().toString();
                     dialogBox.cancel();
                     annotation.setTextComment(texte);
-//                    //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
-                    textAnnotDialogCallback.onSaveTextAnnotation(annotation,checkAnnotPredef.isChecked(), position);
+                    //précise si l'annotation doit être sauvegardée parmi la liste des annotations prédéfinies
+                    textAnnotDialogCallback.onSaveAnnotation(annotation,checkAnnotPredef.isChecked(), false);
                     Log.i("TEXT_DIALOG-BOX", "Validation :" + texte);
                     Toast.makeText(main, "Annotation Enregistrée", Toast.LENGTH_LONG).show();
                 } else {

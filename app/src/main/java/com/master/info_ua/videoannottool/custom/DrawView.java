@@ -194,16 +194,12 @@ public class DrawView extends View {
     }
 
     //Enregistre l'image
-    public String enregistrer_image(String path, String videoName) {
-        //Définition du format de la date
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy-HHmmss");
-        //Définition du chemin du fichier
-        String drawFileName = videoName + "_" + dateFormat.format(new Date()) + ".png";
+    public void enregistrer_image(String path, String drawFileName) {
         //Sauvegarde du dession : attention, mettre un nom unique pour chaque dessin
+        System.out.println("Path : " + path + ", drawFileName = " + drawFileName);
         Util.saveBitmapImage(context, mBitmap, path, drawFileName);
         mPath.reset();
         invalidate();
-        return drawFileName;
     }
 
     public void setmBitmap(Bitmap bitmap) {

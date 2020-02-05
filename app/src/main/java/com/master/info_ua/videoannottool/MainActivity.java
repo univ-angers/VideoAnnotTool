@@ -25,7 +25,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
-import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -74,9 +73,6 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.master.info_ua.videoannottool.adapter.SpinnerAdapter;
 import com.master.info_ua.videoannottool.adapter.VideosAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
@@ -108,17 +104,14 @@ import com.master.info_ua.videoannottool.util.Ecouteur;
 import com.master.info_ua.videoannottool.util.Util;
 
 import org.apache.commons.io.FileUtils;
-import org.json.JSONArray;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.io.OutputStream;
-import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -235,10 +228,10 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private String searchText;
 
     // Listes de toutes les annotations prédéfinies
-    private ArrayList<Annotation> ListAnnotationsPredef = new ArrayList<>();
+    private ArrayList<Annotation> listAnnotationsPredef = new ArrayList<>();
 
     //Dossier contenant les fichiers nécéssaires aux annotations prédéfinies (.png, .mp4, ...)
-    private File AnnotPredefDirectory;
+    private File annotPredefDirectory;
 
 
     //variables utilisees pour l'enregistrement de l'ecran
@@ -316,7 +309,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
         //Spinner catégorie
         categorieList = new ArrayList<>();
-        categorieList.add(new Categorie("Categorie", null, "/"));
+        categorieList.add(new Categorie("Catégorie", null, "/"));
 
         categorieList.addAll(Util.initCatList(this));
 
@@ -416,17 +409,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         searchVideo = (EditText)findViewById(R.id.editText_search_video);
 
         // Créer le dossier "annotations" qui servira à stocker les annotations prédéfinies
-        AnnotPredefDirectory = new File(MainActivity.this.getExternalFilesDir(""),"annotations");
-        AnnotPredefDirectory.mkdirs();
+        annotPredefDirectory = new File(MainActivity.this.getExternalFilesDir(""),"annotations");
+        annotPredefDirectory.mkdirs();
 
         // Récupère les annotations prédéfines stocker en JSON pour les inserer dans la Liste
-        int i = 1;
-        Annotation recupAnnot = Util.parseJSON_Annot(MainActivity.this,i);
-        while( recupAnnot != null){
-            ListAnnotationsPredef.add(recupAnnot);
-            i++;
-            recupAnnot = Util.parseJSON_Annot(MainActivity.this,i);
-        }
+        listAnnotationsPredef.addAll(Util.parseJSON_Annot(MainActivity.this));
 
         spinnerDifficulte=findViewById(R.id.spinner_difficulte);
         ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this, R.array.difficultes, android.R.layout.simple_spinner_item);
@@ -475,6 +462,16 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
+        //Si on est en profil élève, on propose de passer en mode annotation et on interdit la gestion des catégories
+        if(statut_profil==ELEVE) {
+            menu.findItem(R.id.action_category).setVisible(false);
+            menu.findItem(R.id.action_profile).setTitle("Mode annotation");
+        }
+        //Si on est en profil coach, on propose de passer en mode consultation et on autorise la gestion des catégories
+        else if(statut_profil==COACH) {
+            menu.findItem(R.id.action_category).setVisible(true);
+            menu.findItem(R.id.action_profile).setTitle("Mode consultation");
+        }
         return true;
     }
 
@@ -491,15 +488,13 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     dialogProfil.showDialogProfil(MainActivity.this,item,annotFragment);
                 } else if (statut_profil == COACH) {
                     btnLayout.setVisibility(View.GONE);
-                    item.setTitle("Mode annotation");
                     statut_profil = ELEVE;
                     annotFragment.setStatut_profil(ELEVE);
+                    invalidateOptionsMenu();
                 }
-
                 return true;
 
             case R.id.action_category:
-
                 Intent childintent = new Intent(MainActivity.this,CategoryActivity.class);
                 for( Categorie cat: categorieList)
                 {
@@ -585,7 +580,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 annotFragment.getFragmentListener().onDeleteAnnotation(annotation);
                 annotFragment.getAnnotationsAdapter().notifyDataSetChanged();
                 return true;
-                        case R.id.renommer_annot_predef:
+            case R.id.renommer_annot_predef:
                 Log.i("Menu", "Renommer");
                 annotation = annotPredefFragment.getAnnotationsAdapter().getItem(info.position);
                 annotPredefFragment.getFragmentListener().onRenommerAnnotationPredef(annotation, info.position);
@@ -1053,8 +1048,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                         ft.show(drawFragment);
                         ft.commit();
                     } else {
-                        ft.hide(annotFragment);
+                        drawFragment.setPredef(false);
+                        drawFragment.setEditing(false);
+                        drawFragment.setDrawAnnotation(null);
                         ft.show(drawFragment);
+                        ft.hide(annotFragment);
                         ft.commit();
                     }
 
@@ -1073,7 +1071,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                     annotPredefFragment = (Fragment_AnnotPredef)fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_PREDEF_TAG);
                     if (annotPredefFragment == null) {
                         //Si le fragment est null on le créer
-                        annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef,MainActivity.this);
+                        annotPredefFragment = new Fragment_AnnotPredef(listAnnotationsPredef,MainActivity.this);
                         ft2.add(R.id.annotation_menu, annotPredefFragment, FRAGMENT_ANNOT_PREDEF_TAG);
                         //on cache le fragment des annotations et on affiche celui des annotations prédéfines
                         ft2.hide(annotFragment);
@@ -1113,27 +1111,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     protected AdapterView.OnItemSelectedListener catItemSelectedListener = new AdapterView.OnItemSelectedListener() {
 
         @Override
-//        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-//            // Here you get the current item that is selected by its position
-//            currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
-//            spinnerAdapter2.clear();
-////            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
-//            spinnerAdapter2.add(new Categorie("Sous-catégorie", null, "/"));
-//            spinnerAdapter2.addAll(categorieList.get(position).getSubCategories());
-//            spinnerAdapter2.notifyDataSetChanged();
-//            spinnerSubCategorie.setSelection(1);
-//            Log.e("SELECT_CAT", currentCategorie.getPath());
-//        }
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
             // Here you get the current item that is selected by its position
             Categorie cat = (Categorie) adapterView.getItemAtPosition(position);
             if (!cat.getSubCategories().isEmpty()){
                 currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
-                //            System.out.println(categorieList.get(position).getPath()+"      "+categorieList.get(position).getSubCategories().get(0)+"    "+categorieList.get(position).getParentName() +"      "+ categorieList.get(position-1).getName());
                 currentSubCategorie = currentCategorie.getSubCategories().get(0);
                 searchVideo.setText("");
                 spinnerAdapter2.clear();
-                //            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
                 spinnerAdapter2.add(new Categorie("Sous-catégorie", null, "/"));
                 spinnerAdapter2.addAll(categorieList.get(position).getSubCategories());
                 spinnerAdapter2.notifyDataSetChanged();
@@ -1141,8 +1126,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 Log.e("SELECT_CAT", currentCategorie.getPath());
                 annotFragment.updateAnnotationList(null);
                 if (videosAdapter.getCount() > 0) {
-                    //currentVideo = videosAdapter.getItem(0);
-
                     currentVideo = (Video) listViewVideos.getItemAtPosition(0);
                     setCurrentVAnnot();
                     if (currentVAnnot == null) {
@@ -1324,17 +1307,29 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     }
 
     @Override
-    public String saveDrawImage() {
-
-        String drawfileName = drawView.enregistrer_image(currentSubCategorie.getPath() + File.separator + videoName, this.videoName);
-
-        return drawfileName;
+    public String saveDrawImage(Annotation annotation, boolean isEditing, boolean isPredef) {
+        if(!isPredef){
+            final SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy-HHmmss");
+            //Définition du chemin du fichier
+            String drawFileName = videoName + "_" + dateFormat.format(new Date()) + ".png";
+            drawView.enregistrer_image(currentSubCategorie.getPath() + File.separator + videoName, drawFileName);
+            if(isEditing){
+                //supprime l'ancienne image
+                String directory = currentSubCategorie.getPath() + File.separator + videoName;
+                File pngToDelete = new File(getExternalFilesDir(directory), annotation.getDrawFileName());
+                pngToDelete.delete();
+            }
+            return drawFileName;
+        }
+        else
+            drawView.enregistrer_image(annotPredefDirectory.getName(), annotation.getAnnotationTitle()+".png");
+        return annotation.getAnnotationTitle()+".png";
     }
 
     @Override
     public void onSaveDrawAnnotation(Annotation annotation, boolean check) {
-        onSaveAnnotation(annotation,check);
-        closeDrawFragment();
+        onSaveAnnotation(annotation,check, drawFragment.isEditing());
+        closeDrawFrame();
     }
 
 
@@ -1345,39 +1340,40 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         if(drawFragment.isEditing())
             this.currentVAnnot.getAnnotationList().remove(position);
         onSaveDrawAnnotation(annotation, false); //True ou false???
-        closeDrawFragment();
+        closeDrawFrame();
     }
 
-    @Override
-    public void onSaveTextAnnotation(Annotation annotation, boolean isPredef, int position){
-        this.currentVAnnot.getAnnotationList().remove(position);
-        onSaveAnnotation(annotation, isPredef);
-    }
-	
-	@Override
-    public void onSaveTextAnnotationPredef(Annotation annotation, boolean isPredef, int position) {
-
-        onSaveAnnotationPredef(annotation, true, position);
-
-    }
-
-    public void onSaveAnnotationPredef(Annotation annotation, boolean checkAnnotPredef, int position) {
+    public void onSaveAnnotationPredef(Annotation annotation) {
         if (annotPredefFragment == null) {
-            annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef, MainActivity.this);
+            annotPredefFragment = new Fragment_AnnotPredef(listAnnotationsPredef, MainActivity.this);
         }
 
-//        for(int i = 0; i < ListAnnotationsPredef.size(); i++) {
-        File file12 = new File(MainActivity.this.getExternalFilesDir("annotations"), "AnnotPredef_num_" + position + ".json");
-        System.out.println("Suppression "+file12.getAbsolutePath() +"    "+ file12.delete());
-//        }
+        File fileToDelete = new File(getExternalFilesDir("annotations"), annotation.getAnnotationTitle() + ".json");
+        fileToDelete.delete();
 
-//        Util.deleteRecursiveDirectory(AnnotPredefDirectory);
-        Util.saveAnnotation(MainActivity.this, ListAnnotationsPredef.get(position), position);
+        //Suppression éventuelle du fichier PNG
+        if(annotation.getAnnotationType()== DRAW){
+            //Le fichier png d'une annotation graphique prédéfinie se nomme différemment que pour une annotation graphique basique
+            File drawToDelete = new File(getExternalFilesDir("annotations"), annotation.getAnnotationTitle() + ".png");
+            drawToDelete.delete();
+            Log.i("ANNOT PREDEF", "Draw updated : " + drawToDelete.getName());
+        }
+
+        //Suppression éventuelle du fichier MP3
+        if(annotation.getAnnotationType()==AUDIO){
+            File audioToDelete = new File(getExternalFilesDir("annotations"), annotation.getAudioFileName());
+            audioToDelete.delete();
+            Log.i("ANNOT PREDEF", "Audio updated : " + audioToDelete.getName());
+        }
+
+        this.currentVAnnot.getAnnotationList().remove(annotation);
+
+//        Util.deleteRecursiveDirectory(annotPredefDirectory);
+        System.out.println("DRAWFILENAME 2bis : "+ annotation.getDrawFileName());
+        Util.saveAnnotationPredef(MainActivity.this, annotation);
 
 //        annotPredefFragment.getListAnnotationsPredef().remove(annotation);
-
-//        Util.saveAnnotation(MainActivity.this, annotation,annotPredefFragment.getListAnnotationsPredef().size());
-        annotPredefFragment.getAnnotationsAdapter().notifyDataSetChanged();
+        annotPredefFragment.updateAnnotationList();
     }
 
     /**
@@ -1386,10 +1382,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
      * @param annotation
      */
     @Override
-    public void onSaveAnnotation(Annotation annotation, boolean checkAnnotPredef) {
+    public void onSaveAnnotation(Annotation annotation, boolean checkAnnotPredef, boolean isEditing) {
 
         // création de l'annotation
-        annotation.setAnnotationStartTime(player.getCurrentPosition());
+        if(!isEditing)
+            annotation.setAnnotationStartTime(player.getCurrentPosition());
 
         if(drawFragment!=null && drawFragment.isEditing()){
             currentVAnnot.getAnnotationList().remove(annotation);
@@ -1406,16 +1403,18 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
             if (checkAnnotPredef) {
                 if (annotPredefFragment == null)
-                    annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef,MainActivity.this);
+                    annotPredefFragment = new Fragment_AnnotPredef(listAnnotationsPredef,MainActivity.this);
                 annotPredefFragment.getListAnnotationsPredef().add(annotation);
-                System.out.println("                            NOM DU DRAW "+MainActivity.this.getExternalFilesDir("")+" "+annotation.getDrawFileName());
+                System.out.println("NOM DU DRAW "+MainActivity.this.getExternalFilesDir("")+" "+annotation.getDrawFileName());
                 // Util.saveVideoAnnotation(MainActivity.this, currentVAnnot, "annotations", videoName);
-                Util.saveAnnotation(MainActivity.this, annotation, annotPredefFragment.getListAnnotationsPredef().size());
 
                 if (annotation.getAnnotationType() == DRAW){
-                    File ImageAnnotation = new File(MainActivity.this.getExternalFilesDir(directory),annotation.getDrawFileName());
+                    File imageAnnotation = new File(MainActivity.this.getExternalFilesDir(directory),annotation.getDrawFileName());
                     try {
-                        FileUtils.copyFileToDirectory(ImageAnnotation,this.AnnotPredefDirectory);
+                        FileUtils.copyFileToDirectory(imageAnnotation,this.annotPredefDirectory);
+                        File file = new File(this.annotPredefDirectory, imageAnnotation.getName());
+                        file.renameTo(new File(this.annotPredefDirectory, annotation.getAnnotationTitle()+".png"));
+                        annotation.setDrawFileName(file.getName());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -1424,11 +1423,12 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 if (annotation.getAnnotationType() == AUDIO){
                     File AudioAnnotation = new File(MainActivity.this.getExternalFilesDir(directory),annotation.getAudioFileName());
                     try {
-                        FileUtils.copyFileToDirectory(AudioAnnotation,this.AnnotPredefDirectory);
+                        FileUtils.copyFileToDirectory(AudioAnnotation,this.annotPredefDirectory);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
+                Util.saveAnnotationPredef(MainActivity.this, annotation);
             }
 
             annotFragment.updateAnnotationList(currentVAnnot);
@@ -1448,27 +1448,6 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         drawView.setColor(color);
     }
 
-    @Override
-    public void closeAnnotationFrame() {
-        drawView.resetCanvas();
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        annotFragment = (Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
-        if (annotFragment == null) {
-            annotFragment = new Fragment_annotation();
-            ft.add(R.id.annotation_menu, annotFragment, FRAGMENT_ANNOT_TAG);
-            ft.hide(drawFragment);
-            ft.show(annotFragment);
-            ft.commit();
-        } else {
-            ft.hide(drawFragment);
-            ft.show(annotFragment);
-            ft.commit();
-        }
-        drawView.setVisibility(View.GONE);
-        setAnnotButtonStatus(true);
-    }
-
-
     public void setStatutProfil(boolean nouveauStatut) {
         statut_profil = nouveauStatut;
     }
@@ -1487,7 +1466,8 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     /**
      * Ferme la fragment de gestion de l'annotation graphique et affiche celui de la liste de annotations
      */
-    protected void closeDrawFragment() {
+    @Override
+    public void closeDrawFrame() {
         drawView.resetCanvas();
         FragmentTransaction ft = fragmentManager.beginTransaction();
         annotFragment = (Fragment_annotation) fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_TAG);
@@ -1525,7 +1505,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         FragmentTransaction ft2 = fragmentManager.beginTransaction();
         annotPredefFragment = (Fragment_AnnotPredef)fragmentManager.findFragmentByTag(FRAGMENT_ANNOT_PREDEF_TAG);
      /*   if (annotPredefFragment == null) {
-            annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef);
+            annotPredefFragment = new Fragment_AnnotPredef(listAnnotationsPredef);
             ft2.add(R.id.annotation_menu, annotPredefFragment, FRAGMENT_ANNOT_PREDEF_TAG);
             ft2.hide(annotPredefFragment);
             ft2.show(annotFragment);
@@ -1683,8 +1663,40 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
 
             case DRAW:
                 Log.i("onUpdateAnnotPredef","draw");
+                //recupere le dessin de l'annotation a modifier
+                Bitmap bitmap = Util.getBitmapFromAppDir(getApplicationContext(), "annotations", annotation.getAnnotationTitle() + ".png");
                 player.setPlayWhenReady(false);
-                // à developper
+                drawView.setVisibility(View.VISIBLE);
+                drawView.setOnTouchEnable(true);
+
+                //Affichage du fragment draw : obligation de passer par l'activité pour communiquer entre les deux fragments
+                FragmentManager manager = getFragmentManager();
+                FragmentTransaction ft = manager.beginTransaction();
+                drawFragment = (Fragment_draw) manager.findFragmentByTag(FRAGMENT_DRAW_TAG);
+                if (drawFragment == null) {
+                    drawFragment = new Fragment_draw();
+                    drawFragment.setEditing(true);
+                    drawFragment.setPredef(true);
+                    drawFragment.setPosition(position);
+                    drawFragment.setDrawAnnotation(annotation);
+                    ft.add(R.id.annotation_menu, drawFragment, FRAGMENT_DRAW_TAG);
+                    ft.hide(annotFragment);
+                    ft.hide(annotPredefFragment);
+                    ft.show(drawFragment);
+                    ft.commit();
+                } else {
+                    drawFragment.setEditing(true);
+                    drawFragment.setPredef(true);
+                    drawFragment.setPosition(position);
+                    drawFragment.setDrawAnnotation(annotation);
+                    ft.hide(annotFragment);
+                    ft.hide(annotPredefFragment);
+                    ft.show(drawFragment);
+                    ft.commit();
+                }
+                drawView.invalidate();
+                //ajout du dessin a editer a DrawView
+                drawView.setmBitmap(bitmap);
                 break;
 
 
@@ -1725,14 +1737,18 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 if (drawFragment == null) {
                     drawFragment = new Fragment_draw();
                     drawFragment.setEditing(true);
+                    drawFragment.setPredef(false);
                     drawFragment.setPosition(position);
+                    drawFragment.setDrawAnnotation(annotation);
                     ft.add(R.id.annotation_menu, drawFragment, FRAGMENT_DRAW_TAG);
                     ft.hide(annotFragment);
                     ft.show(drawFragment);
                     ft.commit();
                 } else {
-                    drawFragment.setPosition(position);
                     drawFragment.setEditing(true);
+                    drawFragment.setPredef(false);
+                    drawFragment.setPosition(position);
+                    drawFragment.setDrawAnnotation(annotation);
                     ft.hide(annotFragment);
                     ft.show(drawFragment);
                     ft.commit();
@@ -1745,34 +1761,55 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 break;
         }
     }
-    
+
     @Override
-    public void onDeleteAnnotationPredef(Annotation annot, int position) {
+    public void onRenameAnnotationPredef(Annotation annotation, String oldTitle) {
+        //Suppression du fichier JSON
+        File fileToDelete = new File(getExternalFilesDir("annotations"), oldTitle + ".json");
+        fileToDelete.delete();
+        Log.i("ANNOT PREDEF", "File deleted : " + fileToDelete.getName());
+        onSaveAnnotationPredef(annotation);
+    }
+
+    @Override
+    public void onDeleteAnnotationPredef(Annotation annotation, int position) {
+        //Récupère le fragment AnnotPredef
         if(annotPredefFragment == null) {
-            annotPredefFragment = new Fragment_AnnotPredef(ListAnnotationsPredef, MainActivity.this);
+            annotPredefFragment = new Fragment_AnnotPredef(listAnnotationsPredef, MainActivity.this);
         }
 
-        // Supprimer tous les annotations Prédéfinies
-        for(int i = 0; i < ListAnnotationsPredef.size(); i++) {
-            File file12 = new File(MainActivity.this.getExternalFilesDir("annotations"), "AnnotPredef_num_" + i + ".json");
-            System.out.println("Suppression "+file12.getAbsolutePath() +"    "+ file12.delete());
+        boolean isRemove = true;
+
+        try{
+            //Suppression du fichier JSON
+            File fileToDelete = new File(getExternalFilesDir("annotations"), annotation.getAnnotationTitle() + ".json");
+            fileToDelete.delete();
+            Log.i("ANNOT PREDEF", "File deleted : " + fileToDelete.getName());
+
+            //Suppression éventuelle du fichier PNG
+            if(annotation.getAnnotationType()== DRAW){
+                File drawToDelete = new File(getExternalFilesDir("annotations"), annotation.getDrawFileName());
+                drawToDelete.delete();
+                Log.i("ANNOT PREDEF", "Draw deleted : " + drawToDelete.getName());
+            }
+
+            //Suppression éventuelle du fichier MP3
+            if(annotation.getAnnotationType()==AUDIO){
+                File audioToDelete = new File(getExternalFilesDir("annotations"), annotation.getAudioFileName());
+                audioToDelete.delete();
+                Log.i("ANNOT PREDEF", "Audio deleted : " + audioToDelete.getName());
+            }
+        } catch (Exception e){
+            isRemove = false;
+            Log.e("ANNOT PREDEF", "Erreur dans la suppression de l'annotation prédéfinie");
         }
 
-        // Retitrer l'annotaion de la liste des annotaions
-        boolean isRemove = annotPredefFragment.getListAnnotationsPredef().remove(annot);
-
-        // Si ça marche pas pour toi décommenter ce ligne, remarque  tous le contenu de annotaions sera supprimer
-        // Util.deleteRecursiveDirectory(AnnotPredefDirectory);
-
-        // Recreeèr tous les annotations Prédéfinies à partir de la liste des annotations
-        for(int i = 0; i < ListAnnotationsPredef.size(); i++){
-            Log.i("Create Predef", ListAnnotationsPredef.get(i).getAnnotationTitle());
-            Util.saveAnnotation(MainActivity.this, ListAnnotationsPredef.get(i), i);
-        }
-
-        // Refraîchir la listView si l'element est bien supprimer
+        // Rafraîchit la listView si l'element est bien supprimé
         if (isRemove){
-            Log.i("delete","delete predef inside");
+            //Supprime l'annotation de la liste des annotations
+            annotPredefFragment.getListAnnotationsPredef().remove(annotation);
+            Log.i("ANNOT PREDEF","Element in AnnotationPredefList deleted : " + annotation.getAnnotationTitle());
+            //Met à jour la liste dans le fragment
             annotPredefFragment.updateAnnotationList();
         }
     }
@@ -1833,6 +1870,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 List<Categorie> subcategorieList;
                 categorieList = data.getParcelableArrayListExtra("Categorie");
                 spinnerAdapter=new SpinnerAdapter(this, android.R.layout.simple_spinner_item, categorieList);
+                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerCategorie.setAdapter(spinnerAdapter);
 //                Création des répertoires pour les catégories et sous-catégories
                 File Dir = this.getExternalFilesDir("");

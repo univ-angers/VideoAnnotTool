@@ -50,11 +50,23 @@ public class DialogAddSubCategorie {
                 switch (btnId) {
                     case R.id.btnValiderAdd:
                         String title = titre.getText().toString();
-                        if (title != null && !title.isEmpty()) {
-                            dialogListener.onSaveAddSubCategory(categorie, title);
+                        boolean isValid = true;
+                        if (title.isEmpty()){
+                            Toast.makeText(context, "Veuillez renseigner un nom de sous-catégorie", Toast.LENGTH_LONG).show();
+                            isValid = false;
                         }
-                        dialog.dismiss();
-                        Toast.makeText(context,R.string.editValidateToast, Toast.LENGTH_SHORT).show();
+                        for(Categorie sub : categorie.getSubCategories()){
+                            if(sub.getName().toUpperCase().equals(title.toUpperCase())){
+                                Toast.makeText(context, "Cette sous-catégorie existe déjà", Toast.LENGTH_LONG).show();
+                                isValid = false;
+                                break;
+                            }
+                        }
+                        if (isValid) {
+                            dialogListener.onSaveAddSubCategory(categorie, title);
+                            dialog.dismiss();
+                            Toast.makeText(context, R.string.editValidateToast, Toast.LENGTH_SHORT).show();
+                        }
                         break;
                     case R.id.btnAnnulerAdd:
                         //on ferme la boite de dialog
