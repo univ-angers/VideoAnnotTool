@@ -248,12 +248,23 @@ public class CategoryActivity extends Activity implements DialogEditCategorie.Ed
     }
 
     public void CategoryResult(View view) {
-        Intent returnintent = new Intent();
         ArrayList<Categorie> tmpListCategorie = new ArrayList<Categorie>();
         tmpListCategorie.add(new Categorie("Catégorie", null, "/"));
         tmpListCategorie.addAll(list_categorie);
-        returnintent.putParcelableArrayListExtra("Categorie", tmpListCategorie);
-        setResult(READ_CATEGORY_CODE, returnintent);
-        finish();
+        boolean checkNoSubCat = true;
+        for(Categorie categorie : list_categorie){
+            //Provisoire... Créer une catégorie sans sous-catégories peut poser quelques problèmes pour le moment
+            if(categorie.getSubCategories().isEmpty()) {
+                Toast.makeText(view.getContext(), "La catégorie " + categorie.getName() + " ne possède aucune sous-catégorie", Toast.LENGTH_LONG).show();
+                checkNoSubCat = false;
+                break;
+            }
+        }
+        if(checkNoSubCat) {
+            Intent returnintent = new Intent();
+            returnintent.putParcelableArrayListExtra("Categorie", tmpListCategorie);
+            setResult(READ_CATEGORY_CODE, returnintent);
+            finish();
+        }
     }
 }
