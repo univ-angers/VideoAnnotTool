@@ -9,6 +9,8 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -551,6 +553,16 @@ public class Util {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //Permet de fermer le clavier après un input.
+    public static void FermerClavier(View view){
+        //Cache le clavier de la tablette
+        final InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(view.getContext().INPUT_METHOD_SERVICE);
+
+        Log.e("test input mode", imm.)
+
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
 }
