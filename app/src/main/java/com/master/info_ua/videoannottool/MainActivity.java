@@ -417,14 +417,14 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         // Récupère les annotations prédéfines stocker en JSON pour les inserer dans la Liste
         listAnnotationsPredef.addAll(Util.parseJSON_Annot(MainActivity.this));
 
-        spinnerDifficulte=findViewById(R.id.spinner_difficulte);
-        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this, R.array.difficultes, android.R.layout.simple_spinner_item);
-        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinnerDifficulte=findViewById(R.id.spinner_difficulte);
+//        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this, R.array.difficultes, android.R.layout.simple_spinner_item);
+//        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//        spinnerDifficulte.setAdapter(adapterSpinner);
+//        spinnerDifficulte.setOnItemSelectedListener(difficulteSelectedListener);
 
-        spinnerDifficulte.setAdapter(adapterSpinner);
-        spinnerDifficulte.setOnItemSelectedListener(difficulteSelectedListener);
-
-        fileVideoDifficulte = new File(MainActivity.this.getExternalFilesDir("difficulte"), "videodifficulte.json");
+        //fileVideoDifficulte = new File(MainActivity.this.getExternalFilesDir("difficulte"), "videodifficulte.json");
     }
 
     @Override
@@ -536,7 +536,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
             menu.findItem(R.id.renommer_annot_predef).setVisible(false);
             menu.findItem(R.id.modifier_annot_predef).setVisible(false);
             menu.findItem(R.id.supprimer_annot_predef).setVisible(false);
-            menu.findItem(R.id.edit_difficulte).setVisible(true);
+            //menu.findItem(R.id.edit_difficulte).setVisible(true);
         }
     }
 
@@ -599,11 +599,11 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 annotation = annotPredefFragment.getAnnotationsAdapter().getItem(info.position);
                 annotPredefFragment.getFragmentListener().onDeleteAnnotationPredef(annotation, info.position);
                 return true;
-            case R.id.edit_difficulte:
-                video = videosAdapter.getItem(info.position);
-                DialogEditDifficulte dialogDiff = new DialogEditDifficulte(this, video);
-                dialogDiff.showDialogEditDiff();
-                return true;
+//            case R.id.edit_difficulte:
+//                video = videosAdapter.getItem(info.position);
+//                DialogEditDifficulte dialogDiff = new DialogEditDifficulte(this, video);
+//                dialogDiff.showDialogEditDiff();
+//                return true;
             default:
                 return super.onContextItemSelected(item);
         }

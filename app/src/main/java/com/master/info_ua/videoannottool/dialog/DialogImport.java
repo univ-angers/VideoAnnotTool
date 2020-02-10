@@ -32,7 +32,7 @@ public class DialogImport {
     private Spinner spinnerCategorie;
     private Spinner spinnerSubCategorie;
     private Spinner spinnerDifficulte;
-    private int difficulte;
+    private int difficulte = 1;
     private Dialog dialog;
     private DialogCallback dialogCallback;
     private List<Categorie> categorieList;
@@ -65,12 +65,12 @@ public class DialogImport {
         spinnerCategorie.setSelection(1);
 
         //Initialisation du spinner de difficulté
-        spinnerDifficulte = dialog.findViewById(R.id.spinner_import_difficulte);
-        ArrayAdapter<CharSequence> adapterSpinnerDifficulte = ArrayAdapter.createFromResource(context, R.array.difficultes_import, android.R.layout.simple_spinner_item);
-        adapterSpinnerDifficulte.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spinnerDifficulte.setAdapter(adapterSpinnerDifficulte);
-        spinnerDifficulte.setOnItemSelectedListener(difficulteSelectedListener);
+//        spinnerDifficulte = dialog.findViewById(R.id.spinner_import_difficulte);
+//        ArrayAdapter<CharSequence> adapterSpinnerDifficulte = ArrayAdapter.createFromResource(context, R.array.difficultes_import, android.R.layout.simple_spinner_item);
+//        adapterSpinnerDifficulte.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//        spinnerDifficulte.setAdapter(adapterSpinnerDifficulte);
+//        spinnerDifficulte.setOnItemSelectedListener(difficulteSelectedListener);
 
 
         if (context instanceof DialogCallback) {
