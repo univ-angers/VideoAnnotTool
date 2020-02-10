@@ -92,6 +92,7 @@ import com.master.info_ua.videoannottool.dialog.DialogImport;
 import com.master.info_ua.videoannottool.dialog.DialogProfil;
 import com.master.info_ua.videoannottool.dialog.DialogRenameAnnotPredef;
 import com.master.info_ua.videoannottool.dialog.DialogText;
+import com.master.info_ua.videoannottool.dialog.DialogValidationEnregistrementVideo;
 import com.master.info_ua.videoannottool.dialog.DialogVignette;
 import com.master.info_ua.videoannottool.fragment.Fragment_AnnotPredef;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
@@ -253,6 +254,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
     private MediaCodec.BufferInfo mVideoBufferInfo;
     private int mTrackIndex = -1;
 
+    public String nomVideoAEnregistrer = "";
     private boolean recording = false;
     private MediaMuxer mMuxer;
 
@@ -1850,6 +1852,7 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                 mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
                 startRecording();
             } else {
+                AnnulationEnregistrementVideo();
             }
         }
 
@@ -2119,11 +2122,24 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
                    }
                }
            };
-           recording=true;
-           //demande de permission d'enregistrer l'ecran
-           Intent permissionIntent = mProjectionManager.createScreenCaptureIntent();
-           startActivityForResult(permissionIntent, CAST_PERMISSION_CODE);
+           //Dialog contenant l'avertissement pour l'utilisation de l'enregistrement de vidéo et le champ pour rentrer le nom de la vidéo.
+           DialogValidationEnregistrementVideo dialogValidationEnregistrementVideo = new DialogValidationEnregistrementVideo();
+           dialogValidationEnregistrementVideo.showDialogValidationEnregistrementVideo(MainActivity.this);
        }
+   }
+
+
+   //Si l'enregistrement est annulé, il faut enlever le grand écran.
+   public void AnnulationEnregistrementVideo(){
+        closeFullscreenDialog();
+        recording = false;
+   }
+
+   public void validationEnregistrementVideo(){
+       recording=true;
+       //demande de permission d'enregistrer l'ecran
+       Intent permissionIntent = mProjectionManager.createScreenCaptureIntent();
+       startActivityForResult(permissionIntent, CAST_PERMISSION_CODE);
    }
 
 
@@ -2141,7 +2157,9 @@ public class MainActivity extends Activity implements Ecouteur, DialogCallback, 
         try {
             Log.e(Environment.getExternalStorageDirectory() + "/Android/data"+ File.separator, "on est là");
             //emplacement de stockage de la vidéo
-            mMuxer = new MediaMuxer(Environment.getExternalStorageDirectory()+ File.separator +  "video18.mp4", MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+            mMuxer = new MediaMuxer(Environment.getExternalStorageDirectory()+ File.separator + nomVideoAEnregistrer + ".mp4", MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+            //Le nom de vidéo doit être réinitialisé.
+            nomVideoAEnregistrer = "";
         } catch (IOException ioe) {
             throw new RuntimeException("MediaMuxer creation failed", ioe);
         }

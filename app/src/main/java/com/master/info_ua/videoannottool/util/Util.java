@@ -559,10 +559,6 @@ public class Util {
     public static void FermerClavier(View view){
         //Cache le clavier de la tablette
         final InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(view.getContext().INPUT_METHOD_SERVICE);
-
-        Log.e("test input mode", imm.)
-
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
-
 }
