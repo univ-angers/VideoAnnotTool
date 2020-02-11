@@ -101,7 +101,9 @@
     <string name="NewCategory">Nouvelle catégorie</string>
 
     <string name="text_btn_validation_enregistrement_video">Passer à la suite</string>
-    <string name="text_tv_avertissement_enregistrement_video">Veuillez donner le nom de la vidéo qui sera enregistrer puis passer à la suite en appuyant sur le bouton. Attention dès l\'acceptation du dialogue suivant l\'enregistrement de l\'écran commencera, veuillez ne pas faire d\'action sur l\'appareil autre que la suivante. La vidéo commencera sur pause, il faudra appuyer sur le bouton de lancement pour la lancer. L\'enregistrement se finit tout seul.\n Nom :</string>
+    <string name="text_tv_avertissement_enregistrement_video">Veuillez donner le nom de la vidéo qui sera enregistrée puis validez.\n
+        Merci de ne pas effectuer d\'action pendant l\'enregistrement.\n
+        Nom :</string>
     <string name="text_titre_dialog_enregistrement_video">Validation de l\'enregistrement de la vidéo</string>
 
 </resources>
