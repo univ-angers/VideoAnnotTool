@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.fragment.Fragment_draw;
+import com.master.info_ua.videoannottool.util.Util;
 
 public class DialogDraw {
 
@@ -58,15 +59,18 @@ public class DialogDraw {
                         //drawAnnot.setAnnotationTitle(title);
                         //drawAnnot.setAnnotationDuration(Integer.parseInt(duration));
                         //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
+                        Util.FermerClavier(v);
                         dialogListener.onSaveDrawImage(title, Integer.parseInt(duration)*1000, checkAnnotPredef.isChecked());                    }
                     break;
                 case R.id.btnAnnulerDraw:
+                    Util.FermerClavier(v);
                     dialogListener.onResetCanvas();
                     dialog.cancel();
                     break;
             }
             //Vérifie si les champs titre et duree sont vides
             if (titre.getText().length() != 0 && duree.getText().length() != 0) {
+                Util.FermerClavier(v);
                 //Création de l'annotation, il faut encore utiliser le titre et la durée, voir à passer en paramètre de creer_annotation() ???
                 dialog.cancel();
             } else {

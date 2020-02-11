@@ -16,6 +16,7 @@ import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_AnnotPredef;
+import com.master.info_ua.videoannottool.util.Util;
 
 //Classe permettant l'affichage d'une boite de dialogue pour acquérir les annotations textuelles
 public class DialogText {
@@ -59,6 +60,7 @@ public class DialogText {
                     textAnnotDialogCallback.onSaveAnnotation(annotation,checkAnnotPredef.isChecked(), false);
                     Log.i("TEXT_DIALOG-BOX", "Validation :" + texte);
                     Toast.makeText(main, "Annotation Enregistrée", Toast.LENGTH_LONG).show();
+                    Util.FermerClavier(view);
                 } else {
                     title_texte_error.setVisibility(View.VISIBLE);
                 }
@@ -70,6 +72,7 @@ public class DialogText {
                 Log.i("TEXT_DIALOG-BOX", "Annulation");
                 textAnnotDialogCallback.OnOffBoutons(true);
                 dialogBox.cancel();
+                Util.FermerClavier(view);
             }
         });
         dialogBox.show();

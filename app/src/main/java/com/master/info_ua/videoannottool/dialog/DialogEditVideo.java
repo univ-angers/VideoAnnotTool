@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.custom.Video;
+import com.master.info_ua.videoannottool.util.Util;
 
 public class DialogEditVideo {
 
@@ -53,6 +54,7 @@ public class DialogEditVideo {
             switch (btnId) {
                 case R.id.btnValiderEdit:
                     String title = titre.getText().toString();
+                    Util.FermerClavier(v);
                     if (title != null && !title.isEmpty()) {
                         dialogListener.onSaveEditVideo(video, title);
                     }
@@ -61,6 +63,7 @@ public class DialogEditVideo {
                     break;
                 case R.id.btnAnnulerEdit:
                     //on ferme la boite de dialog
+                    Util.FermerClavier(v);
                     dialog.cancel();
                     break;
             }

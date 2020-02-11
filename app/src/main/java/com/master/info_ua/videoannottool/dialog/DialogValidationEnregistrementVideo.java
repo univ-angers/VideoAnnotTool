@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
+import com.master.info_ua.videoannottool.util.Util;
 
 import static com.master.info_ua.videoannottool.MainActivity.COACH;
 
@@ -23,6 +24,7 @@ public class DialogValidationEnregistrementVideo {
     //Affichage de la boîte de dialog pour l'acceptation de l'enregistrement et du choix du nom de la vidéo.
     public void showDialogValidationEnregistrementVideo(final MainActivity main) {
         final Dialog dialog = new Dialog(main);
+        testBoutonCliquer = false;
         //Le dialog à afficher.
         dialog.setContentView(R.layout.boite_dialog_start_recorder);
         //Le titre correspondant au dialog
@@ -30,16 +32,15 @@ public class DialogValidationEnregistrementVideo {
         final EditText editTextNomVideo = dialog.findViewById(R.id.ed_nom_video);
         final TextView texteAvertissement = dialog.findViewById(R.id.tv_avertissement_enregistrement_video);
         Button btnPasserALaSuite = dialog.findViewById(R.id.btn_validation_enregistrement_video);
-//        Button btnAnnuler = dialog.findViewById(R.id.btnAnnulerPasserCoach);
         btnPasserALaSuite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 RelativeLayout btnLayout = main.findViewById(R.id.btn_layout_id);
-                //Gestion du mot de passe à changer?
                 if(!editTextNomVideo.getText().toString().isEmpty() && !editTextNomVideo.getText().toString().equals("")) {
                     //Le bouton a été cliqué, il ne faut pas appliquer la fonction d'annulation d'enregistrement.
                     testBoutonCliquer = true;
                     main.nomVideoAEnregistrer = editTextNomVideo.getText().toString();
+                    Util.FermerClavier(view);
                     main.validationEnregistrementVideo();
                     dialog.cancel();
                 }

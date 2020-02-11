@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
+import com.master.info_ua.videoannottool.util.Util;
 
 import static com.master.info_ua.videoannottool.MainActivity.COACH;
 
@@ -36,7 +37,6 @@ public class DialogProfil {
             @Override
             public void onClick(View view) {
                 RelativeLayout btnLayout = main.findViewById(R.id.btn_layout_id);
-                //Gestion du mot de passe à changer?
                 if(!editTextModeCoach.getText().toString().isEmpty() && editTextModeCoach.getText().toString().equals("123")) {
                     btnLayout.setVisibility(View.VISIBLE);
                     audioAnnotBtn.setEnabled(true);
@@ -47,6 +47,7 @@ public class DialogProfil {
                     fragment_annotation.setStatut_profil(COACH);
                     item.setTitle("Mode consultation");
                     main.invalidateOptionsMenu();
+                    Util.FermerClavier(view);
                     dialog.cancel();
                 } else {
                     invalidPassword.setVisibility(View.VISIBLE);
@@ -60,6 +61,7 @@ public class DialogProfil {
                 //Cache le clavier de la tablette
                 final InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(view.getContext().INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                Util.FermerClavier(view);
             }
         });
         dialog.show();

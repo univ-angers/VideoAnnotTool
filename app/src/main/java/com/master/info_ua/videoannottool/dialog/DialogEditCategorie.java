@@ -12,6 +12,7 @@ import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.custom.Video;
 import com.master.info_ua.videoannottool.util.Categorie;
+import com.master.info_ua.videoannottool.util.Util;
 
 public class DialogEditCategorie {
     private CategoryActivity context;
@@ -53,6 +54,7 @@ public class DialogEditCategorie {
             switch (btnId) {
                 case R.id.btnValiderEdit:
                     String title = titre.getText().toString();
+                    Util.FermerClavier(v);
                     if (title != null && !title.isEmpty()) {
                         dialogListener.onSaveEditCategorie(categorie, title);
                     }
@@ -60,6 +62,7 @@ public class DialogEditCategorie {
                     Toast.makeText(context,R.string.editValidateToast, Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.btnAnnulerEdit:
+                    Util.FermerClavier(v);
                     //on ferme la boite de dialog
                     dialog.cancel();
                     break;

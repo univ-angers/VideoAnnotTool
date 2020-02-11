@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.custom.Audio;
+import com.master.info_ua.videoannottool.util.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -127,6 +128,7 @@ public class DialogAudio {
                         recordCallback.onSaveAnnotation(audioAnnot,checkAnnotPredef.isChecked(), false);
                         Toast.makeText(mainActivity, "Annotation Enregistrée", Toast.LENGTH_LONG).show();
                         Log.i("AUDIO_DIALOG-BOX", "Validation " + audioName);
+                        Util.FermerClavier(v);
                         dialogBox.cancel();
                         recordCallback.OnOffBoutons(true);
                     } else {
@@ -136,7 +138,9 @@ public class DialogAudio {
                 case R.id.btnAnnulerRecord:
                     File file = new File(mainActivity.getFilesDir(), audioName);
                     file.delete();
+                    Util.FermerClavier(v);
                     Log.i("AUDIO_DIALOG-BOX", "Annulation");
+
                     dialogBox.cancel();
                     recordCallback.OnOffBoutons(true);
                     break;

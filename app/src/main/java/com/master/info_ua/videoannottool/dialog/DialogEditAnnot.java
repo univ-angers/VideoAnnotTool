@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
+import com.master.info_ua.videoannottool.util.Util;
 
 public class DialogEditAnnot {
 
@@ -56,6 +57,7 @@ public class DialogEditAnnot {
                 case R.id.btnValiderEdit:
                     String title = titre.getText().toString();
                     String duration = duree.getText().toString();
+                    Util.FermerClavier(v);
                     if (title != null && !title.isEmpty() && duration != null && !duration.isEmpty()) {
                         dialogListener.onSaveEditAnnot(annotation, title, Integer.parseInt(duration)*1000);
                     }
@@ -63,6 +65,7 @@ public class DialogEditAnnot {
                     Toast.makeText(context.getActivity(),R.string.editValidateToast, Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.btnAnnulerEdit:
+                    Util.FermerClavier(v);
                     //on ferme la boite de dialog
                     dialog.cancel();
                     break;

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.custom.Video;
+import com.master.info_ua.videoannottool.util.Util;
 
 public class DialogEditDifficulte {
     private MainActivity context;
@@ -66,6 +67,7 @@ public class DialogEditDifficulte {
             int btnId = v.getId();
             if (btnId == R.id.btnValidEditDiff) {
                 dialogListener.onSaveEditDifficulte(video, difficulte);
+                Util.FermerClavier(v);
                 dialog.dismiss();
                 Toast.makeText(context, R.string.editValidateToast, Toast.LENGTH_SHORT).show();
             }

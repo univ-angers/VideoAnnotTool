@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.util.Util;
 
 //Classe permettant l'affichage d'une boite de dialogue pour modifier les annotations prédéfinies textuelles
 public class DialogAnnotPredefModification {
@@ -61,6 +62,7 @@ public class DialogAnnotPredefModification {
                     textAnnotDialogCallback.onSaveAnnotationPredef(annotation);
                     Log.i("TEXT_DIALOG-BOX", "Validation :" + texte);
                     Toast.makeText(main, "Annotation Prédéfinie Modifiée", Toast.LENGTH_LONG).show();
+                    Util.FermerClavier(view);
                 } else {
                     comment_texte_error.setVisibility(View.VISIBLE);
                 }
@@ -75,6 +77,7 @@ public class DialogAnnotPredefModification {
                 ed_texte_titre.setFocusable(true);
                 etDuration.setFocusable(true);
                 checkAnnotPredef.setEnabled(true);
+                Util.FermerClavier(view);
             }
         });
         dialogBox.show();

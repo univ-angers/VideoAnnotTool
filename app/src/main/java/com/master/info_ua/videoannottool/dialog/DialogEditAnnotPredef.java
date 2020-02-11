@@ -10,6 +10,7 @@ package com.master.info_ua.videoannottool.dialog;
         import com.master.info_ua.videoannottool.annotation.Annotation;
         import com.master.info_ua.videoannottool.fragment.Fragment_AnnotPredef;
         import com.master.info_ua.videoannottool.fragment.Fragment_annotation;
+        import com.master.info_ua.videoannottool.util.Util;
 
 public class DialogEditAnnotPredef {
 
@@ -58,6 +59,7 @@ public class DialogEditAnnotPredef {
                 case R.id.btnValiderEdit:
                     String title = titre.getText().toString();
                     String duration = duree.getText().toString();
+                    Util.FermerClavier(v);
                     if (title != null && !title.isEmpty() && duration != null && !duration.isEmpty()) {
                         //sauvegarde l'annotation prédefinie dans la liste des annotations de la vidéo courante
                         dialogListener.onSaveEditAnnot(annotation, title, Integer.parseInt(duration)*1000);
@@ -66,6 +68,7 @@ public class DialogEditAnnotPredef {
                     Toast.makeText(context.getActivity(),R.string.editValidateToast, Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.btnAnnulerEdit:
+                    Util.FermerClavier(v);
                     //on ferme la boite de dialog
                     dialog.cancel();
                     break;

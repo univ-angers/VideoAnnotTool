@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
+import com.master.info_ua.videoannottool.util.Util;
 
 //Classe permettant l'affichage une boîte de dialog pour renommer les trois types d'annotation(TEXT, AUDIO, DRAW)
 public class DialogRenameAnnotPredef {
@@ -59,6 +60,7 @@ public class DialogRenameAnnotPredef {
                     textAnnotDialogCallback.onRenameAnnotationPredef(annotation, oldTitle);
                     Log.i("TEXT_DIALOG-BOX", "Validation :" + annotation.getAnnotationTitle());
                     Toast.makeText(main, "Annotation Prédéfinie Renommer", Toast.LENGTH_LONG).show();
+                    Util.FermerClavier(view);
                 } //else {
 //                    comment_texte_error.setVisibility(View.VISIBLE);
 //                }
@@ -69,6 +71,7 @@ public class DialogRenameAnnotPredef {
             public void onClick(View view) {
                 Log.i("TEXT_DIALOG-BOX", "Annulation");
                 textAnnotDialogCallback.OnOffBoutons(true);
+                Util.FermerClavier(view);
                 dialogBox.cancel();
             }
         });

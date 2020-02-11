@@ -14,6 +14,7 @@ import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.AnnotationType;
 import com.master.info_ua.videoannottool.dialog.DialogDraw;
+import com.master.info_ua.videoannottool.util.Util;
 
 import java.io.File;
 import java.util.Date;
@@ -183,6 +184,7 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
                             drawAnnotation.setDrawFileName(fragmentCallback.saveDrawImage(drawAnnotation, true, false));
                             //sauvegarde de l'annotation dans le fichier json
                             fragmentCallback.onSaveDrawAnnotation(drawAnnotation, position);
+                            Util.FermerClavier(v);
                             //Fermeture du fragment draw
                             fragmentCallback.closeDrawFrame();
                         }
