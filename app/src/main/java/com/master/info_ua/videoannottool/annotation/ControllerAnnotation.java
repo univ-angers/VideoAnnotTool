@@ -147,7 +147,7 @@ public class ControllerAnnotation implements Runnable {
         while (checkTime() && (!cancelled)) {
             synchronized (this) {
                 try {
-                    this.wait(50);
+                    this.wait(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
