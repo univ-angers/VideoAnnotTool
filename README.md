@@ -38,6 +38,7 @@ Rapport 2019-2020 : [Rapport de soutenance 2020](https://github.com/univ-angers/
 # Licence
 
 Copyright (C) 2019 CISSE Sékou Aboubacar, TRAORE Hamidou, VAUX Charline, LEMOINE Théo, SAOUT Thomas, ROUSSEAU Nans
+Copyright (C) 2020 VIAUX Kylian, GAUDIN Thibaut, LAUNAY Matthias, LELU--RIBAIMONT Victor, LENG Jérôme, TAGUENITI Anas, VIOT Sébastien
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
