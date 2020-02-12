@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="15dip">
+
+
+    <TextView
+        android:id="@+id/tv_edit_titre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/titre_de_la_video" />
+
+    <EditText
+        android:id="@+id/ed_edit_titre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnValiderEdit"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:background="@color/btnValider"
+            android:text="@string/BtnValider" />
+
+        <Button
+            android:id="@+id/btnAnnulerEdit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:background="@color/btnAnnuler"
+            android:text="@string/TextBtnAnnulerRecord" />
+    </LinearLayout>
+</LinearLayout>

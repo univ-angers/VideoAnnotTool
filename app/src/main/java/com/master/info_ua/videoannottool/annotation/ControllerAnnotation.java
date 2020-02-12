@@ -53,7 +53,8 @@ public class ControllerAnnotation implements Runnable {
                 //Pour chacune des annotations de la liste
                 for (Annotation annotation : annotationList) {
                     //Initialise une InfoAnno
-                    InfoAnno tmp = new InfoAnno(arronditSeconde(annotation.getAnnotationStartTime()), i, true);
+                    InfoAnno tmp = new InfoAnno(annotation.getAnnotationStartTime(), i, true);
+//                    InfoAnno tmp = new InfoAnno(arronditDeciSeconde(annotation.getAnnotationStartTime()), i, true);
                     //Ajout à la liste d'InfoAnno
                     listInfoAnno.add(tmp);
                     i++;
@@ -96,7 +97,8 @@ public class ControllerAnnotation implements Runnable {
             if (last_pos < listInfoAnno.size()) { // ==> Switch while() to if()
                 Log.e("Pos_VS_Size", "Last_Pos ["+last_pos+"] Size ["+listInfoAnno.size()+"]");
                 //Si la valeur du curseur (arrondie à la seconde inférieure) est égale à la date de lancement de l'annotation (seconde inférieure également)
-                if (arronditSeconde(m_ecouteur.getVideoCurrentPosition()) == listInfoAnno.get(last_pos).getTime()) {
+                if (arronditDeciSeconde(m_ecouteur.getVideoCurrentPosition()) == arronditDeciSeconde(listInfoAnno.get(last_pos).getTime())) {
+//                if (arronditDeciSeconde(m_ecouteur.getVideoCurrentPosition()) == listInfoAnno.get(last_pos).getTime()) {
                     //Si l'annotation est en cours de diffusion
                     if (listInfoAnno.get(last_pos).isDebut()) {
                         //Lance l'annotation
@@ -125,8 +127,8 @@ public class ControllerAnnotation implements Runnable {
     }
 
     // Arrondit un long représentant des millisecondes à la seconde inférieure
-    public long arronditSeconde(long time) {
-        return (time / 1000) * 1000;
+    public long arronditDeciSeconde(long time) {
+        return (time / 100) * 100;
     }
 
     // Lance les annotations en fonction de leur type
@@ -145,7 +147,7 @@ public class ControllerAnnotation implements Runnable {
         while (checkTime() && (!cancelled)) {
             synchronized (this) {
                 try {
-                    this.wait(1000);
+                    this.wait(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -167,7 +169,8 @@ public class ControllerAnnotation implements Runnable {
         //Pour chacune de ces annotations
         for (Annotation annotation : annotationList) {
             //Initialisation de l'InfoAnno correspondante
-            InfoAnno tmp = new InfoAnno(arronditSeconde(annotation.getAnnotationStartTime()), i, true);
+            InfoAnno tmp = new InfoAnno(annotation.getAnnotationStartTime(), i, true);
+//            InfoAnno tmp = new InfoAnno(arronditDeciSeconde(annotation.getAnnotationStartTime()), i, true);
             //Ajout de l'InfoAnno à la liste
             listInfoAnno.add(tmp);
             i++;

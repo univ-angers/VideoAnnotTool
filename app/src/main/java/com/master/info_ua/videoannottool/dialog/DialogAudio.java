@@ -8,6 +8,7 @@ import android.media.MediaRecorder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.custom.Audio;
+import com.master.info_ua.videoannottool.util.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +41,7 @@ public class DialogAudio {
     private Dialog dialogBox;
     private MediaRecorder recorder;
     private Context mainActivity;
+    private CheckBox checkAnnotPredef;
     //Répertoire
     private String directory;
     //Nom de l'audio
@@ -67,6 +70,7 @@ public class DialogAudio {
         btnListen = dialogBox.findViewById(R.id.btnListenRecord);
         btnValid = dialogBox.findViewById(R.id.btnValiderRecord);
         btnCancel = dialogBox.findViewById(R.id.btnAnnulerRecord);
+        checkAnnotPredef = dialogBox.findViewById(R.id.CheckAnnotRecord);
         if (context instanceof DialogCallback) {
             recordCallback = (DialogCallback) context;
         }
@@ -120,10 +124,13 @@ public class DialogAudio {
                 case R.id.btnValiderRecord:
                     if(!ed_audio_titre.getText().toString().isEmpty()){
                         audioAnnot.setAnnotationTitle(ed_audio_titre.getText().toString());
-                        recordCallback.onSaveAnnotation(audioAnnot);
+                        //précise si l'annotation doit être sauvegardé parmis la liste des annotations prédéfinies
+                        recordCallback.onSaveAnnotation(audioAnnot,checkAnnotPredef.isChecked(), false);
                         Toast.makeText(mainActivity, "Annotation Enregistrée", Toast.LENGTH_LONG).show();
                         Log.i("AUDIO_DIALOG-BOX", "Validation " + audioName);
+                        Util.FermerClavier(v);
                         dialogBox.cancel();
+                        recordCallback.OnOffBoutons(true);
                     } else {
                         error_title_audio.setVisibility(View.VISIBLE);
                     }
@@ -131,8 +138,11 @@ public class DialogAudio {
                 case R.id.btnAnnulerRecord:
                     File file = new File(mainActivity.getFilesDir(), audioName);
                     file.delete();
+                    Util.FermerClavier(v);
                     Log.i("AUDIO_DIALOG-BOX", "Annulation");
+
                     dialogBox.cancel();
+                    recordCallback.OnOffBoutons(true);
                     break;
             }
         }

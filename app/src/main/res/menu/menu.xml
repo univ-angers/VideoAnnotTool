@@ -6,4 +6,7 @@
     <item android:id="@+id/action_import"
         android:title="Importer une vidéo" />
 
+    <item android:id="@+id/action_category"
+        android:title="@string/mode_categorie" />
+
 </menu>

@@ -12,26 +12,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
-
 import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.adapter.AnnotationsAdapter;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.VideoAnnotation;
-import com.master.info_ua.videoannottool.util.AnnotationComparator;
+import com.master.info_ua.videoannottool.dialog.DialogEditAnnot;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import static com.master.info_ua.videoannottool.MainActivity.COACH;
+import static com.master.info_ua.videoannottool.MainActivity.ELEVE;
 
-public class Fragment_annotation extends Fragment {
+
+public class Fragment_annotation extends Fragment  implements DialogEditAnnot.EditAnnotDialogListener {
+
+    public AnnotationsAdapter getAnnotationsAdapter() {
+        return annotationsAdapter;
+    }
 
     private AnnotationsAdapter annotationsAdapter;
     private ListView listViewAnnotations;
 
     private AnnotFragmentListener fragmentListener;
+
+    public AnnotFragmentListener getFragmentListener() {
+        return fragmentListener;
+    }
+
+    private boolean statut_profil=ELEVE;
+
+    private static final String FRAGMENT_DRAW_TAG = "drawFragment";
 
 
     public Fragment_annotation() {
@@ -122,38 +133,38 @@ public class Fragment_annotation extends Fragment {
         }
     };
 
-
+    // Crée le contextmenu pour les annotations qui utilisera le listener dans le MainActivity
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId() == R.id.lv_annotations) {
+        //super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.lv_annotations && statut_profil == COACH) {
             MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.context_menu, menu);
+            menu.findItem(R.id.edit_item_annot).setVisible(true);
+            menu.findItem(R.id.delete_item_annot).setVisible(true);
+            menu.findItem(R.id.edit_item_infos_annot).setVisible(true);
+            menu.findItem(R.id.edit_item_video).setVisible(false);
+            menu.findItem(R.id.delete_item_video).setVisible(false);
+            menu.findItem(R.id.renommer_annot_predef).setVisible(false);
+            menu.findItem(R.id.modifier_annot_predef).setVisible(false);
+            menu.findItem(R.id.supprimer_annot_predef).setVisible(false);
+            menu.findItem(R.id.edit_difficulte).setVisible(false);
         }
     }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public void setStatut_profil(boolean profil){ statut_profil = profil; }
 
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.edit_annot:
-                Toast.makeText(getActivity(), "Développement en cours ...", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.delete_annot:
-                Annotation annotation = annotationsAdapter.getItem(info.position);
-                fragmentListener.onDeleteAnnotation(annotation);
-                annotationsAdapter.notifyDataSetChanged();
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
+    @Override
+    public void onSaveEditAnnot(Annotation annotation, String title, int duree) {
+        annotation.setAnnotationTitle(title);
+        annotation.setAnnotationDuration(duree);
+        annotationsAdapter.notifyDataSetChanged();
     }
 
     public interface AnnotFragmentListener {
 
         void onAnnotItemClick(Annotation annotation);
-
+        void onEditAnnotation(Annotation annotation, int position);
         void onDeleteAnnotation(Annotation annotation);
     }
 }

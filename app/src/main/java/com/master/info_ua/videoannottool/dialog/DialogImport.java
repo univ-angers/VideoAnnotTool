@@ -27,13 +27,19 @@ public class DialogImport {
     private Button btnAnnuler;
     private TextView videoImportTextView;
     private Categorie currentCategorie;
-    private Categorie currentSubCategorie;
     private ArrayAdapter<Categorie> spinnerAdapter2;
     private ArrayAdapter<Categorie> spinnerAdapter;
     private Spinner spinnerCategorie;
     private Spinner spinnerSubCategorie;
+    private Spinner spinnerDifficulte;
+    private int difficulte = 1;
     private Dialog dialog;
     private DialogCallback dialogCallback;
+    private List<Categorie> categorieList;
+
+    public DialogImport(List<Categorie> categorieList) {
+        this.categorieList=categorieList;
+    }
 
     //Affiche la boîte de dialogue permettant d'importer une vidéo
     public void showDialogImport(Context context) {
@@ -44,9 +50,6 @@ public class DialogImport {
         dialog.setTitle(R.string.ImportVideo);
         //Initialisation du spinner categorie
         spinnerCategorie = dialog.findViewById(R.id.spinner_import_cat);
-        List<Categorie> categorieList = new ArrayList<>();
-        categorieList.add(new Categorie("Categorie", null, "/"));
-        categorieList.addAll(Util.setCatSpinnerList(context));
         spinnerAdapter = new SpinnerAdapter(context, android.R.layout.simple_spinner_item, categorieList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategorie.setAdapter(spinnerAdapter);
@@ -60,6 +63,16 @@ public class DialogImport {
         spinnerSubCategorie.setAdapter(spinnerAdapter2);
         spinnerCategorie.setOnItemSelectedListener(catItemSelectedListener);
         spinnerCategorie.setSelection(1);
+
+        //Initialisation du spinner de difficulté
+//        spinnerDifficulte = dialog.findViewById(R.id.spinner_import_difficulte);
+//        ArrayAdapter<CharSequence> adapterSpinnerDifficulte = ArrayAdapter.createFromResource(context, R.array.difficultes_import, android.R.layout.simple_spinner_item);
+//        adapterSpinnerDifficulte.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//        spinnerDifficulte.setAdapter(adapterSpinnerDifficulte);
+//        spinnerDifficulte.setOnItemSelectedListener(difficulteSelectedListener);
+
+
         if (context instanceof DialogCallback) {
             dialogCallback = (DialogCallback) context;
         }
@@ -71,6 +84,7 @@ public class DialogImport {
         btnImporter.setOnClickListener(btnClickListener);
         btnAnnuler = dialog.findViewById(R.id.btnCancelImport);
         btnAnnuler.setOnClickListener(btnClickListener);
+
         //Affichage de la boîte de dialogue
         dialog.show();
     }
@@ -87,8 +101,11 @@ public class DialogImport {
                     dialogCallback.updateImportVideoTextView(videoImportTextView);
                     break;
                 case R.id.btnImport:
-                    dialogCallback.saveImportVideo((Categorie) spinnerSubCategorie.getSelectedItem());
-                    dialog.cancel();
+                    if(!currentCategorie.getSubCategories().isEmpty()) {
+                        dialogCallback.saveImportVideo((Categorie) spinnerSubCategorie.getSelectedItem(), difficulte);
+                        dialog.cancel();
+                    }else
+                        Toast.makeText(v.getContext(),"Impossible d'importer la vidéo, pas de sous-catégorie existante",Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.btnCancelImport:
                     dialog.cancel();
@@ -104,7 +121,8 @@ public class DialogImport {
             //Here you get the current item that is selected by its position
             currentCategorie = (Categorie) adapterView.getItemAtPosition(position);
             spinnerAdapter2.clear();
-            spinnerAdapter2.addAll(Util.setSubCatSpinnerList(currentCategorie.getPath()));
+            spinnerAdapter2.add(new Categorie("Sous-categorie",null,"/"));
+            spinnerAdapter2.addAll(currentCategorie.getSubCategories());
             spinnerAdapter2.notifyDataSetChanged();
             spinnerSubCategorie.setSelection(1);
             Log.e("SELECT_CAT", currentCategorie.getPath());
@@ -115,4 +133,25 @@ public class DialogImport {
             //???
         }
     };
+
+    public AdapterView.OnItemSelectedListener difficulteSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            switch(adapterView.getItemAtPosition(i).toString()) {
+                case "Niveau 1" : difficulte = 1; break;
+                case "Niveau 2" : difficulte = 2; break;
+                case "Niveau 3" : difficulte = 3; break;
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
+
+    public int getDifficulte() {
+        return difficulte;
+    }
+
 }

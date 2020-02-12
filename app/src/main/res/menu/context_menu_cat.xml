@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+        <item android:id="@+id/edit_categorie"
+            android:title="@string/edit_cat"
+            />
+
+        <item android:id="@+id/delete_categorie"
+            android:title="@string/delete_cat"
+            />
+
+        <item android:id="@+id/add_sub_cat"
+            android:title="@string/add_sub_cat"/>
+
+        <item android:id="@+id/edit_sub_cat"
+            android:title="@string/edit_sub_cat"
+            />
+
+        <item android:id="@+id/delete_sub_cat"
+            android:title="@string/delete_sub_cat"
+            />
+
+</menu>

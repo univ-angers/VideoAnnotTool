@@ -7,11 +7,19 @@ import com.master.info_ua.videoannottool.util.Categorie;
 
 public interface DialogCallback {
     //Appelée lors d'une sauvegarde d'une annotation
-    void onSaveAnnotation(Annotation annotation);
+    void onSaveAnnotation(Annotation annotation, boolean checkAnnotPredef, boolean isEditing);
     //Appelée lors d'un clic sur l'import d'une vidéo
     void onClickVideoFileImport();
     //Appelée lors d'un clic sur l'import d'une vidéo
     void updateImportVideoTextView(TextView videoImportTextView);
     //Appelée lors de la sauvegarde de la vidéo
-    void saveImportVideo(Categorie selectedSousCategorie);
+    void saveImportVideo(Categorie selectedSousCategorie, int difficulte);
+
+    void CopyFileAnnotPredef (Annotation annotation);
+
+    void onSaveAnnotationPredef(Annotation annotation);
+
+    void OnOffBoutons(boolean bonton);
+
+    void onRenameAnnotationPredef(Annotation annotation, String oldTitle);
 }

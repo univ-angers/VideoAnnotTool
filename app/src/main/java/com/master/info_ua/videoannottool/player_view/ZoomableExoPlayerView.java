@@ -44,6 +44,7 @@ import com.google.android.exoplayer2.video.VideoListener;
 
 import java.util.List;
 
+import com.master.info_ua.videoannottool.MainActivity;
 import com.master.info_ua.videoannottool.R;
 
 public class ZoomableExoPlayerView extends FrameLayout {
@@ -597,6 +598,10 @@ public class ZoomableExoPlayerView extends FrameLayout {
                 || keyCode == KeyEvent.KEYCODE_DPAD_LEFT
                 || keyCode == KeyEvent.KEYCODE_DPAD_UP_LEFT
                 || keyCode == KeyEvent.KEYCODE_DPAD_CENTER;
+    }
+
+    public int getControllerShowTimeoutMs() {
+        return controllerShowTimeoutMs;
     }
 
     private final class ComponentListener extends Player.DefaultEventListener

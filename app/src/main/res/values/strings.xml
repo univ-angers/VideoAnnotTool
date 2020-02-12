@@ -20,6 +20,7 @@
     <string name="invalidPassword">Mot de passe invalide</string>
     <string name="title_audio_error">Préciser le titre de l\'annotation</string>
     <string name="title_texte_error">Préciser le titre de l\'annotation</string>
+    <string name="comment_texte_error">Préciser le commentaire de l\'annotation</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="TextBtnImport">Sauvegarder la vidéo</string>
@@ -33,10 +34,77 @@
     <string name="TextBtnShareVideo">Partager la vidéo</string>
     <string name="TextBtnSelectVideo">Choisir la vidéo</string>
 
+    <string name="TextDialogEditAnnot">Editer l\'annotation</string>
+    <string name="TitleDialogEditAnnotPredef">Enregitrement prédéfini</string>
 
+    <string name="CheckAnnotPredef">Enregistrer l\'annotation en prédéfinie</string>
+    <string name="TextAnnotPredef">Liste des annotations prédéfinies</string>
     <string name="profil">Profil</string>
+    <string name="editValidateToast">Modification effectuée</string>
+    <string name="TextDialogEditVideo">Editer la vidéo</string>
+    <string name="TextDialogEditCategorie">Editer la catégorie</string>
+    <string name="TextDialogAddSubCategorie">Ajouter la sous-catégorie</string>
+    <string name="titre_de_la_video">Titre de la vidéo</string>
+    <string name="mode_categorie">Gestion des catégories</string>
+    <string name="quitter">Quitter</string>
+    <string name="sous_categorie">Sous-catégorie</string>
+    <string name="categorie">Catégorie</string>
+    <string name="categories">Catégories</string>
+    <string name="sousCategories">Sous-catégories</string>
+    <string name="nom_de_la_categorie">Nom de la catégorie</string>
+    <string name="nom_de_la_sous_categorie">Nom de la sous-catégorie</string>
+    <string name="TextDialogEditSubCategorie">Modification de la sous-catégorie</string>
+    <string name="ajouter">Ajouter</string>
+
+    <!-- Menu contextuel -->
+    <string name="add_sub_cat">Ajouter une sous-catégorie</string>
+    <string name="edit_sub_cat">Modifier la sous-catégorie</string>
+    <string name="delete_sub_cat">Supprimer la sous-catégorie</string>
+    <string name="delete_cat">Supprimer la catégorie</string>
+    <string name="edit_cat">Modifier la catégorie</string>
+
+    <string name="modifierInfos">Modifier le nom et la durée</string>
+    <string name="modifierItem">Modifier le nom et la durée</string>
+    <string name="modifier_annot">Modifier l\'annotation</string>
+    <string name="supprimer_annot">Supprimer l\'annotation</string>
+
+    <string name="modifier_video">Modifier la vidéo</string>
+    <string name="supprimer_video">Supprimer la vidéo</string>
+    <string name="ModifDialogText">Modifier le texte</string>
+    <string name="TextBtnAnnuler">Annuler</string>
+    <string name="validateVignette">Vignette modifiée</string>
+    <string name="ChangeVignette">Changement de vignette</string>
+    <string name="rechercher_video">Rechercher vidéo</string>
 
 
+    <string-array name="difficultes_import">
+        <item>Niveau 1</item>
+        <item>Niveau 2</item>
+        <item>Niveau 3</item>
+    </string-array>
 
+    <string-array name="difficultes">
+        <item>Niv.1</item>
+        <item>Niv.2</item>
+        <item>Niv.3</item>
+    </string-array>
+
+    <string name="btn_AP">AP</string>
+    <string name="btn_export_video">EXP</string>
+
+    <string name="renommer_annot_predef">Renommer</string>
+    <string name="modifier_annot_predef">Modifier</string>
+    <string name="supprimer_annot_predef">Supprimer</string>
+
+    <string name="RenommerDialogText">Renommer l\'annotation Prédefinie</string>
+    <string name="ModifierDialogText">Modifier l\'annotaion Prédéfinie</string>
+    <string name="NewCategory">Nouvelle catégorie</string>
+
+    <string name="text_btn_validation_enregistrement_video">Passer à la suite</string>
+    <string name="text_tv_avertissement_enregistrement_video">Veuillez donner le nom de la vidéo qui sera enregistrée puis validez.\n
+        Après avoir validé, commencez la vidéo.
+        Merci de ne pas effectuer d\'autre action.\n
+        Nom :</string>
+    <string name="text_titre_dialog_enregistrement_video">Validation de l\'enregistrement de la vidéo</string>
 
 </resources>

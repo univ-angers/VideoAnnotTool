@@ -14,7 +14,9 @@ import com.master.info_ua.videoannottool.R;
 import com.master.info_ua.videoannottool.annotation.Annotation;
 import com.master.info_ua.videoannottool.annotation.AnnotationType;
 import com.master.info_ua.videoannottool.dialog.DialogDraw;
+import com.master.info_ua.videoannottool.util.Util;
 
+import java.io.File;
 import java.util.Date;
 
 
@@ -27,12 +29,38 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
     private Button b_red;
     private Button b_yellow;
     private Button b_black;
+    private Button b_eraser;
+
+    public boolean isEditing() {
+        return isEditing;
+    }
+
+    public void setEditing(boolean editing) {
+        isEditing = editing;
+    }
+
     private Button b_green;
     private Button b_white;
 
+    //true si il s'agit d'une modification d'annotation
+    private boolean isEditing = false;
+
+    public void setPredef(boolean predef) {
+        isPredef = predef;
+    }
+
+    //True s'il s'agit d'une annotation prédéfinie que l'on souhaite modifier
+    private boolean isPredef = false;
+
     private DrawFragmentCallback fragmentCallback;
 
-    private Annotation drawAnnotation;
+    public void setDrawAnnotation(Annotation drawAnnotation) {
+        this.drawAnnotation = drawAnnotation;
+    }
+
+    private Annotation drawAnnotation = null;
+
+    private int position;
 
     public Fragment_draw() {
         // Required empty public constructor
@@ -43,11 +71,18 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         super.onCreate(savedInstanceState);
     }
 
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_draw, container, false);
+
+        b_eraser = view.findViewById(R.id.b_draw_eraser);
+        b_eraser.setOnClickListener(btnClickListener);
 
         b_clear = view.findViewById(R.id.b_draw_reset);
         b_clear.setOnClickListener(btnClickListener);
@@ -121,18 +156,46 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
             int btnId = v.getId();
 
             switch (btnId){
+                case R.id.b_draw_eraser:
+                    fragmentCallback.setErase();
+                    setAllEnable();
+                    b_eraser.setEnabled(false);
+                    break;
+
                 case R.id.b_draw_reset:
                     fragmentCallback.resetCanvas();
+
                     break;
                 case R.id.b_draw_cancel:
                     fragmentCallback.setOnTouchEnable(false);
-                    fragmentCallback.closeAnnotationFrame();
+                    fragmentCallback.closeDrawFrame();
                     break;
                 case R.id.b_draw_save:
                     fragmentCallback.setOnTouchEnable(false);
-                    String drawFileName = fragmentCallback.saveDrawImage();
-                    setDrawAnnotation(drawFileName);
-                    onShowDrawAnnotDialog();
+                    if(!isPredef){
+                        //Cas où l'on crée une annotation graphique
+                        if(!isEditing){
+                            String drawFileName = fragmentCallback.saveDrawImage(null, false, false);
+                            setDrawAnnotation(drawFileName);
+                            onShowDrawAnnotDialog();
+                        //Cas où l'on modifie une annotation graphique non-prédéfinie
+                        } else {
+                            //sauvegarde la nouvelle dans l'objet Annotation
+                            drawAnnotation.setDrawFileName(fragmentCallback.saveDrawImage(drawAnnotation, true, false));
+                            //sauvegarde de l'annotation dans le fichier json
+                            fragmentCallback.onSaveDrawAnnotation(drawAnnotation, position);
+                            Util.FermerClavier(v);
+                            //Fermeture du fragment draw
+                            fragmentCallback.closeDrawFrame();
+                        }
+                    //Cas où l'on modifie une annotation prédéfinie graphique
+                    } else {
+                        //sauvegarde de l'image
+                        drawAnnotation.setDrawFileName(fragmentCallback.saveDrawImage(drawAnnotation, true, true));
+                        //Fermeture du fragment draw
+                        fragmentCallback.closeDrawFrame();
+                    }
+
 
                     break;
                 case R.id.b_draw_blue:
@@ -176,19 +239,24 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
         b_yellow.setEnabled(true);
         b_white.setEnabled(true);
         b_green.setEnabled(true);
+        b_eraser.setEnabled(true);
     }
 
     @Override
-    public void onSaveDrawImage(String title, int duration) {
+    public void onSaveDrawImage(String title, int duration, boolean check) {
         drawAnnotation.setAnnotationTitle(title);
         drawAnnotation.setAnnotationDuration(duration);
         drawAnnotation.setAnnotationDate(new Date());
-        fragmentCallback.onSaveDrawAnnotation(drawAnnotation);
+        if(isEditing){
+            fragmentCallback.onSaveDrawAnnotation(drawAnnotation, position);
+        } else {
+            fragmentCallback.onSaveDrawAnnotation(drawAnnotation, check);
+        }
     }
 
     @Override
     public void onResetCanvas() {
-
+        fragmentCallback.setOnTouchEnable(true);
     }
 
     protected void onShowDrawAnnotDialog(){
@@ -202,12 +270,14 @@ public class Fragment_draw extends Fragment implements DialogDraw.DrawAnnotDialo
     }
 
     public interface DrawFragmentCallback {
+        void setErase();
         void resetCanvas();
         void setOnTouchEnable(boolean bool);
-        String saveDrawImage();
-        void onSaveDrawAnnotation(Annotation annotation);
+        String saveDrawImage(Annotation annotation, boolean isEditing, boolean isPredef);
+        void onSaveDrawAnnotation(Annotation annotation, boolean check);
+        void onSaveDrawAnnotation(Annotation annotation, int position);
         void setColor(int color);
-        void closeAnnotationFrame();
+        void closeDrawFrame();
     }
 
 }

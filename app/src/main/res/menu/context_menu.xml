@@ -1,12 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/edit_annot"
-        android:title="Modifier l'annotation"
-        android:enabled="false"/>
+    <item android:id="@+id/edit_item_video"
+        android:title="@string/modifier_video"
+        />
 
-    <item android:id="@+id/delete_annot"
-        android:title="Supprimer l'annotation"
+    <item android:id="@+id/delete_item_video"
+        android:title="@string/supprimer_video"
+        />
+
+    <item android:id="@+id/edit_item_infos_annot"
+        android:title="@string/modifierInfos"
+        />
+
+    <item android:id="@+id/edit_item_annot"
+        android:title="@string/modifier_annot"
+        />
+
+    <item android:id="@+id/delete_item_annot"
+        android:title="@string/supprimer_annot"
+        />
+	
+	<item android:id="@+id/renommer_annot_predef"
+        android:title="@string/renommer_annot_predef"
+        />
+
+    <item android:id="@+id/modifier_annot_predef"
+        android:title="@string/modifier_annot_predef"
+        />
+
+    <item android:id="@+id/supprimer_annot_predef"
+        android:title="@string/supprimer_annot_predef"
+        />
+        
+    <item android:id="@+id/edit_difficulte"
+        android:title="Modifier la difficulté"
+        android:visible="false"
         />
 
 </menu>

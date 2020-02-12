@@ -1,0 +1,43 @@
+Ce fichier a pour but de mettre en commun l'ensemble des erreurs présentes dans l'application.
+
+Indiquez ci-dessous la liste des problèmes à corriger dans l'application :
+- Le bouton dans le menu principal pour passer en mode consultation/annotation reste 
+  bloquer à mode consultation une fois passer en mode annotation.
+
+- Dans le mode annotation :
+    ° dans le cas des annotations graphiques :
+        . si on annule une annotation avec les deux boutons annuler 
+            (Le premier entre effacer et save, le deuxième dans le menu du save).
+            On ne peut plus créer d'annotations. 
+                (Il faut passer à consultation puis annotation pour pouvoir ou utiliser l'autre bouton annuler)
+            Les boutons et couleurs restent même en mode consultation. (Ne s'en va qu'en enregistrant un graphique)
+    ° dans le cas des annotation sonores :
+        . Ecouter l'enregistrement que l'on vient de faire empêche d'utilise rle bouton Ecouter.
+        . Si on l'annule avec le bouton annuler on ne peut plus créer d'annotations. 
+            (Il faut passer à consultation puis annotation pour pouvoir)
+    ° dans le cas des annotation textuelles :
+        . Si on l'annule avec le bouton annuler ou on clique autre part que le dialogue on ne peut plus créer d'annotations. 
+            (Il faut passer à consultation puis annotation pour pouvoir)(Le seul avec Dialog de problématique)
+    ° Après avoir créee une annotation, toutes celles concernant des annotations de la même catégorie et sous-catégorie
+        sont affichées dans la liste jusqu'à ce qu'on change de vidéo.
+
+
+- Lorsque l'on change de Catégorie la liste des vidéos de la Sous-catégorie par défaut ne s'actualise pas, 
+il faut passer par une autre sous-catégorie puis revenir à la première pour que les vidéos s'affichent.
+
+
+
+PHASE 2 :
+ - Fermeture du clavier après saisie du mot de passe pour entrer dans le mode Annotation
+ - Interdire l'accès aux boutons d'ajout d'annotations lorsque la liste d'annotations prédéfinies est affichée
+ - Modification du nom et de la durée d'annotation instable
+ - Modification d'une annotation graphique ne fonctionne qu'à partir de la deuxième tentative après ouverture de l'application
+    (l'initialisation doit se faire après la première tentative...)
+ - Lors d'un clic sur une annotation, on l'affiche avant de revenir à son emplacement dans la vidéo.
+ - Deux annotations à la même seconde provoquent une erreur
+    ° Lorsque la première se termine, la lecture de la vidéo redémarre alors qu'elle devrait rester en pause jusqu'à la fin de la dernière annotation 
+ - Répertoires contenant les informations des vidéos non supprimés lorsque la vidéo est supprimée
+ - Images dessinées non supprimées en cas d'annulation de sauvegarde (peut-être même en cas de suppression de l'annotation)
+ - Ajouter un contrôle sur le nom d'une annotation prédéfinie car on ne peut pas avoir d'homonymes
+
+
