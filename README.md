@@ -32,6 +32,8 @@ Accessible à l'adresse : [Manuel utilisateur](https://github.com/VideoAnnot/Vid
 # Rapport de soutenace (M2)
 Ici: [Rapport de soutenace](https://github.com/VideoAnnot/VideoAnnotTool/tree/master/docs/rapport_projet-VideoAnnot-version_finale.pdf)
 
+Rapport 2019-2020 : [Rapport de soutenance 2020](https://github.com/univ-angers/VideoAnnotTool/blob/master/docs/RapportM2_2020.pdf)
+
 
 # Licence
 
